@@ -1,11 +1,13 @@
 # Ignore configuration files that may contain sensitive information.
-sites/*/settings*.php
+#sites/*/settings*.php
+sites/default/settings.php
 
 
 # Ignore paths that contain user-generated content.
-sites/*/files
-sites/*/private
-
+#sites/*/files
+#sites/*/private
+sites/default/files
+sites/default/private
 
 
 # Directories
@@ -23,7 +25,6 @@ piwik/
 intranet/
 blogoldg/
 images/
-videos/
 annual-report/
 blog-backup/
 books2/
@@ -33,7 +34,6 @@ cathy 3rd writer reader series/
 cathy 5th reader writer series/
 cathy 6th reader writer series/
 data1/
-img/
 library/
 Past Questions/
 PKCLAUNCH/
@@ -58,6 +58,7 @@ db.php
 db_books.php
 shorten.php
 decoder.php
+correction-new/images
 correction-new/connect.php
 correction-new/connect2.php
 correction-new/access.php
