@@ -1,0 +1,174 @@
+
+
+/* CSS Document */
+
+<style>
+
+
+
+/*start navigation css*/
+#menu_container {
+
+}
+
+#dino_menu {
+	background: url(../images/dino_cloud.png);
+	width: 175px;
+	height: 161px;
+	margin: 40px 0px 0px 60px;
+	float: left;
+}
+
+
+#lion_menu {
+	background: url(../images/lion_cloud.png);
+	width: 175px;
+	height: 161px;
+	margin: 40px 0px 0px 60px;
+	float: left;
+}
+
+
+#owl_menu {
+	background: url(../images/owl_cloud.png);
+	width: 175px;
+	height: 161px;
+	margin: 40px 0px 0px 60px;
+	float: left;
+}
+
+
+#tortoise_menu {
+	background: url(../images/tortoise_cloud.png);
+	width: 175px;
+	height: 161px;
+	margin: 40px 0px 0px 60px;
+	float: left;
+}
+
+
+
+
+
+
+#sub_menu {
+	margin: 20px 0px 0px 60px;
+}
+
+
+#sub_menu02 {
+	margin: 20px 0px 0px 60px;
+}
+
+
+
+#sub_menu03 {
+	width: 880px;
+	margin: 20px 0px 0px 60px;
+	
+}
+
+
+/*links to cloud animal menu section*/
+a.explore_link {
+	color: #7bb8bd;   
+	font-size: 14px;
+	font-family: Baveuse;
+	font-weight: bold ;
+	text-decoration: none;
+	
+}
+
+a.explore_link:hover {
+	color: #d6429b; 
+	font-size: 15px;
+    	text-decoration: none;	
+}
+
+a.explore_link:visited:hover {
+	color: #d6429b; 
+    	text-decoration: none;
+	
+}
+
+a.explore_link:visited:active {
+	color: #d6429b; 
+    	text-decoration: none;
+	
+}
+
+
+
+
+.link_positioning {
+	text-align: center;
+	margin: 100px 0px 0px 0px;
+
+
+}
+
+a.submenu0 {
+	color: #e85a13;   
+	font-size: 15px;
+	font-family: arial, helvetics, verdana;
+	font-weight: bold;
+	text-decoration: none;
+	padding: 0px 0px 0px 13px;
+	margin: 9px;
+	
+}
+
+a.submenu0:hover {
+	color: #ffff00;   
+	font-size: 15px;
+    	text-decoration: underline;	
+}
+
+a.submenu0:visited:hover {
+	color: #ffff00;   
+    	text-decoration: none;
+	
+}
+
+a.submenu0:visited:active {
+	color: #ffff00;   
+    	text-decoration: none;
+	
+}
+
+
+
+
+a.submenu {
+	color: #e85a13;   
+	font-size: 15px;
+	font-family: arial, helvetics, verdana;
+	font-weight: bold;
+	text-decoration: none;
+	padding: 0px 0px 0px 13px;
+	margin: 9px;
+	border-left-style:dotted;
+	border-left-width: 2px;
+	
+}
+
+a.submenu:hover {
+	color: #ffff00;   
+	font-size: 15px;
+    	text-decoration: underline;	
+}
+
+a.submenu:visited:hover {
+	color: #ffff00;   
+    	text-decoration: none;
+	
+}
+
+a.submenu:visited:active {
+	color: #ffff00;   
+    	text-decoration: none;
+	
+}
+
+
+</style>

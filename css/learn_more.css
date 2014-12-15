@@ -1,0 +1,77 @@
+@charset "utf-8";
+
+<style>
+
+
+/*Edited area 11/04/12*/
+
+#site_container2{
+	margin:auto;
+	width: 1015px;
+	height: auto;
+	background: url(../images/backgrnd.png);
+	border: #F60;
+	-moz-box-shadow: 0px 0px 10px #000; 
+	-webkit-box-shadow: 0px 0px 10px #000;
+        
+		
+	}
+#learn_container {
+	background-image: url(../images/learn_more.png);
+	background-repeat: no-repeat;
+    height: 102px;
+    width: 950px;
+}
+
+.main_text_text_learn{
+	background: #F93;
+	font-size: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	color:#ffffff;
+	padding:10px;
+	border:#000 double 3px;
+	font-weight:bold;
+	
+}
+
+#oma_learning_cat{
+	height:400px;
+	width: 898px;
+	margin: 210px 0px 30px 13px;
+	padding: 0px 20px 0px 20px;
+	text-align:justify;
+	background-color:#FFFFFF;
+	font:Verdana, Geneva, sans-serif;
+	font-size:16px;
+	line-height:2;
+	/*border:solid 2px #00CC00;
+	-webkit-border-radius:15px;
+	box-shadow:5px 5px 5px #888;*/
+}
+#oma_dlc_learn{
+	height:auto;
+	width: 900px;
+	text-align:right;
+	background-color:#FFFFFF;
+}
+
+.learnmore_btn{
+	width: 160px;
+	height: 45px;
+	display:block;
+	float:right;
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background:url(../images/more_infobtn.png);
+	
+	}
+	
+	
+.learnmore_btn:hover{
+	background:url(../images/more_infobtn2.png);
+}
+
+</style>
+
+
+

@@ -1,0 +1,26 @@
+ErrorDocument 404 /notfound.php
+
+Options +FollowSymLinks -Indexes -MultiViews
+RewriteEngine on
+#
+# Internally rewrite shortened URL requests to de-shortened URL lookup script filepath plus query string
+RewriteRule ^([\w\d]{4})$ decoder.php?decode=$1 [L]
+
+
+RewriteCond %{HTTP_HOST} !^www\.zodml\.org$ [NC]
+ 
+ #RewriteRule ^(.*)$ http://www.zodml.org/$1 [R=301,L] this should be unhash and line 22 should be removed
+
+
+
+
+# stuff to let through (ignore)
+ # RewriteCond %{REQUEST_URI} "/piwik/" [OR]
+ # RewriteCond %{REQUEST_URI} "/blog/" it works with blog not with piwik, piwik might likely go back to directory
+  # RewriteRule (.*) $1 [L]
+
+
+RedirectMatch 301 ^/piwik/(.*)$ http://piwik.zodml.org/$1
+RedirectMatch 301 ^/intranet/(.*)$ http://intranet.zodml.org/$1
+RedirectMatch 301 ^/stage/(.*)$ http://stage.zodml.org/$1
+RedirectMatch 301 ^/webmail/(.*)$ http://webmail.zodml.org/$1

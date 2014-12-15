@@ -1,0 +1,29 @@
+@charset "utf-8";
+/* CSS Document */
+
+#loading { 
+width: 100%; 
+/*position: absolute;*/
+margin:0px auto;
+text-align:center;
+}
+
+#pagination
+{
+text-align:center;
+margin-left:120px;
+
+}
+dt{	
+list-style: none; 
+float: left; 
+margin-right: 8px; 
+padding:3px; 
+border:solid 1px #dddddd;
+color:#EC9F00; 
+}
+dt:hover
+{ 
+color:#FF0084; 
+cursor: pointer; 
+}

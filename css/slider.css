@@ -1,0 +1,295 @@
+
+/* === Font Styles === */
+
+@font-face {
+    font-family: 'PTSansRegular';
+    src: url('fonts/pt-sans/PTS55F-webfont.eot');
+    src: url('fonts/pt-sans/PTS55F-webfont.eot?#iefix') format('embedded-opentype'), url('fonts/pt-sans/PTS55F-webfont.woff') format('woff'), url('fonts/pt-sans/PTS55F-webfont.ttf') format('truetype'), url('fonts/pt-sans/PTS55F-webfont.svg#PTSansRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+/* === General Styles === */
+
+html,
+div,
+span,
+head,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+a,
+font,
+img,
+small,
+strong,
+ol,
+ul,
+li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    background: transparent;
+}
+
+ol,
+ul {    list-style: none }
+
+blockquote,
+q {    quotes: none }
+
+/*body {
+    font-family: PTSansRegular;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    line-height: 1;
+}*/
+
+/*body {    background: #aaaaaa url(images/bg.jpg) repeat scroll 0 0 }
+*/
+/*.container {
+    width: 885px;
+    margin: 0 auto;
+}
+*/
+/*#main {
+    background: url(images/page_background.png) no-repeat scroll 0 0;
+    margin: 0 auto;
+    padding: 0;
+    height: 430px;
+}*/
+
+
+/* === Header Styles === */
+
+/*#header {
+    margin: auto;
+    margin-top: 80px;
+    margin-bottom: 10px;
+    height: 50px;
+}*/
+
+/*#logo {
+    position: relative;
+    float: left;
+    padding-left: 42px;
+}
+
+#contact_details {
+    float: right;
+    color: #333333;
+    font-size: 13px;
+    font-style: normal;
+    line-height: 22px;
+    padding-right: 42px;
+    text-align: right;
+}
+
+#contact_details a {
+    color: #333333;
+    font-size: 13px;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}*/
+
+
+/* === Content Styles === */
+
+/*#content {    padding: 10px 44px }*/
+
+.text {
+    text-align: center;
+    margin-top: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #262626;
+}
+
+.text h2 {
+    font-size: 30px;
+    color: #e5e5e5;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: lighter;
+    letter-spacing: 2px;
+}
+
+/*.counter {
+    background: url(images/counter_bg.png) no-repeat scroll center 57px;
+    width: 797px;
+    height: 150px;
+    border-top: 1px solid #4f4f4f;
+    border-bottom: 1px solid #262626;
+    text-align: center;
+    position: relative;
+}
+
+.counter h3 {
+    font-size: 14px;
+    color: #e5e5e5;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: lighter;
+    letter-spacing: 1px;
+    margin-top: 20px;
+}
+*/
+.details {
+    
+    height: 160px;
+}
+
+#sliderwrap {
+    float: left;
+    text-align: center;
+    width: 600px;
+    overflow: hidden;
+    position: relative;
+    height: 180px;
+    margin-left: 10px;
+}
+
+#slidertext h3 {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: lighter;
+    color: #e5e5e5;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+#slidertext2 h3 {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: lighter;
+    color: #e5e5e5;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+#slidertext3 h3 {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: lighter;
+    color: #e5e5e5;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+#slidertext p {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    color: #CCCCCC;
+    padding: 0 25px;
+}
+#slidertext2 p {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    color: #CCCCCC;
+    padding: 0 25px;
+}
+#slidertext3 p {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    color: #CCCCCC;
+    padding: 0 25px;
+}
+
+a.prev {
+    float: left;
+    margin-top: 70px;
+    margin-left: 50px;
+}
+a.prev2 {
+    float: left;
+    margin-top: 70px;
+    margin-left: 50px;
+}
+a.prev3 {
+    float: left;
+    margin-top: 70px;
+    margin-left: 50px;
+}
+
+a.next {
+    float: right;
+    margin-top: 70px;
+    margin-right: 50px;
+}
+a.next2 {
+    float: right;
+    margin-top: 70px;
+    margin-right: 50px;
+}
+
+a.next3 {
+    float: right;
+    margin-top: 70px;
+    margin-right: 50px;
+}
+
+
+#slidertext {
+    margin-top: 15px;
+    float: left;
+    width: 600px;
+    overflow: hidden;
+    position: relative;
+}
+#slidertext2 {
+    margin-top: 15px;
+    float: left;
+    width: 600px;
+    overflow: hidden;
+    position: relative;
+}
+#slidertext3 {
+    margin-top: 15px;
+    float: left;
+    width: 600px;
+    overflow: hidden;
+    position: relative;
+}
+
+#slidertext li {
+    overflow: hidden;
+    position: relative;
+    width: 600px;
+    height: 180px;
+}
+#slidertext2 li {
+    overflow: hidden;
+    position: relative;
+    width: 600px;
+    height: 180px;
+}
+#slidertext3 li {
+    overflow: hidden;
+    position: relative;
+    width: 600px;
+    height: 180px;
+}
+
+#slidertext ul {    width: 600px }
+#slidertext2 ul {    width: 600px }
+#slidertext3 ul {    width: 600px }
+
+#book_list_slider{
+	width:170px;
+	height:180px;
+	float:left;
+	margin-right:22px;
+	padding:4px;
+	text-align:center;
+}

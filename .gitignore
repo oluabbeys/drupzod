@@ -1,0 +1,115 @@
+# Ignore configuration files that may contain sensitive information.
+sites/*/settings*.php
+sites/*/settings.php
+
+# Ignore paths that contain user-generated content.
+sites/*/files
+sites/*/private
+
+
+
+# Directories
+solr-4.5.0.zip
+sites.zip
+koha-latest.tar.gz
+includes/
+misc/
+modules/
+profiles/
+scripts/
+themes/
+stage/
+piwik/
+intranet/
+blogoldg/
+images/
+videos/
+annual-report/
+blog-backup/
+books2/
+cathy  1st writer reader/
+cathy 2nd writer reader series/
+cathy 3rd writer reader series/
+cathy 5th reader writer series/
+cathy 6th reader writer series/
+data1/
+img/
+library/
+Past Questions/
+PKCLAUNCH/
+professional_Past_Question/
+tmp/
+shortstory/
+gallery/
+# Files
+CHANGELOG.txt
+cron.php
+INSTALL.mysql.txt
+INSTALL.pgsql.txt
+INSTALL.sqlite.txt
+install.php
+INSTALL.txt
+LICENSE.txt
+MAINTAINERS.txt
+update.php
+UPGRADE.txt
+xmlrpc.php
+db.php
+db_books.php
+shorten.php
+decoder.php
+correction-new/connect.php
+correction-new/connect2.php
+correction-new/access.php
+error_log.txt
+# Old file system
+_private/
+_vti_bin/
+_vti_cnf/
+_vti_log/
+_vti_pvt/
+_vti_txt/
+cgi-bin/
+bin/
+dlc/
+Nigeria2/
+images/dnpictures
+img/
+videos/
+SpryAssets/
+513zodml001/
+513zodml002/
+513zodml003/
+513zodml004/
+513zodml005/
+513zodml006/
+513zodml007/
+513zodml008/
+513zodml009/
+513zodml010/
+513zodml011/
+513zodml012/
+513zodml013/
+513zodml014/
+513zodml015/
+513zodml016/
+513zodml017/
+513zodml018/
+life/
+bookdrive/
+intrusion/
+update/
+blogoldg/Wp-config.php
+Nigeria/config.php
+Nigeria/config2.php
+Nigeria/wordpress.php
+server/db.php
+read.php
+read2.php
+read3.php
+read4.php
+read5.php
+zodml_englishjss/
+zodml_mathjss/
+zodml_sciencessss/
+blog-backup/

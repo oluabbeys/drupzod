@@ -1,0 +1,188 @@
+@charset "utf-8";
+
+/*body {background: url(../../images/bear_footprint.png);background-repeat: ;background-repeat:;margin: 0 auto;font-family: Arial, Helvetica, sans-serif;}*/
+
+
+/* Container */
+#main_container {width:750px; height: auto; background-color:#; margin-top:5px;/* box-shadow:3px 3px 3px 3px #888;*/}
+#wrapper{/*-moz-box-shadow: 0px 0px 10px #666; -webkit-box-shadow: 0px 0px 10px #666;*/ width: 739px; margin: 0 auto; min-height: 600px; margin-left:0px;}
+
+#study_container {background-image:url(images/study_more.png);background-repeat: no-repeat;height:90px;width: 950px;margin: 0px 0px 0px 0px;padding: 0px 0px 0px 0px; height:86px;}
+
+
+
+.main_title {color: #ffffff;font-size: 25px;font-family: Arial, Helvetica, sans-serif;font-weight: bold;padding: 45px 0px 0px 80px;}
+
+.verticalslider {border: 0px solid #666666; overflow: hidden; width:939px; height:inherit; margin-left:12px;  /*margin: 0 10px;*/float: left; /*margin-left:12px;*/}
+
+#get_container {
+	background-image: url(images/get_more.png);
+	background-repeat: no-repeat;
+        height: 102px;
+        width: 950px;
+ 		
+}
+
+#content_wrapper {
+	background: #ffffff;
+	height: auto;
+    width: 739px;
+	margin: 10px 0px 20px 0px;
+	width:inherit;
+	
+	
+	 		
+}
+#title_sub {
+	float: left;
+        margin: 10px 20px 0px 70px;
+        padding: 0px 0px 0px 0px;
+	font-family: calibri;
+        color: #525252;
+	font-size: 15px;
+	font-weight: ;
+	
+}
+
+.main_text {
+	color: #525252;   
+	font-size: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: ;
+	/*padding: 45px 40px 30px 70px;*/
+	
+	
+}
+
+#minitabs{
+	width: 200px;
+	height:50px;
+	margin:10px 10px 0px 0px;
+	float: left;
+}
+#footer{
+	width:980px;
+	height:40px;
+	margin:0px auto;
+	margin-top:30px;
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:12px;
+	color:#C90;
+	border-top: 2px solid #C90;
+}
+.comment{
+	background: url(images/drop_a_message2.png) no-repeat;
+	height: 230px;
+	width: 180px;
+	margin-left: 25px;
+}
+
+#page_navigation {
+	/*float: left;*/
+	width:939px;
+	height: 350px;
+	/*margin-bottom: 5px;*/
+	margin-left:12px;
+	margin-top:10px;
+	color: #525252;   
+	font-size: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	background:#FFFFFF;
+	
+}
+
+#footer{
+	width:980px;
+	height:40px;
+	margin:0px auto;
+	margin-top:30px;
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:12px;
+	color:#C90;
+	border-top: 2px solid #C90;
+}
+
+.subtitles{
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:20px;
+	font-weight:bold;
+	text-shadow: 1px 1px 1px #C9F;
+}
+#poppping{
+	width:109px;
+	height:60px;
+	background:url(images/drop_a_message2.png) no-repeat;
+	cursor:pointer;
+}
+
+
+/* Tabs */
+.verticalslider_tabs {float: left;width: 250px;}
+.verticalslider_tabs, .verticalslider_tabs li{margin: 0px; padding: 0px;}
+.verticalslider_tabs li{list-style-type: none;}
+.verticalslider_tabs a:link, .verticalslider_tabs a:visited{display: block; width: 230px; height: 29px; padding: 14px 10px 6px 10px; background: url(../images/tabBG.jpg) bottom repeat-x;  background-color: #eeeeee;font-family: Georgia, "Times New Roman", Times, serif; font-size: 12px; font-weight: bold;color: #333333;  border-right: 1px solid #666666; border-top: 1px solid #666666; text-decoration: none;}
+.verticalslider_tabs a:hover, .verticalslider_tabs a:active{ background: url(images/newimages/tabHoverBG.jpg) bottom repeat-x; background-color: #fcfcfc;}
+.verticalslider_tabs li:first-child a:link, .verticalslider_tabs li:first-child a:visited{border-top: none; height: 30px;}
+.verticalslider_tabs .activeTab a:link, .verticalslider_tabs .activeTab a:visited{background: #ffffff; border-right: 1px solid #ffffff;}
+.verticalslider_tabs .activeTab a:hover, .verticalslider_tabs .activeTab a:active{background: #ffffff; border-right: 1px solid #ffffff;}
+.verticalslider .arrow {background: url(../images/learning_images/arrow.png); width: 27px; height: 60px; position: absolute; z-index: 1000; margin-left: 250px; margin-top: -55px; }
+
+/* Contents */
+.verticalslider_contents{float: left;width: 689px; height:auto; display: inline; margin-top: 1px; padding: 0px;}
+
+.verticalslider_contents li{background: #ffffff; margin: 0px; padding: 0px;width: 689px;overflow: AUTO; padding: 0px;display: none;position: absolute;list-style-type: none; }
+.verticalslider_contents li h2{font-family: Verdana, Geneva, sans-serif; font-size: 12px; font-weight:bold; color: #333333;margin: 5px 20px; padding: 0px;}
+.verticalslider_contents li p{ margin: 5px 20px; padding: 0px;color: #333333; font-family: "Verdana", Geneva, sans-serif;font-size: 12px; line-height:20px; }
+.verticalslider_contents .activeContent{display: inline;}
+.verticalslider_contents a{font-family: Verdana, Geneva, sans-serif; font-size: 12px; font-weight:bold; color: #333333;margin: 5px 20px; padding: 0px;}
+
+/* Play Pause*/
+.verticalslider .playPause a{display:block; width: 60px;height: 60px;position:absolute;z-index:50;}
+.verticalslider .play a:link,.verticalslider .play a:visited{background: url(../images/plays.png) no-repeat 0 0;display: none;}
+.verticalslider .pause a:link,.verticalslider .pause a:visited{background: url(../images/pauses.png) no-repeat 0 0;}	
+.verticalslider .pause a:hover,.verticalslider .pause a:active,.verticalslider .play a:hover,.verticalslider  .play a:active{background-position:0px -60px;border-bottom: none;}
+
+/* Float Right Styles 
+.verticalslider_tabs {float: right;}
+.verticalslider .arrow {margin-left: -27px; background: url(../images/arrow-right.png); }
+.verticalslider_tabs a:link, .verticalslider_tabs a:visited{border-left: 1px solid #666666; border-right: none;}
+.verticalslider_tabs .activeTab a:link, .verticalslider_tabs .activeTab a:visited{border-left: 1px solid #ffffff;}
+.verticalslider_tabs .activeTab a:hover, .verticalslider_tabs .activeTab a:active{border-left: 1px solid #ffffff;}*/
+
+
+
+
+?
+/*Past Question*/
+.verticalslider_contents a{font-family: Verdana, Geneva, sans-serif; font-size: 12px; font-weight:bold; color: #333333;margin: 5px 20px; padding: 0px;}
+
+#achieve_container {
+	background-image: url(../images/achieve_more.png);
+	background-repeat: no-repeat;
+        height: 90px;
+        width: 950px;
+}
+#page_navigation2 {
+	/*float: left;*/
+	width:939px;
+	height: 100px;
+	/*margin-bottom: 5px;*/
+	margin-left:12px;
+	
+	color: #525252;   
+	font-size: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	background:#FFFFFF;
+	
+}
+
+
+
+
+
+
+
+
+
+
+

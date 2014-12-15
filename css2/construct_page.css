@@ -1,0 +1,155 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	background:url(../images/construct_bg.png) repeat-x;
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:12px;
+	color:#444;
+}
+#container_construct{
+	width:100%;
+	height:auto;
+}
+
+#header{
+	width:960px;
+	height:200px;
+	margin: 0px auto;
+	clear:both;
+	background-image:url(../images/construct_header.png);
+	margin-top:20px;
+	margin-bottom:10px;
+}
+
+#greetings{
+	width:960px;
+	height:100px;
+	clear:both;
+	margin:0px auto;
+	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+	font-size:32px;
+	color:#F00;
+	text-align:center;
+	padding-top:40px;
+	margin-top:50px;
+	margin-bottom:20px;
+
+}
+#new_msg{
+	width:960px;
+	height:150px;
+	clear:both;
+	margin:0px auto;
+	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+	font-size:14px;
+	color:#444;
+	text-align:center;
+	/*padding-top:40px;*/
+	margin-top:50px;
+	margin-bottom:20px;
+    line-height:20px;
+	background:url(../images/alert.png) no-repeat left;
+
+}
+#new_msg2{
+	width:820px;
+	height:150px;
+	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+	font-size:16px;
+	color:#444;
+	text-align:justify;
+	/*padding-top:40px;*/
+	/*margin-top:50px;*/
+	margin-bottom:20px;
+    line-height:25px;
+	float:right;
+	
+
+}
+
+#countdown{
+	width:960px;
+	height:350px;
+	margin:0px auto;
+	clear:both;
+}
+
+#countdown_pix{
+	width:823px;
+	height:300px;
+	margin:0px auto;
+	clear:both;
+	background:url(../images/page_background.png) no-repeat;
+	/*margin-top:30px;*/
+}
+#countdown_msg{
+	width:600px;
+	height:60px;
+	margin:0px auto;
+	clear:both;
+	/*margin-top:60px;*/
+	font-family:Verdana, Geneva, sans-serif;
+	color:#FFF;
+	font-size:28px;
+	padding-top:50px;
+	text-align:center;
+}
+
+#defaultCountdownhold{
+	background:url(../images/counter_bg.png) no-repeat center;
+	width: 740px;
+    height: 80px;
+	margin:0px auto;
+}
+
+#defaultCountdown {
+   
+	font-size:28px;
+	font-family: Arial, Helvetica, sans-serif;
+	color:#FFF;
+	margin:0px auto;
+	text-align:center;
+	padding-top:20px;
+	
+	/*margin-left:70px;*/
+	/*padding:60px 0px 0px 0px;*/
+	
+}
+#estimate{
+	width:200px;
+	height:30px;
+	margin:0px auto;
+	text-align:center;
+	font-size:16px;
+	color:#CCC;
+	
+}
+
+#footer{
+	width:960px;
+	height:200px;
+	margin:0px auto;
+	clear:both;
+	margin-top:30px;
+}
+#footer_left{
+	width:460px;
+	height:inherit;
+	float:left;
+}
+
+#footer_right{
+	width:460px;
+	height:inherit;
+	float:right;
+	text-align:right;
+}
+#jingle{
+	width:146px;
+	height:179px;
+	position:absolute;
+	left:1250px;
+	top:250px;
+	background:url(../images/jingle_bells.gif);
+}

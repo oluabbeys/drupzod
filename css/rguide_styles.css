@@ -1,0 +1,43 @@
+@charset "utf-8";
+/* CSS Document */
+
+#cat_guides{
+	width:880px;
+	height:210px;
+	border-bottom:#000000 2px solid;
+	border-top:#000000 2px solid;
+	padding-top:15px;
+	padding-left:50px;
+	margin: 0px auto;
+	line-height:none;
+
+}
+#cat_guides_ind{
+	width:161px;
+	height:160px;
+	float:left;
+	margin-right:50px;
+	text-align:center;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-style:bold;
+
+}
+#content_holder_oma2{
+	width:1015px;
+	height:auto;
+	margin:0px auto;
+	text-align:justify;
+}
+
+
+
+#cguide_content{
+	width:975px;
+	height:auto;
+	padding:20px;
+	border:#CCCCCC;
+	box-shadow:2px 2px 2px 2px #888;
+	line-height:30px;
+	font-size:12px;
+}

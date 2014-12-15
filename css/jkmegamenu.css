@@ -1,0 +1,137 @@
+@charset "utf-8";
+/* CSS Document */
+
+.megamenu{
+position: absolute;
+display: none;
+left: 0;
+top: 0;
+background:#FFF;
+border: 1px solid #CCC;
+border-width: 4px 1px;
+padding: 10px;
+font: normal 12px Verdana;
+z-index: 100;
+cursor:pointer;
+box-shadow:3px 3px 3px #888;
+border-radius:3px;
+margin:5px 0px 0px 0px;
+opacity:0.9;
+
+}
+
+.megamenu .column{
+float: left;
+width: 180px; /*width of each menu column*/
+margin-right: 5px;
+cursor:pointer;
+}
+
+.megamenu .column ul{
+margin: 0;
+padding: 0;
+list-style-type: none;
+}
+
+.megamenu .column ul li{
+padding-bottom: 5px;
+font-size:13px;
+}
+.megamenu .column ul li a{
+	color:#444;
+	text-decoration:none;
+}
+.megamenu .column ul li a:hover{
+	color:#AAA;
+	text-decoration:none;
+}
+.megamenu .column h3{
+background: #e0e0e0;
+font: bold 12px Arial;
+margin: 0 0 5px 0;
+padding:5px;
+}
+
+.megamenu .column h3 a{
+	color:#444;
+	text-decoration:none;
+}
+.megamenu .column h3 a:hover{
+	color:#EC9F00;
+	text-decoration:none;
+}
+
+.megamenu .column ul li a{
+text-decoration: none;
+}
+
+/*.megamenu .column ul li a:hover{
+color: red;
+}*/
+
+/*second set*/
+
+.megamenu2{
+position: absolute;
+display: none;
+left: 0;
+top: 0;
+background:#FFF;
+border: 1px solid #CCC;
+border-width: 4px 1px;
+padding: 10px;
+font: normal 12px Verdana;
+z-index: 100;
+cursor:pointer;
+box-shadow:3px 3px 3px #888;
+border-radius:3px;
+margin:5px 0px 0px 0px;
+opacity:0.9;
+
+}
+
+.megamenu2 .column2{
+float: left;
+width: 100px; /*width of each menu column*/
+margin-right: 5px;
+cursor:pointer;
+}
+
+.megamenu2 .column2 ul{
+margin: 0;
+padding: 0;
+list-style-type: none;
+}
+
+.megamenu2 .column2 ul li{
+padding-bottom: 5px;
+font-size:13px;
+margin-bottom:5px;
+}
+.megamenu2 .column2 ul li a{
+	color:#444;
+	text-decoration:none;
+}
+.megamenu2 .column2 ul li a:hover{
+	color:#AAA;
+	text-decoration:none;
+}
+.megamenu2 .column2 h3{
+background: #e0e0e0;
+font: bold 12px Arial;
+margin: 0 0 5px 0;
+padding:5px;
+}
+
+.megamenu2 .column2 h3 a{
+	color:#444;
+	text-decoration:none;
+}
+.megamenu2 .column2 h3 a:hover{
+	color:#EC9F00;
+	text-decoration:none;
+}
+
+.megamenu2 .column2 ul li a{
+text-decoration: none;
+}

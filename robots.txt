@@ -1,0 +1,110 @@
+#
+# robots.txt
+#
+# This file is to prevent the crawling and indexing of certain parts
+# of your site by web crawlers and spiders run by sites like Yahoo!
+# and Google. By telling these "robots" where not to go on your site,
+# you save bandwidth and server resources.
+#
+# This file will be ignored unless it is at the root of your host:
+# Used:    http://example.com/robots.txt
+# Ignored: http://example.com/site/robots.txt
+#
+# For more information about the robots.txt standard, see:
+# http://www.robotstxt.org/robotstxt.html
+#
+# For syntax checking, see:
+# http://www.frobee.com/robots-txt-check
+
+User-agent: *
+Crawl-delay: 10
+# Directories
+Disallow: /includes/
+Disallow: /misc/
+Disallow: /modules/
+Disallow: /profiles/
+Disallow: /scripts/
+Disallow: /themes/
+Disallow: /stage/
+Disallow: /piwik/
+Disallow: /intranet/
+Disallow: /blogoldg/
+# Files
+Disallow: /CHANGELOG.txt
+Disallow: /cron.php
+Disallow: /INSTALL.mysql.txt
+Disallow: /INSTALL.pgsql.txt
+Disallow: /INSTALL.sqlite.txt
+Disallow: /install.php
+Disallow: /INSTALL.txt
+Disallow: /LICENSE.txt
+Disallow: /MAINTAINERS.txt
+Disallow: /update.php
+Disallow: /UPGRADE.txt
+Disallow: /xmlrpc.php
+# Paths (clean URLs)
+Disallow: /admin/
+Disallow: /comment/reply/
+Disallow: /filter/tips/
+Disallow: /node/add/
+Disallow: /search/
+Disallow: /user/register/
+Disallow: /user/password/
+Disallow: /user/login/
+Disallow: /user/logout/
+# Paths (no clean URLs)
+Disallow: /?q=admin/
+Disallow: /?q=comment/reply/
+Disallow: /?q=filter/tips/
+Disallow: /?q=node/add/
+Disallow: /?q=search/
+Disallow: /?q=user/password/
+Disallow: /?q=user/register/
+Disallow: /?q=user/login/
+Disallow: /?q=user/logout/
+# Old file system
+Disallow: /_private/
+Disallow: /_vti_bin/
+Disallow: /_vti_cnf/
+Disallow: /_vti_log/
+Disallow: /_vti_pvt/
+Disallow: /_vti_txt/
+Disallow: /cgi-bin/
+Disallow: /bin/
+Disallow: /correction-new/
+Disallow: /dlc/
+Disallow: /Nigeria2/
+Disallow: /images/dnpictures
+Disallow: /img/
+Disallow: /videos/
+Disallow: /SpryAssets/
+Disallow: /513zodml001/
+Disallow: /513zodml002/
+Disallow: /513zodml003/
+Disallow: /513zodml004/
+Disallow: /513zodml005/
+Disallow: /513zodml006/
+Disallow: /513zodml007/
+Disallow: /513zodml008/
+Disallow: /513zodml009/
+Disallow: /513zodml010/
+Disallow: /513zodml011/
+Disallow: /513zodml012/
+Disallow: /513zodml013/
+Disallow: /513zodml014/
+Disallow: /513zodml015/
+Disallow: /513zodml016/
+Disallow: /513zodml017/
+Disallow: /513zodml018/
+Disallow: /life/
+Disallow: /bookdrive/
+Disallow: /intrusion/
+Disallow: /update
+Disallow: /read.php
+Disallow: /read2.php
+Disallow: /read3.php
+Disallow: /read4.php
+Disallow: /read5.php
+Disallow: /zodml_englishjss
+Disallow: /zodml_mathjss
+Disallow: /zodml_sciencessss

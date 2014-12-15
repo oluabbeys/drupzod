@@ -1,0 +1,271 @@
+/* CSS Document */
+
+<style>
+
+
+* {
+	margin: 0;
+	padding: 0;
+	}
+
+
+body {
+        background:   #366f73 url(../images/bear_footprint.png);
+        background-repeat: ;
+	background-repeat: ;
+	margin: 0 auto;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+#site_container {
+	margin:auto;
+	width: 1015px;
+	height: auto;
+	background-color:#;
+	box-shadow:3px 3px 3px 3px #888;
+		
+	}
+
+
+
+#page_title {
+	float: left;
+        margin: 20px 0px 0px 10px;
+        padding: 0px 0px 0px 0px;
+	font-family: Arial, Helvetica, sans-serif;
+        color: #ffffff;
+	font-size: 30px;
+	font-weight: bold;
+	
+}
+
+
+#title_sub {
+	float: left;
+        margin: 10px 0px 0px 10px;
+        padding: 0px 0px 0px 0px;
+	font-family: calibri;
+        color: #ffffff;
+	font-size: 20px;
+	font-weight: ;
+	
+}
+
+
+
+#homepage_link {
+	float: left;
+        margin: 15px 0px 0px 20px;
+        padding: 0px 0px 0px 20px;
+	font-family: calibri;
+        color: #ffffff;
+	font-size: 15px;
+	font-weight: ;
+	border-left-style:solid;
+	border-left-width: 2px;
+	
+}
+
+
+
+
+
+
+
+
+#box2 {
+	float: ;
+	padding: 0px 0px 0px 380px;
+}
+
+.informationheaders {
+	font-family: Arial, Helvetica, sans-serif;
+        color: #ffffff;
+	font-size: 19px;
+	font-weight: bold;
+}
+
+
+.info_headers_text {
+        width: 348px;
+	font-family: Arial, Helvetica, sans-serif;
+        color: #ffffff;
+	font-size: 13px;
+	font-weight: lighter;
+} 
+
+
+#box_section {
+        
+	padding: 20px 0px 0px 0px;
+        width: 300px;
+}
+
+
+#get_more {
+        background-image: url(../images/green_box.png);
+	background-repeat: no-repeat;
+        height: 237px;
+        width: 272px;
+        margin: 0px 30px 20px 0px;
+        	
+}
+
+
+#learn_more {
+	background-image: url(../images/blue_box.png);
+	background-repeat: no-repeat;
+        height: 237px;
+        width: 272px;
+	margin: 0px 0px 20px 0px;     
+	
+	
+}
+
+
+#study_more {
+	background-image: url(../images/purple_box.png);
+	background-repeat: no-repeat;
+        height: 237px;
+        width: 272px;
+	
+	
+}
+
+#achieve_more {
+	background-image: url(../images/orange_box.png);
+	background-repeat: no-repeat;
+        height: 237px;
+        width: 272px;
+	
+	
+}
+
+
+.box_wrapper {
+	width: 200px;
+        margin: 0px 0px 0px 0px;
+	padding: 50px 0px 0px 35px;
+}
+
+.box_title {
+	font-family: Arial, Helvetica, sans-serif;
+        color: #ffffff;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+
+.box_text {
+	font-family: Arial, Helvetica, sans-serif;
+        color: #ffffff;
+	font-size: 14px;
+	font-weight: ;
+        margin: 10px 0px 0px 0px;
+}
+
+a.box_textlinks {
+	color: #ffffff;   
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: ;
+	text-decoration: none;
+	
+}
+
+a.box_textlinks:hover {
+	color: #ffffff; 
+    	text-decoration: underline;	
+}
+
+a.box_textlinks:visited:hover {
+	color: #ffffff; 
+    	text-decoration: none;
+	
+}
+
+
+
+
+
+.intro_header {
+	font-family: Arial, Helvetica, sans-serif;
+        color: #ffffff;
+	font-size: 23px;
+	font-weight: ;
+	width: 400px;
+	margin: 0px 0px 10px 0px;
+}
+
+
+.intro_text {
+        width: 400px;
+	font-family: Arial, Helvetica, sans-serif;
+        color: #ffffff;
+	font-size: 15px;
+	font-weight: lighter;
+} 
+
+
+
+#welcome_wrapper {
+	width: ;
+	margin: 14px 0px 0px 20px;
+	padding: 0px 0px 0px 0px;
+	    
+	
+	
+}
+
+
+
+#library_photo {
+	width: 400px;
+	margin: 30px 0px 0px 20px;
+	padding: 0px 0px 0px 0px;
+	    
+	
+	
+}
+
+
+.pass_wrapper {
+	border:3px solid white;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>

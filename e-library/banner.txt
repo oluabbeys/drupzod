@@ -1,0 +1,200 @@
+<div id="aboutus_others_cathy_hold_ad">
+                               				
+											<!--VOLUNTEER BANNER-->
+											<a href="../volunteer.php">
+                                        	<div id="cathy_get_involved">
+                                            <table cellspacing="10" align="center">
+                                            <tr>
+                                            <td align="center"><img src="../images/160x120/volunteer160by120.png" width="160" height="120" alt="get involved" /><br/><br/><b>Volunteer at ZODML</b></td>
+                                            <!--<td valign="top"><span style="font-size:10px; font-family:verdana;">Want to give back to the community? ZODML offers rewarding opportunities for volunteers of all ages and professions.</span></td>-->
+                                            </tr>
+                                            </table>
+                                            </div>
+											</a>
+                                            <!--END OF VOLUNTEER BANNER-->
+											<!--JOIN THE DLC BANNER-->
+											<a href="../dlc/" target="_blank">
+                                            <div id="cathy_get_involved">
+                                            <table cellspacing="10" align="center">
+                                            <tr>
+                                            <td align="center"><img src="../images/160x120/joinTheDlc160by120.png" width="160" height="120" alt="dlc" /><br/><br/><b>Join the DLC</b></td>
+                                            <!--<td valign="top"><span style="font-size:10px; font-family:verdana;">Join the Digital Learning Community, share your knowledge with fellow students and win exciting prizes!</span></td>-->
+                                            </tr>
+                                            </table>
+                                            </div>
+											</a>
+											<!--END OF JOIN THE DLC BANNER-->
+											<!--CAREER GUIDE BANNER-->
+											<a href="../career_guide.php">
+											<div id="cathy_get_involved">
+                                            <table cellspacing="10" align="center">
+                                            <tr>
+                                            <td align="center"><img src="../images/160x120/carrierGuide160by120.png" width="160" height="120" alt="career guide" /><br/><br/><b>Career Guide</b></td>
+                                            <!--<td valign="top"><span style="font-size:10px; font-family:verdana;">Free resources to help you build a thriving and rewarding career.</span></td>-->
+                                            </tr>
+                                            </table>
+                                            </div>
+											</a>
+                                            <!--END OF CAREER GUIDE BANNER-->
+											<!--BOOK OF THE WEEK BANNER-->
+                            				<div id="each_book_others_holdbow_ad">
+
+                           
+										
+                            			<div id="aboutus_shortlinksbow_ad">
+
+                                        	<div id="aboutus_shortlinks_titlebow_ad"><b>Book of the Week</b></div>
+
+                                       		<table cellspacing="8">
+
+                                         <tr>
+
+                                            <td><img src="../images/mine-boy-home.jpg" width="60" height="70" alt="Mine Boy" title="Mine Boy" /></td>
+
+                                            <td><a href="../book-of-the-week.php?bookid=Mine Boy">Mine Boy</a> <br />by Abrahams, Peter <br />Category: Fiction</td>
+
+                                            </tr>
+
+                                             <tr>
+
+                                            <td><img src="../images/precolonial-home.jpg" width="60" height="70" alt="Precolonial Black Africa" title="Precolonial Black Africa" /></td>
+
+                                            <td><a href="../book-of-the-week.php?bookid=Precolonial Black Africa">Precolonial Black Africa</a> <br />by Diop, Cheikh Anta <br />Category: Non-fiction</td>
+
+                                            </tr>
+
+                                             <tr>
+
+                                            <td><img src="../images/weep-not-home.jpg" width="60" height="70" alt="Weep Not, Child" title="Weep Not, Child"/></td>
+
+                                            <td><a href="../book-of-the-week.php?bookid=Weep Not, Child">Weep Not, Child</a> <br />by Wa Thiong'o, Ngugi <br />Category: Children & Young Adults</td>
+
+                                            </tr>
+
+
+                                            </table>
+
+                                        </div>
+										<!--END OF BOOK OF THE WEEK BANNER-->
+										
+										<!--SOCIAL MEDIA BANNER FACEBOOK-->
+										<div id="social_media">
+                	
+                        					<table cellspacing="0">
+                        
+                       							 <!--FACEBOOK API-->
+                        						<tr>
+                        							<td>
+                        								<div class="fb-like-box" data-href="http://www.facebook.com/pages/Zaccheus-Onumba-Dibiaezue-Memorial-Libraries/233709620080206" data-width="260" data-height="300" data-show-faces="true" data-border-color="#CCC" data-stream="false" data-header="false"></div>
+                        							</td>
+                        						</tr>
+                        						<!--END OF FACEBOOK API-->
+                        					</table>
+                        
+                						</div>
+										<!--END OF SOCIAL MEDIA BANNER FACEBOOK-->
+										
+										<!--SOCIAL MEDIA BANNER TWITTER-->
+										<div id="social_media2">
+										<a class="twitter-timeline"  href="https://twitter.com/ZODML" data-widget-id="260372541170917376" width="260px" height="350px">Tweets by @ZODML</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+										</div>
+
+                            
+
+                            	</div>
+                                
+                                	
+                           	 </div>
+							 
+
+~
+
+<div id="aboutus_others_cathy_hold_ad">
+                                    	
+                                        
+                                    
+                               				<!--DISCOVER NIGERIA BANNER-->
+											<a href="../Nigeria/">
+                            			<div id="cathy_get_involved" style="font-size:11px;">
+                                        	<table cellspacing="10" align="center">
+                                            <tr>
+                                            <td valign="top" align="center"><img src="../images/160x120/discovernigeriaad1.png" width="160" height="120" alt="discover nigeria" /><br /><br /><b>Discover Nigeria</b></td>
+                                            <!--<td valign="top"><span style="font-size:10px; font-family:verdana;">We at ZODML have set ourselves the task of reminding people about the rich culture we possess and numerous achievements of Nigerians.</span></td>-->
+                                            </tr>
+                                            </table>
+                                           
+                                        </div>	
+										</a>
+                                        <!--END OF DISCOVER NIGERIA BANNER-->
+                                       
+                                            <!--DLC BANNER-->
+											<a href="../dlc/" target="_blank">
+                                            <div id="cathy_get_involved">
+                                            <table cellspacing="10" align="center">
+                                            <tr>
+                                            <td align="center"><img src="../images/160x120/joinTheDlc160by120.png" width="160" height="120" alt="get involved" /><br/><br/><b>Join the DLC</b></td>
+                                            <!--<td valign="top"><span style="font-size:10px; font-family:verdana;">Join the Digital Learning Community, share your knowledge with fellow students and win exciting prizes!</span></td>-->
+                                            </tr>
+                                            </table>
+                                            </div>
+											</a>
+                                            <!--END OF DLC BANNER-->
+                                            
+											
+                                             <!--VOLUNTEER-->
+											 <a href="../volunteer.php">
+                                        	<div id="cathy_get_involved">
+                                            <table cellspacing="10" align="center">
+                                            <tr>
+                                            <td align="center"><img src="../images/160x120/volunteer160by120.png" width="160" height="120" alt="Volunteer" /><br/><br/><b>Volunteer at ZODML</b></td>
+                                            <!--<td valign="top"><span style="font-size:10px; color:#444; font-family:verdana;">Want to give back to the community? ZODML offers rewarding opportunities for volunteers of all ages and professions.</span></td>-->
+                                            </tr>
+                                            </table>
+                                            </div>
+											</a>
+                                            <!--END OF VOLUNTEER-->
+											
+											<!--CAREER GUIDE BANNER-->
+											<a href="../career_guide.php">
+											<div id="cathy_get_involved">
+                                            <table cellspacing="10" align="center">
+                                            <tr>
+                                            <td align="center"><img src="../images/160x120/carrierGuide160by120.png" width="160" height="120" alt="career guide" /><br/><br/><b>Career Guide</b></td>
+                                            <!--<td valign="top"><span style="font-size:10px; font-family:verdana;">Free resources to help you build a thriving and rewarding career.</span></td>-->
+                                            </tr>
+                                            </table>
+                                            </div>
+											</a>
+											<!--END OF CAREER GUIDE BANNER-->
+											<!--SOCIAL MEDIA BANNER FACEBOOK-->
+										<div id="social_media">
+                	
+                        					<table cellspacing="0">
+                        
+                       							 <!--FACEBOOK API-->
+                        						<tr>
+                        							<td>
+                        								<div class="fb-like-box" data-href="http://www.facebook.com/pages/Zaccheus-Onumba-Dibiaezue-Memorial-Libraries/233709620080206" data-width="260" data-height="300" data-show-faces="true" data-border-color="#CCC" data-stream="false" data-header="false"></div>
+                        							</td>
+                        						</tr>
+                        						<!--END OF FACEBOOK API-->
+                        					</table>
+                        
+                						</div>
+										<!--END OF SOCIAL MEDIA BANNER FACEBOOK-->
+										
+										<!--SOCIAL MEDIA BANNER TWITTER-->
+										<div id="social_media2">
+										<a class="twitter-timeline"  href="https://twitter.com/ZODML" data-widget-id="260372541170917376" width="260px" height="350px">Tweets by @ZODML</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+										</div>
+                                            
+                                            
+                                            
+                            
+
+                            	</div>
+                                
+                                	
+                           	 </div>

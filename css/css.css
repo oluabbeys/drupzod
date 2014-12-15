@@ -1,0 +1,175 @@
+/*::::::: PIROBOX V.1.0. :::::::::*/
+
+
+/*html, body {  
+	margin: 0;
+	padding: 0; 
+}*/
+/*body {  */
+	/*background: #000 url(background2.jpg) center top no-repeat;*/
+	/*font-family: 'SansationRegular';
+	background-attachment:fixed;
+	font-size: 12px;
+	
+}*/
+
+/*::::::::::::REGOLE GENERALI:::::::::::*/
+
+
+img{
+	border:none;
+	padding:0;
+	margin:0;
+}
+p{
+	margin:0;
+	padding:0;
+}
+
+a{
+	color:#fff;
+	text-decoration:none;
+	outline:none;
+	background:none;
+	padding:0;
+}
+a:hover{
+	color:#bb0f05;
+	text-decoration:none;
+	outline:none;
+}
+.clear { clear: both; }
+a.AlexaSiteStatsWidget{
+	float:left;
+	padding:10px;
+	background: white;
+	margin:4px 0 0 10px;
+}
+a:hover.AlexaSiteStatsWidget{
+	float:left;
+	padding:10px;
+	background: #333;
+	margin:4px 0 0 10px;
+}
+.logo{
+	position:absolute;
+	top:35px;
+	left:50%;
+	margin:0 0 0 -51px;
+	background:url(logo4.png) center no-repeat;
+	width:102px;
+	height:120px;
+	z-index:5;
+}
+
+
+#nav{
+	position:absolute;
+	top:0;
+	left:50%;
+	width:750px;
+	height:35px;
+	display:block;
+	margin:0 0 0 -375px;
+	background: url(bg_up.png);
+}
+
+#bg{
+	position:fixed;
+	height:100%;
+	width:100%;
+	z-index:1;
+}
+
+
+.demo{
+	/*float:left;*/
+	width:1000px;
+	height:auto;
+	margin:5px 0px 10px 0px;
+	/*border:solid 1px #CCC;*/
+	/*box-shadow:4px 4px 4px #888;
+	border:solid 1px #CCC;
+	box-shadow:4px 4px 4px #888;*/
+	background:url(css/picture_frame_page_BW_T.png) repeat-x;
+}
+.demo ul{
+	float:left;
+	width:1000px;
+	margin:5px 0 0 4px;
+	display:block;
+}
+.demo li{
+	float:left;
+	padding:0;
+	margin:0;
+	color:white;
+
+}
+.demo {
+	float:left;
+	color:white;
+
+}
+.demo a{
+	float:left;
+	margin:10px 39px 0 0;
+	padding:0;
+	/*background: url(bg_thumbs.png);*/
+	width:118px;
+	height:118px;
+	color:none;
+}
+.demo  a:hover{
+	float:left;
+	/*background: url(bg_thumbs.png);*/
+	padding:0;
+}
+.demo p{
+	float:left;
+	padding:5px;
+}
+.box_left pre{
+	float:left;
+	width:630px;
+	background:#000;
+	color:#fff;
+}
+.demo  a img{
+	float:left;
+	margin:9px 0 0 9px;
+}
+
+.box_right .list{
+	float:left;
+	width:290px;
+}
+.box_right .list li{
+	float:left;
+	font-size:14px;
+}
+
+
+
+/*My Contribution- Oma Ogban*/
+
+#pic_holder{
+ height:177px;
+ width: 180px;
+ margin: 10px 0px 0px 20px;
+ padding-right:8px;
+ padding-bottom:18px;
+ background:url(bg_thumbs_h.png) no-repeat center;
+}
+
+.demo_2{
+	/*float:left;*/
+	width:400px;
+	margin-bottom:20px;
+	/*border:solid 1px #CCC;
+	box-shadow:4px 4px 4px #888;
+	border:solid 1px #CCC;
+	box-shadow:4px 4px 4px #888;*/
+	background:url(css/picture_frame_page_BW_T.png) repeat-x;
+}
+/*Default CSS for pan containers*/

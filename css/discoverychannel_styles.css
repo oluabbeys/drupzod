@@ -1,0 +1,158 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+#intro{
+	width:880px;
+	height:50px;
+	padding:20px;
+	margin: 0px 0px 20px 20px; 
+	background: #D6F0FE;
+	border: #000 2px inset;
+}
+#vid_guides{
+	width:880px;
+	height:270px;
+	/*border-bottom:#000000 2px solid;*/
+	padding-top:25px;
+	
+	margin: ;
+
+}
+
+#vid_guides_title{
+	width: 840px;
+	height:20px;
+	font:Verdana, "Geneva", sans-serif;
+	font-weight:500;
+	font-size:14px;
+	color:#CC6600;
+	margin-bottom:20px;
+	border-bottom: #333 1px dotted;
+}
+
+#vid_guides_ind1{
+	width:300px;
+	height:220px;
+	/*background:url(../images/discovery/wildabtanimals.png)0 0 no-repeat;*/
+	float:left;
+	margin: 0px 50px 0px 50px;
+	text-align:center;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:14px;
+	font-style:bold;
+	
+
+}
+#vid_guides_ind2{
+	width:300px;
+	height:220px;
+	/*background:url(../images/discovery/naturaldisasters.png) 0 0 no-repeat;*/
+	float:left;
+	margin: 0px 50px 0px 50px;
+	text-align:center;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:14px;
+	font-style:bold;
+
+}
+#vid_guides_ind3{
+	width:300px;
+	height:220px;
+	/*background:url(../images/discovery/medialiteracy1.png) 0 0 no-repeat;*/
+	float:left;
+	margin: 0px 50px 0px 50px;
+	text-align:center;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:14px;
+	font-style:bold;
+
+}
+#vid_guides_ind4{
+	width:300px;
+	height:220px;
+	/*background:url(../images/discovery/indigenouspeople.png) 0 0 no-repeat;*/
+	float:left;
+	margin: 0px 50px 0px 50px;
+	text-align:center;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:14px;
+	font-style:bold;
+	cursor:pointer;
+
+}
+#content_holder_oma2{
+	width:1015px;
+	height:auto;
+	margin:0px auto;
+	text-align:justify;
+}
+#modalhead2{width:800px; height:30px; background:url(../images/newimages/pop.png) repeat-x; font-family:"Lucida Console", Monaco, monospace;}
+
+
+
+#cguide_content{
+	width:975px;
+	height:auto;
+	padding:20px;
+	border:#CCCCCC;
+	background:#FFFFFF;
+	box-shadow:2px 2px 2px 2px #888;
+}
+
+
+
+
+/*a.enlargeleft:hover img { height:220px; width:165px;}*/
+
+
+a.enlarge_a { 
+	
+	background: url(../images/discovery/wildabtanimals.png) 0 0 no-repeat;
+	height: 220px;
+	width: 300px;
+		
+	display:block; 
+	}
+
+
+a.enlarge_a:hover{ background-image:url(../images/discovery/wildabtanimals2.png);}
+
+
+
+a.enlarge_b { 
+	
+	background: url(../images/discovery/naturaldisasters.png) 0 0 no-repeat;
+	height: 220px;
+	width: 300px;
+		
+	display:block; 
+	}
+
+
+a.enlarge_b:hover{ background-image:url(../images/discovery/naturaldisasters2.png);}
+
+a.enlarge_c { 
+	
+	background: url(../images/discovery/medialiteracy1.png) 0 0 no-repeat;
+	height: 220px;
+	width: 300px;
+		
+	display:block; 
+	}
+
+
+a.enlarge_c:hover{ background-image:url(../images/discovery/medialiteracy2.png);}
+
+a.enlarge_d { 
+	
+	background: url(../images/discovery/indigenouspeople.png) 0 0 no-repeat;
+	height: 220px;
+	width: 300px;
+		
+	display:block; 
+	}
+
+
+a.enlarge_d:hover{ background-image:url(../images/discovery/indigenouspeople2.png);}
+

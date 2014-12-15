@@ -1,0 +1,551 @@
+/* CSS Document */
+
+<style>
+
+
+* {
+	margin: 0;
+	padding: 0;
+	}
+
+
+/*body {
+        background:    #366f73 url(../../../images/bear_footprint.png);
+        background-repeat: ;
+	background-repeat:;
+	margin: 0 auto;
+	font-family: Arial, Helvetica, sans-serif;
+}*/
+
+
+
+#site_container {
+	margin:auto;
+	margin-top:0px;
+	width: 1015px;
+	height: auto;
+	background:url(../images/backgrnd.png);
+	-moz-box-shadow: 0px 0px 10px #000;
+	-webkit-box-shadow: 0px 0px 10px #000;
+	
+
+		
+	}
+	
+	/*Remove after rectification*/
+#site_container_pastquestions {
+	margin:auto;
+	margin-top:0px;
+	width: 1015px;
+	height: auto;
+	background: url(../../../images/backgrnd.png) repeat;
+	-moz-box-shadow: 0px 0px 10px #000;
+	-webkit-box-shadow: 0px 0px 10px #000;
+	
+
+		
+	}
+
+#content_container {
+	width: 770px;
+		
+	}
+
+
+
+/*Level 01 Pages*/
+
+
+
+#achieve_container {
+	background-image: url(../images/achieve_more.png);
+	background-repeat: no-repeat;
+        height: auto;
+        width: 950px;
+ 		
+}
+
+
+#learn_container {
+	background-image: url(../images/learn_more.png);
+	background-repeat: no-repeat;
+        height: 102px;
+        width: 791px;
+ 		
+}
+
+
+#study_container {
+	background-image: url(../images/study_more.png);
+	background-repeat: no-repeat;
+        height: 102px;
+        width: 791px;
+ 		
+}
+
+#get_container {
+	background-image: url(../images/get_more.png);
+	background-repeat: no-repeat;
+        height: 102px;
+        width: 791px;
+ 		
+}
+
+#content_wrapper {
+	background: #ffffff;
+	height: 40px;
+        width: 938px;
+	margin: 8px 0px 0px 15px;
+ 		
+}
+
+
+.main_title {
+	color: #ffffff;   
+	font-size: 25px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	padding: 45px 0px 0px 80px;
+
+}
+
+
+.main_text {
+	color: #525252;   
+	font-size: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: ;
+	padding: 45px 40px 45px 70px;
+}
+
+
+
+
+#bookshelf {
+	background-image: url(../images/wood_texture01.jpg);
+	height: 180px;
+        width: 768px;
+	margin: 0px 0px 0px 13px;
+	padding: 30px 0px 30px 0px;
+}
+
+
+#book_closet {
+	background: #ab7438;
+	background-repeat: repeat-x;
+	background-repeat:repeat-y;
+        height: 180px;
+        width: 166px;
+	margin: 0px 0px 5px 20px;
+	float: left;
+}
+
+
+.bookshelf_title {
+	color: #ffffff;   
+	font-size: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	padding: 10px 0px 0px 0px;
+	text-align: center;
+}
+
+#book_list {
+	color: #ffffff;
+	width: 120px;
+}
+
+a {
+	color: #ffffff;   
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: ;
+	text-decoration: none;
+	margin: 10px 0px 0px 0px;
+	
+}
+
+a:hover {
+	color: #ffffff; 
+    	text-decoration: underline;	
+}
+
+a:visited:hover {
+	color: #ffffff; 
+    	text-decoration: none;
+	
+}
+
+
+
+#minitabs{
+	width: 200px;
+	height:auto;
+	margin-right:80px;
+	/*margin-top:10px;*/
+	float: left;
+}
+
+#minitabs a{
+	text-decoration:none;
+	color: transparent;
+}
+#mintabs hover{
+	color:none;
+	text-decoration:none;
+}
+
+
+
+#page_navigation {
+	/*float: left;*/
+	width:inherit;
+	height: 50px;
+	/*margin-bottom: 5px;*/
+	margin-left:60px;
+	margin-top:10px;
+	
+}
+
+#title_sub {
+	float: left;
+        margin: 10px 20px 0px 70px;
+        padding: 0px 0px 0px 0px;
+	font-family: calibri;
+        color: #525252;
+	font-size: 15px;
+	font-weight: ;
+	
+}
+
+
+
+#homepage_link {
+	float: left;
+        margin: 10px 0px 0px 0px;
+        padding: 0px 0px 0px 20px;
+        color: #525252;
+	border-left-style:solid;
+	border-left-width: 1px;
+	
+}
+
+
+a.box_textlinks {
+	color: #525252;
+	font-size: 13px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: ;
+	text-decoration: none;
+	margin: 10px 0px 0px 0px;
+	
+}
+
+a.box_textlinks:hover {
+	color: #525252;
+    	text-decoration: underline;	
+}
+
+a.box_textlinks:visited:hover {
+	color: #525252;
+    	text-decoration: none;
+	
+}
+
+
+#shelf_stack  {
+	/*margin: 0px 0px 0px 12px;*/
+	height: auto;
+	margin:0px auto;
+
+
+}
+
+
+#top_shelf {
+
+	background-image: url(../images/learning_images/top_half_shelf_maths.png);
+	background-repeat: no-repeat;
+	height: 49px;
+        width: 770px;
+	margin: 0px auto;
+	padding: 0px 0px 0px 0px;
+	margin-top:10px;
+}
+
+#top_shelf_eng {
+
+	background-image: url(../images/learning_images/top_half_shelf_english.png);
+	background-repeat: no-repeat;
+	height: 49px;
+    width: 770px;
+	margin: 0px auto;
+	padding: 0px 0px 0px 0px;
+	margin-top:10px;
+}
+
+#top_shelf_sci {
+
+	background-image: url(../images/learning_images/top_half_shelf_science.png);
+	background-repeat: no-repeat;
+	height: 49px;
+        width: 770px;
+	margin: 0px auto;
+	padding: 0px 0px 0px 0px;
+	margin-top:10px;
+}
+#top_shelf_englit{
+
+	background-image: url(../images/learning_images/top_half_shelf_englishlit.png);
+	background-repeat: no-repeat;
+	height: 49px;
+        width: 770px;
+	margin: 0px auto;
+	padding: 0px 0px 0px 0px;
+	margin-top:10px;
+}
+
+
+
+#middle_shelf {
+
+	background-image: url(../images/learning_images/middle_half_shelf.png);
+	background-repeat: repeat-y;
+	height: 268px;
+    width: 770px;
+	margin: 0px auto;
+	padding: 0px 0px 0px 0px;
+}
+
+#middle_shelf_eng {
+
+	background-image: url(../images/middle_half_shelf.png);
+	background-repeat: repeat-y;
+	height: 268px;
+        width: 770px;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+}
+
+
+.books {
+	margin: 20px 0px 0px 30px;
+}
+
+.top{
+	width:1015px;
+	height:150px;
+	margin:0px auto;
+	/*margin-top: 12px;*/
+	margin-bottom: 10px;
+	background: url(../images/Header.png) no-repeat;
+}
+.top_SS{
+	width:1015px;
+	height:150px;
+	margin:0px auto;
+	/*margin-top: 12px;*/
+	margin-bottom: 10px;
+	background: url(../images/Header_SS.png) no-repeat;
+}
+
+.comment{
+	background:url(../../../images/drop_a_message2.png) no-repeat;
+	height: 230px;
+	width: 200px;
+	margin-left: 5px;
+}
+
+.othersubjects{
+	height: 210px;
+	width: 768px;
+	/*float: left;*/
+	margin:0px auto;
+	margin-top:20px;
+	/*margin-bottom:20px;*/
+	background:url(../images/bck.png);
+	/*margin-left:12px;*/
+	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+	font-size:18px;
+	font-weight:bold;
+	color:#FFFFFF;
+	text-shadow:#030;
+}
+
+#footer{
+	width:980px;
+	height:40px;
+	margin:0px auto;
+	margin-top:30px;
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:12px;
+	color:#C90;
+	border-top: 2px solid #C90;
+}
+#footer a{
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:12px;
+	color:#C90;
+}
+.card{
+	float: right;
+	margin: 0px 10px 0px 0px;
+	height: 110px;
+	width: 250px;
+	background:url(../images/card.png) no-repeat;
+	background-position:right;
+}
+
+.heading{
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:14px;
+	color: #333;
+	font-weight:bold;
+}
+
+.contentlinks{
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color: #000;
+}
+
+.contentlinks a{
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color: #000;
+	text-decoration:none;
+}
+
+
+/*Sliding Content*/
+
+.dhtmlgoodies_question{	/* Styling question */
+	/* Start layout CSS */
+	color:#FFF;
+	font-size:0.9em;
+	width:450px;
+	margin:5px 20px 0px 20px;
+	padding-left:2px;
+	background-image: url(../../../images/Sub_tit.png);
+	background-repeat:no-repeat;
+	background-position:top right;
+	height:40px;
+
+	/* End layout CSS */
+
+	overflow:hidden;
+	cursor:pointer;
+}
+.dhtmlgoodies_answer{	/* Parent box of slide down content */
+	/* Start layout CSS */
+	border:1px solid #317082;
+	margin-left:30px;
+	background-color:#E2EBED;
+	width:400px;
+
+	/* End layout CSS */
+
+	visibility:hidden;
+	height:0px;
+	overflow:hidden;
+	position:relative;
+
+}
+.dhtmlgoodies_answer_content{	/* Content that is slided down */
+	padding:1px;
+	font-size:0.9em;
+	position:relative;
+}
+
+.subtitles{
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:20px;
+	font-weight:bold;
+	text-shadow: 1px 1px 1px #C9F;
+}
+
+#mask {
+  position:absolute;
+  left:0;
+  top:0;
+  z-index:9000;
+  background-color:#000;
+  display:none;
+}
+  
+#boxes .window {
+  position:fixed;
+  left:0;
+  top:0;
+  width:440px;
+  height:200px;
+  display:none;
+  z-index:9999;
+  padding:20px;
+}
+
+#boxes #dialog {
+  width:375px; 
+  height:203px;
+  padding:10px;
+  background-color:#ffffff;
+}
+
+#boxes #dialog1 {
+  width:375px; 
+  height:203px;
+}
+
+#dialog1 .d-header {
+  background:url(images/login-header.png) no-repeat 0 0 transparent; 
+  width:375px; 
+  height:150px;
+}
+
+#dialog1 .d-header input {
+  position:relative;
+  top:60px;
+  left:100px;
+  border:3px solid #cccccc;
+  height:22px;
+  width:200px;
+  font-size:15px;
+  padding:5px;
+  margin-top:4px;
+}
+
+#dialog1 .d-blank {
+  float:left;
+  background:url(images/login-blank.png) no-repeat 0 0 transparent; 
+  width:267px; 
+  height:53px;
+}
+
+#dialog1 .d-login {
+  float:left;
+  width:108px; 
+  height:53px;
+}
+
+#boxes #dialog2 {
+  background: url(../images/learning_images/notice.png) no-repeat 0 0 transparent; 
+  width:326px; 
+  height:229px;
+  padding:50px 0 20px 25px;
+}
+#boxes #dialog2 a{
+	text-decoration:none;
+	font:Verdana, Geneva, sans-serif;
+	color:#000000;
+	font-size:12px;
+	
+}
+#poppping{
+	width:109px;
+	height:60px;
+	background:url(../images/drop_a_message2.png) no-repeat;
+	cursor:pointer;
+}
+
+
+</style>
