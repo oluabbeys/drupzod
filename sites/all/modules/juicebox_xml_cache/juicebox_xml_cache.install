@@ -1,0 +1,18 @@
+<?php
+
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Juicebox XML Cache module.
+ */
+
+
+/**
+ * Implements hook_schema().
+ */
+function juicebox_xml_cache_schema() {
+  // Setup a special cache table to hold the XML for a gallery.
+  $schema['cache_juicebox_xml'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_juicebox_xml']['description'] = 'Cache table to store Juicebox conifg XML info across multiple path requests.';
+  return $schema;
+}

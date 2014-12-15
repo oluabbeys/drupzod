@@ -1,0 +1,1435 @@
+/* This file will hold styles for the mobile version of your website (mobile first). */
+/* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
+/*
+html {
+  height: 100%;
+  background-color:#333;
+ 
+ */
+
+body {
+background-color:#333;
+margin: 0;
+padding:0;
+font: 1em Helvetica, Arial, 'Sans-serif';
+line-height:1.5em; 
+}
+blockquote {
+  color:#FF9900;
+  
+}
+
+
+blockquote p {
+  font-style: italic;
+}
+
+p, h1, h2, h3, h4, h5, h6{
+margin:5px;} /* change from 5 */
+
+p {
+  
+  line-height: 33px;
+}
+
+
+
+#region-header-second {
+  margin-top: 10px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Tahoma,Helvetical,'Sans-serif';
+  letter-spacing: 0.05em;
+  line-height:1em;
+}
+
+a:link, a:visited {
+  color: #0062A0;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #777777;
+  text-decoration: none;
+}
+
+a:hover img{
+        opacity: 0.3;
+	filter: alpha(opacity=30);
+}
+
+a:active {
+  /*color: #202124;*/
+  text-decoration: none;
+  color: #000;
+  background-color: #ff9900;
+}
+
+
+.tb-megamenu .nav > li > a {
+  border-right: 1px solid #222;
+  border-top: 0;
+  color: #fff;
+  font-weight: bold;
+  /*padding: 7px 15px;*/
+  text-shadow: none;
+ 
+}
+
+
+.tb-megamenu .dropdown-menu li > a {
+          line-height: 20px;
+
+}
+
+.tb-megamenu .nav li.dropdown.active > .dropdown-toggle, .tb-megamenu .nav li.dropdown.open.active > .dropdown-toggle, .tb-megamenu .nav > li.dropdown.open.active > a:hover {
+  background-color: #ff9900;
+  border-color: #333;
+}
+.tb-megamenu .nav > .active > a, .tb-megamenu .nav > .active > a:hover, .tb-megamenu .nav > .active > a:focus {
+  background-color: #ff9900;
+}
+
+/*NOTE THIS COLOR CODE, VERY NECESSARY, STILL NEED SOME ADJUSTMENT
+  color: #E54E4B; former hover color*/
+.tb-megamenu .nav > li > a:focus, .tb-megamenu .nav > li > a:hover {
+  background-color: #FFFFFF;
+  color: #ff9900;
+  outline: medium none;
+  text-decoration: none;
+  text-shadow: none;
+}
+.tb-megamenu .nav li.dropdown.open > .dropdown-toggle {
+  background-color: #FFFFFF;
+  color: #FF9900;
+}
+/*this is for sub menu hover*/
+.tb-megamenu .dropdown-menu li > a:hover, .tb-megamenu .dropdown-menu li > a:focus, .tb-megamenu .dropdown-submenu:hover > a {
+  background-color: inherit;
+  background-image: none;
+  color: #ff9900;
+  text-decoration: none;
+}
+
+/* Background color change --Beginning*/
+.tb-megamenu{
+background-color:#333;}
+ /*Background color change --end*/
+
+/* this show active link css on the main menu
+.tb-megamenu .dropdown-menu .active > a, .tb-megamenu .dropdown-menu .active > a:hover {
+  background-color: #0081C2;
+  background-image: linear-gradient(to bottom, #0088CC, #0077B3);
+  background-repeat: repeat-x;
+ 
+}*/
+
+
+div.block-system-main img{
+ 
+  
+margin: 10px 0 0 0;
+
+}
+
+.block-interns-and-volunteer .block-title{display: none;}
+
+
+
+#block-views-main-home-side-view-block .odd img
+{
+ padding:0;
+
+ margin: 10px 10px 0 0px !important; 
+}
+
+#block-views-main-home-side-view-block .even img
+{
+ padding:0; 
+ margin: 10px 0px 0 0 !important;
+ }
+#block-views-welcom-view-block{
+ padding:0; 
+margin: 10px 0 0 0;
+}
+
+#block-views-main-site-footer-view-block{
+padding:5px 0 0 0; 
+margin: 5px 0 0 0;
+background-color:#333;
+color:#FFFFFF;
+line-height:1.5em;
+font-weight:bold;
+}
+
+h2.block-title {
+  font-size: 18px;
+  margin: 10px;
+}
+.block-title {
+font-size:1.5em;
+color:#FF9900;
+}
+
+#block-views-libraries-view-block-block{
+border-bottom:solid thick #f90;
+padding-top:5px;
+padding-bottom: 5px;
+margin-bottom:10px;}
+
+.block-views-libraries-view-block-block .odd{
+margin-top:10px;
+}
+
+
+.block-views-libraries-view-block-block .even{
+margin-top:10px;
+}
+
+/* all this place are in number because i fail to specify the block title while designing it*/
+/* This 3 block of code is for reading programme*/
+#block-views-6ff803ccc1b61899285bb96f7236ce33 {
+border-bottom:solid thick #f90;
+padding-top:5px;
+padding-bottom: 5px;
+margin-bottom:10px;
+}
+
+.block-views-6ff803ccc1b61899285bb96f7236ce33 .odd{
+margin-top:10px;
+}
+
+.block-views-6ff803ccc1b61899285bb96f7236ce33 .even{
+margin-top:10px;
+}
+/* This 3 block of code is for ICT and knowledge centre*/
+#block-views-f065352955ce3f512890b0ce60d38971 {
+border-bottom:solid thick #f90;
+padding-top:5px;
+padding-bottom: 5px;
+margin-bottom:10px;
+}
+
+.block-views-f065352955ce3f512890b0ce60d38971 .odd{
+margin-top:10px;
+}
+.block-views-f065352955ce3f512890b0ce60d38971 .even{
+margin-top:10px;
+}
+/*sidebar style --beginnng*/
+.views-field-field-sidebar-image{
+margin-top:10px;
+}
+.block-menu{ /*note this place*/
+border:solid thick #ff9900;
+padding:10px 0 10px 10px;
+margin:10px;}
+.block-menu .block-title{
+margin-left:0}
+.menu{
+margin-left:13px;
+}
+/*this is for donate link in the sidebar*/
+#block-views-general-sidebar-widget-block{
+margin-left:10px;}
+
+#mc-embedded-subscribe-form{
+border:solid thick #ff9900;
+padding: 10px;
+background-color:ff9900;
+margin:10px
+}
+#mc-embedded-subscribe-form body{
+
+background-color:ff9900;
+}
+#mce-EMAIL{
+margin:10px;
+}
+
+#block-views-contact-us-widget-block{
+border:solid thick #ff9900;
+margin:0 10px 10px 10px;
+padding:5px;}
+
+#block-views-contact-us-widget-block-1{
+border:solid thick #ff9900;
+margin:10px;
+padding:5px;
+}
+
+
+
+.sidebar_blog {
+margin:10px;}
+
+
+
+#block-views-contact-us-widget-block-1 li{
+
+list-style:disc outside none;}
+
+ul li.leaf {
+  /*list style for sidebar menu system*/
+  list-style: disc outside none;
+}
+#block-views-contact-us-widget-block-1 .more-link{
+display:none;}
+
+#block-apachesolr-search-mlt-001{
+border:solid thick #ff9900;
+margin:10px;
+padding:5px}
+
+#block-apachesolr-search-mlt-001 li{
+
+list-style:disc outside none;}
+                   /*sidebar style --end*/
+
+
+/*the one for centring has been move to narrow default layout*/
+ .content .field-name-field-main-content-image img{
+margin:10px 0 10px 0;
+}
+
+/*#flexslider-1{
+width:100%;
+height:100%;}*/
+
+.view-display-id-block #flexslider-1{
+width:100%;
+height:100%;
+}
+
+.views-field-title {
+padding:5px;
+}
+
+.form-textarea-wrapper{
+width:100%}
+#webform-component-name{
+width:100%}
+
+/*Removing hiding field for spam checking --beginning*/
+#webform-component-spam-prevention{
+display:none;}
+/*Removing hiding field for spam checking --end*/
+#map-canvas {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        padding-bottom: 75%; // This is the aspect ratio
+        margin:auto;
+        overflow: hidden;
+      }
+	
+	 /* our team css --Beginning*/
+	 #node-33 img{
+	float:left;
+	margin-right: 20px;
+      }
+	  
+	 #node-34 img{
+	float:left;
+	margin-right: 20px;
+      }
+    
+	   #node-35 img{
+	float:left;
+	margin-right: 20px;
+      }
+	   #node-36 img{
+	float:left;
+	margin-right: 20px;
+      }
+	   #node-37 img{
+	float:left;
+	margin-right: 20px;
+      }
+	  /* our team css --End*/
+	  
+	/*This is for location and hours attachment -- Beginning*/  
+#block-nodeblock-31 img{
+float:left;
+padding:20px;}
+
+#block-nodeblock-31 .block-title{
+display:none;}
+
+#block-nodeblock-32 img{
+float:left;
+padding:20px;}
+
+#block-nodeblock-32 .block-title{
+display:none;}
+/*This is for location and hours attachment -- End */
+
+/*This is for BOT -- Beginning*/  
+#block-nodeblock-38 img{
+float:left;
+padding:10px 20px 10px 0;}
+
+#block-nodeblock-39 img{
+float:left;
+padding:10px 20px 10px 0;}
+
+#block-nodeblock-41 img{
+float:left;
+padding:10px 20px 10px 0;}
+
+#block-nodeblock-42 img{
+float:left;
+padding:10px 20px 10px 0;
+}
+
+#block-nodeblock-43 img{
+float:left;
+padding:10px 20px 10px 0;
+}
+/*This is for BOT -- End */
+
+/*Removing the node title on the webform for both volunteer and contact us form --Beginning*/
+#node-webform-26 .node-title{
+display:none;}
+#node-webform-25 .node-title{
+display:none;}
+/*Removing the node title on the webform for both volunteer and contact us form --End*/
+
+/*Removing day and monthe from webform date datatype --beginning*/
+#edit-submitted-year-of-graduation-month{
+display:none;}
+#edit-submitted-year-of-graduation-day{
+display:none;}
+/*Removing day and monthe from webform date datatype --end*/
+/*Removing the block title of our story in about us page --beginning*/
+#block-nodeblock-49 .block-title{
+display:none;}
+/*Removing the block title of our story in about us page --end*/
+/*Aligning the form component of Internship --End*/
+#zone-branding{
+background-color:#fff;}
+#zone-menu{
+background-color:#333;}
+#zone-header{
+background-color:#fff;}
+#zone-content{
+background-color:#fff;}
+#zone-footer{
+background-color:#333;}
+
+/*need to be modify about us css*/
+.story-action{
+float:right;
+
+}
+
+.our-project{
+float:right;
+}
+/*This has to do with our project in about us landing page*/
+.why-libraries{
+float:right;
+}
+
+
+.our-team-about .views-field-field-call-to-action-button{
+margin:10px;}
+
+
+/*The involved css --beginning*/
+#block-views-get-involved-about-block{
+border-top:solid thick #f90;
+margin-bottom:10px;
+}
+#block-views-get-involved-about-block img{
+float:right;
+}
+#block-nodeblock-57 .block-title{
+display:none;
+}
+
+.view-main-home-view .pager{
+display:none;}
+
+.content .reading-programme{
+float:left;}
+/*about us --beginnng
+.field-name-field-our-team-about-img{
+float:right;}*/
+
+
+#block-nodeblock-76 .block-title{
+display:none;}
+
+#block-nodeblock-77{
+border-top:solid thick #f90;
+}
+
+#block-nodeblock-78{
+border-top:solid thick #f90;
+}
+
+#block-nodeblock-79{
+border-top:solid thick #f90;
+}
+#block-nodeblock-80{
+border-top:solid thick #f90;
+}
+#block-nodeblock-81{
+border-top:solid thick #f90;
+}
+.views-field-field-call-to-action-button{
+margin:10px;
+float:right;}
+
+.views-field-field-action-button{
+margin:10px;
+float:right;}
+/*about us --end*/
+
+.page-main-home-page #block-views-contact-us-widget-block-1{
+  margin: 10px 0;
+  padding: 5px;
+}
+.page-main-home-page #mc-embedded-subscribe-form{
+  margin: 10px 0;
+  padding: 20px;
+}
+
+#region-header-first{
+margin-top:10px;
+}
+
+/* Livefyre off */
+.fyre-help {
+display:none;}
+
+
+/* Flickr warning message start photoset setting */
+.messages warning{
+display:none;}
+.flickr-photoset {
+margin:10px;}
+/* Flickr warning message end */
+/*
+.not-logged-in .login-download{
+display:none;} this is deactivated for now*/
+#block-quicktabs-professional-pq-tabs .block-title{
+display:none;}
+.not-logged-in .block-tb-megamenu-user-menu {
+display:none;}
+/*top menu start here*/
+.allin{
+float:right;
+}
+
+.dn-login{
+background-color:#66e566;
+margin:4px;
+padding:10px;
+font-size:18px;
+font-weight:bold;
+}
+.dn-login a{
+color:#FFFFFF;}
+
+
+
+
+.dn-main-site{
+background-color:#ff9900;
+margin:4px;
+padding:10px;
+font-size:18px;
+font-weight:bold;
+}
+.dn-main-site a{
+color:#FFFFFF;}
+
+
+.main-sign-in{
+background-color:#ff9900;
+margin:4px;
+padding:10px;
+font-size:18px;
+font-weight:bold;
+}
+.main-sign-in a{
+color:#000000;}
+.main-sign-in a:hover{
+color:#ffffff;}
+
+.main-sign-up{
+background-color:#ff9900;
+margin:4px;
+padding:10px;
+font-size:18px;
+font-weight:bold;
+}
+.main-sign-up a{
+color:#000000;}
+.main-sign-up a:hover{
+color:#ffffff;}
+
+.main-donate{
+background-color:#ff9900;
+margin:4px;
+padding:10px;
+font-size:18px;
+font-weight:bold;
+}
+.main-donate a{
+color:#000000;}
+
+.main-donate a:hover{
+color:#ffffff;}
+
+#trans-title{position:absolute;
+             width:100%;
+             height:25.5%;
+             bottom:0%;
+             background-color:#ff9900;
+             opacity:0.9;
+             }
+
+#title-body{
+position:absolute;
+  bottom:7%;
+  width:90%;
+  left:2%;
+   white-space: nowrap;
+  overflow: hidden;  
+  text-overflow:ellipsis;
+  font-weight:bold;}
+
+#title-body a:hover{
+color:#ffffff;}
+
+#title-body-sidebar{
+position:absolute;
+  bottom:5%;
+  width:90%;
+  left:2%;
+   white-space: nowrap;
+  overflow: hidden;  
+  text-overflow:ellipsis;
+  font-weight:bold;}
+  
+  #trans-title-sidebar{position:absolute;
+             width:100%;
+             height:25.5%;
+             bottom:0%;
+             background-color:#ff9900;
+             opacity:0.9;
+}
+
+#title-body-sidebar-1{
+position:absolute;
+  bottom:5%;
+  width:90%;
+  left:2%;
+   white-space: nowrap;
+  overflow: hidden;  
+  text-overflow:ellipsis;
+  font-weight:bold;}
+  
+  #trans-title-sidebar-1{position:absolute;
+             width:100%;
+             height:25.5%;
+             bottom:0%;
+             background-color:#ff9900;
+             opacity:0.9;
+}
+
+#block-views-main-home-side-view-block-2{
+margin:10px 0 0 0;}
+
+.view-display-id-block_2 .view-header{
+color:#ff9900;
+font-weight:bold;}
+
+#mc_embed_signup .button {
+ 
+  color: #000;
+  }
+
+.blogyou .blog-landing-img img{
+
+display: block;
+  height: 380px;
+  margin: auto;
+  width: 520px;
+}
+
+.field-name-field-blog-image{
+
+display: block;
+  height: 380px;
+  margin: auto;
+  width: 520px;
+}
+
+.blog-body{margin: 15px;}
+.blog-title{font-size: 1.5em;
+font-weight:bold;}
+ 
+ .blogyou{clear: both;
+ }
+
+div.warning {
+  display: none;
+}
+
+
+
+/*DISCOVER NIGERIA CSS --BEGINNING*/
+.context-discover-nigeria{
+  background-color:#0A380A;
+  /*color:#66E566;*/
+
+ }
+.context-discover-nigeria .tb-megamenu{
+background-color:#0a380a;}
+
+.context-discover-nigeria #zone-menu{
+background-color:#0a380a;}
+
+
+
+/*this line seem not be working*/
+.context-discover-nigeria #zone-footer{
+background-color:#0a380a;}
+
+.tb-megamenu-menu-discover-nigeria-menu .nav > li > a:focus, .tb-megamenu-menu-discover-nigeria-menu .nav > li > a:hover {
+  color: #090;
+}
+
+.tb-megamenu-menu-discover-nigeria-menu .nav > .active > a, .tb-megamenu-menu-discover-nigeria-menu .nav > .active > a:hover, .tb-megamenu-menu-discover-nigeria-menu .nav > .active > a:focus {
+  background-color: #090;
+}
+
+.context-discover-nigeria a:hover {
+  color: #090;
+  
+}
+.context-discover-nigeria .views-field-field-landing-page-image{
+margin : 10px 0;}
+
+.view-dn-state-front-ads .views-field-field-landing-page-image{
+margin : 0 0 10px 0;}
+
+.context-discover-nigeria .pager{
+margin : 0 0 10px 0;
+}
+/*footer*/
+#block-imageblock-3{
+padding:5px 0 0 0; 
+margin: 5px 0 0 0;/*
+background-color:#333;
+color:#FFFFFF; */
+line-height:1.5em;
+font-weight:bold;
+}
+
+#region-postscript-first img{
+float:right;}
+
+/*discover nigeria header --beginning */
+.dn-main-header{
+background-color:#090;
+text-align:center;
+color:#FFFFFF;
+padding:3px;
+margin:10px auto 0 0;}
+/* discover nigeria header--end*/
+
+.context-discover-nigeria #zone-preface{
+
+background-color:#FFFFFF;
+}
+.view-display-id-block_1 .attachment-after img{
+float: left;
+margin:0 10px 10px 10px;}
+
+.view-display-id-attachment_1{
+margin:40px auto;}
+/*sidebars start*/
+.context-discover-nigeria #block-views-contact-us-widget-block-1 {
+  border: thick solid #090;
+ }
+ .context-discover-nigeria #mc-embedded-subscribe-form {
+  border: thick solid #090;
+ }
+.context-discover-nigeria  #block-views-contact-us-widget-block {
+  border: thick solid #090;
+ }
+ .context-discover-nigeria .block-title {
+  color: #090;
+}
+
+/* apache solr for DN */
+.context-discover-nigeria #block-apachesolr-search-mlt-001 {
+   border: thick solid #090;
+  margin: 10px;
+  padding: 5px;
+}
+
+.context-discover-nigeria .sidebar-submit-photo img{
+   border: thick solid #090;
+}
+
+/* sidebars end */
+/*sulayman profile beginning*/
+
+#block-system-main .node-discover-nigeria .field-name-field-image{
+float:right;
+margin:0 auto 0px 10px;}
+#region-sidebar-first .block-imageblock-8{
+border:thick solid #090;
+margin: auto auto 10px auto;
+padding:0;
+text-align:center;
+}
+/**submit an article webform title hiding */
+#node-webform-140 .node-title{
+display:none;}
+
+#block-webform-client-block-140 .block-title{
+margin: 30px 0 0 0;}
+
+#region-sidebar-first .block-imageblock-8 h2{
+line-height:0.9em;
+}
+
+.dn-states-header{
+background-color:#66E566;
+color:#fff;
+padding:2px;
+margin:10px 0 10px 0;}
+
+ul.quicktabs-tabs.quicktabs-style-garland {
+  background: url("images/bg.gif") repeat-x scroll center bottom #66E566/* #bcd6eb*/;
+  font: bold 12px/20px Tahoma;
+ 
+}
+
+ul.quicktabs-tabs.quicktabs-style-garland li a:link, ul.quicktabs-tabs.quicktabs-style-garland li a:visited {
+  color: #090 /* #fff*/;
+  font: bold 12px/20px Tahoma;
+
+}
+
+.block-quicktabs-state-tabs .block-title{
+display:none;}
+
+
+.lga li{
+
+margin: 15px}
+
+.lga img{
+float:right;
+margin: auto 15px 15px auto;}
+
+
+.quickfact li{
+line-height: 30px;
+margin: 0 0 0 30px;}
+
+.quickfact {
+margin: 0px auto 20px auto;}
+
+
+
+.quickfact img{
+float:left;
+margin: 0 30px 15px 0;}
+
+.gov li{
+margin: 15px;
+}
+
+.gov img{
+padding-top:0px;
+float:right;
+margin:right;
+clear: both;
+}
+
+
+
+
+.notable{
+padding:5px 0px;
+color:#009900;
+ font: bold 1.4em/1.7em Tahoma;
+ vertical-align:middle;
+}
+.notable img{
+float:left;
+margin: 20px 30px 10px 20px;
+}
+.notable li{
+margin: 0 0 0 35px;}
+
+.economy{
+
+color:#009900;
+ font: bold 1.4em/1.7em Tahoma;
+}
+.economy img{
+float:left;
+margin: 15px 15px 0 15px;
+}
+
+.views-field-field-image-description{
+margin: 40px auto auto auto;}
+
+/* DN Cross Label CSS Beginning */
+
+#dn-cross-label{position:absolute;
+             width:100%;
+             height:22%;
+             bottom:3%;
+             background-color:#ffffff;
+             opacity:0.7;
+             }
+
+#cross-label{
+position:absolute;
+font-family:Tahoma, Helvetica, sans-serif;
+  bottom:2.5%;
+  width:100%;
+  font-size:20px;
+  text-align:center;
+  }
+#dn-people-front-cross-label{position:absolute;
+             width:100%;
+             height:18%;
+             top:32%;
+             background-color:#ffffff;
+             opacity:0.7;
+             }
+
+#people-front-cross-label{
+position:absolute;
+font-family:Tahoma, Helvetica, sans-serif;
+  top:32%;
+  width:100%;
+  font-size:20px;
+  text-align:center;
+  }
+
+#dn-state-front-cross-label{position:absolute;
+             width:100%;
+             height:10%;
+             bottom:2%;
+             background-color:#ffffff;
+             opacity:0.7;
+             }
+
+#state-front-cross-label{
+position:absolute;
+font-family:Tahoma, Helvetica, sans-serif;
+  bottom:1.5%;
+  width:100%;
+  font-size:20px;
+  text-align:center;
+  }
+  
+  #trans-main-front-cross-label{position:absolute;
+             width:100%;
+             height:10%;
+             top:40.9%;
+             bottom: 0%;
+             background-color:#ff9900;
+             opacity:0.9;
+             }
+
+#title-main-front-cross-label{
+position:absolute;
+font-family:Tahoma, Helvetica, sans-serif;
+width:100%;
+bottom:50%;
+  font-size:18px;
+  text-align:center;
+  }
+
+/* DN cross label end */
+
+#block-imageblock-17{
+margin: 10px auto;
+}
+
+.view-welcom-view{
+margin: 10px 0 0 0;
+}
+
+  .sidebar-submit-photo img{
+   border: thick solid #ff9900;
+  padding: 5px;
+ }
+
+/*DISCOVER NIGERIA CSS --END*/
+
+
+/* Beginning of kids */
+.context-kids #zone-branding{
+ background-color:#AAE3FF;}
+.context-kids{
+  background-color:#000099;
+  }
+  
+  .context-kids .tb-megamenu{
+background-color:#000099;}
+
+ .context-kids #zone-menu{
+background-color:#000099;}
+
+.tb-megamenu-menu-kids-menu .nav > li > a:focus, .tb-megamenu-menu-kids-menu .nav > li > a:hover {
+  color: #ff9900;
+}
+
+.tb-megamenu-menu-kids-menu .nav > .active > a, .tb-megamenu-menu-kids-menu .nav > .active > a:hover, .tb-megamenu-menu-kids-menu .nav > .active > a:focus {
+  background-color: #AAE3FF;
+}
+
+
+.kids-login{
+background-color:#000099;
+margin:4px;
+padding:10px;
+font-size:18px;
+font-weight:bold;
+}
+.kids-login a{
+color:#FFffff;
+}
+
+.kids-login a:hover{
+color:#FF9900;
+}
+
+  #block-imageblock-10{
+  margin:auto 0 10px 0;}
+  #block-imageblock-11{
+  margin:10px auto;}
+  
+.kids-book{
+margin:10px 0 30px 0;
+height:280px;}
+
+/*kids footer*/
+.context-kids #zone-footer{
+background-color:#000099;
+color:#ffffff;}
+
+.context-kids #zone-footer a{
+color:#ffffff;}
+
+.context-kids #zone-footer a:hover{
+color:#f90;}
+
+/*sidebars start*/
+.context-kids #block-views-contact-us-widget-block-1 {
+  border: thick solid #000099;
+ }
+ .context-kids #mc-embedded-subscribe-form {
+  border: thick solid #000099;
+ }
+.context-kids  #block-views-contact-us-widget-block {
+  border: thick solid #000099;
+ }
+ .context-kids .block-title {
+  color: #000099;
+}
+
+ .context-kids .sidebar-submit-photo img{
+   border: thick solid #000099;
+}
+
+/* apache solr for KIDS */
+.context-kids #block-apachesolr-search-mlt-001 {
+   border: thick solid #000099;
+  margin: 10px;
+  padding: 5px;
+}
+
+/* sidebars end */
+
+/* end of kids */
+
+/* school start */
+
+  .context-secondary-school-students #zone-branding{
+ background-color:#caffeb;}
+.context-secondary-school-students{
+  background-color:#005e5e;
+  }
+
+  .context-secondary-school-students .tb-megamenu{
+background-color:#005e5e;}
+
+ .context-secondary-school-students #zone-menu{
+background-color:#005e5e;}
+
+.tb-megamenu-menu-secondary-school .nav > li > a:focus, .tb-megamenu-menu-secondary-school .nav > li > a:hover {
+  color: #caffeb;
+}
+
+.tb-megamenu-menu-secondary-school .nav > .active > a, .tb-megamenu-menu-secondary-school .nav > .active > a:hover, .tb-megamenu-menu-secondary-school .nav > .active > a:focus {
+  background-color: #caffeb;
+}
+
+
+.secondary-login{
+background-color:#005e5e;
+margin:4px;
+padding:10px;
+font-size:18px;
+font-weight:bold;
+}
+.secondary-login a{
+color:#FFffff;
+}
+
+.secondary-login a:hover{
+color:#FF9900;
+}
+
+  #block-imageblock-15{
+  margin:10px 0 10px 0;}
+  #block-imageblock-16{
+  margin:10px auto;}
+  
+.kids-book{
+margin:10px 0 30px 0;
+height:280px;}
+
+/*kids footer*/
+.context-secondary-school-students #zone-footer{
+background-color:#005e5e;
+color:#ffffff;}
+
+.context-secondary-school-students #zone-footer a{
+color:#ffffff;}
+
+.context-secondary-school-students #zone-footer a:hover{
+color:#ff9900;}
+
+/*sidebars start*/
+.context-secondary-school-students #block-views-contact-us-widget-block-1 {
+  border: thick solid #005e5e;
+ }
+ .context-secondary-school-students #mc-embedded-subscribe-form {
+  border: thick solid #005e5e;
+ }
+.context-secondary-school-students  #block-views-contact-us-widget-block {
+  border: thick solid #005e5e;
+ }
+ .context-secondary-school-students .block-title {
+  color: #005e5e;
+}
+
+ .context-secondary-school-students .block-title {
+  color: #005e5e;
+}
+/* apache solr for student */
+.context-secondary-school-students #block-apachesolr-search-mlt-001 {
+   border: thick solid #005e5e;
+  margin: 10px;
+  padding: 5px;
+}
+
+ .context-secondary-school-students .sidebar-submit-photo img{
+   border: thick solid #005e5e;
+}
+/*Secondary school end */
+
+
+
+/* @media all and (max-width: 500px) { */
+/* global */
+.content .field-name-field-main-content-image img{
+  height:100%;
+  width: 100%;
+}
+.view-display-id-block_1 #flexslider-1, .view-display-id-block_2 #flexslider-1, .view-display-id-block_3 #flexslider-1, .view-display-id-block_4 #flexslider-1{
+width:100%;
+height:100%;}
+
+.view-display-id-block_1 #flexslider-1 img, .view-display-id-block_2 #flexslider-1 img, .view-display-id-block_3 #flexslider-1 img, .view-display-id-block_4 #flexslider-1 img{
+width:100%;
+height:100%;}
+/* } */
+/* for blog only */
+.breadcrumb{display:none;}
+
+/* THIS MUST BE MOVED */ 
+.block-views-blog-block-1{
+margin:auto auto 10px auto;}
+
+.block-views-blog-block-2{
+margin:10px auto;}
+
+.blog-header{
+background-color:#ff9900;
+color:#fff;
+padding:2px;
+margin:0 auto 10px auto;}
+
+.blog-content-header{
+background-color:#ff9900;
+color:#fff;
+padding:2px;
+margin:auto auto 10px auto;}
+
+/*top menu end here*/
+
+
+
+/* @media all and (max-width: 1200px) { */
+/* narrow screen */
+@media all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape){
+.tb-megamenu .nav > li > a {
+ padding: 5px 10px;
+ font-size:0.8em;
+}
+.view-display-id-block_1 #flexslider-1, .view-display-id-block_2 #flexslider-1, .view-display-id-block_3 #flexslider-1, .view-display-id-block_4 #flexslider-1{
+width:550px;
+height:490px;
+margin:10px auto auto auto;
+}
+.view-display-id-block_1 #flexslider-1 img, .view-display-id-block_2 #flexslider-1 img, .view-display-id-block_3 #flexslider-1 img, .view-display-id-block_4 #flexslider-1 img{
+width:530px;
+height:450px;
+margin:auto ;
+padding-top:10px;
+}
+
+}
+
+
+
+/* @media all and (max-width: 1500px) { */
+/* normal screen  for zodml projector screen*/
+@media all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape){
+.tb-megamenu .nav > li > a {
+ 
+  padding: 7px 9px;
+ font-size:0.9em;
+}
+
+/*DN start */
+#block-tb-megamenu-menu-discover-nigeria-menu {
+  margin-left: 110px;
+}
+
+#region-sidebar-first .block-imageblock-8 h2 {
+  line-height: 0.9em;
+}
+h2 {
+  font-size: 23px;
+}
+/* DN End */
+
+.page-main-home-page #mc-embedded-subscribe-form {
+  margin: 1px 0;
+  padding: 1px;
+}
+
+}
+
+/* wide normal 15 inchees screen */
+@media all and (min-width: 1220px){
+
+.tb-megamenu .nav > li > a {
+ 
+  padding: 8.5px 18px;
+ font-size:1em;
+}
+
+.page-main-home-page #mc-embedded-subscribe-form {
+  margin: 10px 0;
+  padding: 18px;
+}
+
+/* from alpha default */
+ .content .field-name-field-main-content-image img{
+  height:400px;
+  width: 880px;
+  display: block;
+margin:10px auto 10px auto;
+}
+
+.introduction img{
+  height:400px;
+  width: 880px;
+  display: block;
+margin:10px auto 10px auto;
+}
+
+.view-display-id-block #flexslider-1{
+width:500px;
+height:400px;
+margin:auto auto 60px auto;}
+
+
+
+.views-field-title {
+padding:5px;
+}
+
+/*Aligning the form component of Volunteer --Beginning*/
+#edit-submitted-surname{
+margin-left:60px;}
+#edit-submitted-first-name{
+margin-left:48px;}
+#edit-submitted-phone-number--2{
+margin-left:25px;}
+#edit-submitted-email-address{
+margin-left:20px;}
+#edit-submitted-residential-address{
+margin-left:-12px;}
+#edit-submitted-primary-institute{
+margin-left:17px;}
+#edit-submitted-secondary-institute{
+margin-left:-5px;}
+#edit-submitted-tertiary-institute{
+margin-left:20px;}
+#edit-submitted-area-of-choice{
+margin-left:30px;}
+/*Aligning the form component of Volunteer --End*/
+
+/*Aligning the form component of Internship --Beginning*/
+#edit-submitted-surname--2{
+margin-left:60px;}
+#edit-submitted-first-name--2{
+margin-left:48px;}
+#edit-submitted-phone-number{
+margin-left:25px;}
+#edit-submitted-email-address--2{
+margin-left:20px;}
+#edit-submitted-residential-address--2{
+margin-left:-12px;}
+#edit-submitted-primary-institute--2{
+margin-left:17px;}
+#edit-submitted-secondary-institute--2{
+margin-left:-5px;}
+#edit-submitted-tertiary-institute--2{
+margin-left:20px;}
+#edit-submitted-year-of-graduation-year{
+margin-left:-7px;}
+#edit-submitted-course-of-study{
+margin-left:10px;}
+
+/*Aligning the form component of Contact Us --Beginning*/
+#edit-submitted-name{
+margin-left:78px;}
+#node-webform-11 #edit-submitted-phone-number{
+margin-left:48px;}
+#edit-submitted-enquiry-type{
+margin-left:50px;}
+#edit-submitted-subject{
+margin-left:95px;}
+
+/*
+#edit-submitted-body{
+margin-left:188px;}
+.grippie{
+margin-left:188px;}
+.form-textarea-wrapper{
+width:30%} */
+
+/*Aligning the form component of Contact Us --End*/
+
+
+/*#webform-component-name{
+width:30%}*/
+ #map-canvas {
+        width: 500px;
+        height: 400px;
+		position:fixed;
+		padding-bottom: 10px;
+		margin:auto;
+      }
+/*there is issue with this aspect, generic image setting involves for our project in about us page*/
+#node-51 .content img{
+width: 620;
+height: 175;
+display:block;
+margin:auto;
+}
+#node-52 .content img{
+float:left;
+}
+#node-53 .content img{
+float: right;
+}
+.our-team-about{
+float:left;}
+
+ .our-team-about .views-field-field-call-to-action-button{
+margin:10px 10px 0 0;}
+
+/*about us --beginnng*/
+/*float right is not working properly on responsive*/
+.field-name-field-our-team-about-img{
+float:right;}
+
+/*about us --end*/
+
+
+/*DISCOVER NIGERIA CSS --BEGINNING*/
+#block-tb-megamenu-menu-discover-nigeria-menu{
+margin-left:120px;
+background-color:#0a380a;
+
+}
+
+h2 {
+  font-size: 28px;
+}
+
+
+
+.view-display-id-block_1 #flexslider-1, .view-display-id-block_2 #flexslider-1, .view-display-id-block_3 #flexslider-1, .view-display-id-block_4 #flexslider-1{
+width:850px;
+height:470px;
+margin:10px auto auto auto;
+}
+
+.view-display-id-block_1 #flexslider-1 img, .view-display-id-block_2 #flexslider-1 img, .view-display-id-block_3 #flexslider-1 img, .view-display-id-block_4 #flexslider-1 img{
+width:830px;
+height:450px;
+margin:auto ;
+padding-top:10px;
+}
+
+/* yet to be done in other part of media query */
+.field-name-field-general-image{
+height:450px;
+width:830px;
+margin:0 auto 10px auto;}
+
+
+.lga img{
+float:right;
+margin: 0 150px 15px 0;}
+
+.container-inline{
+padding: 30px 150px;}
+/*DISCOVER NIGERIA CSS --END*/
+
+#block-tb-megamenu-menu-kids-menu{
+margin-left:325px;
+
+}
+
+#block-tb-megamenu-menu-secondary-school{
+margin-left:140px;
+}
+
+
+}

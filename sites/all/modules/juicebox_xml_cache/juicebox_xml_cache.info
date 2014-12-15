@@ -1,0 +1,6 @@
+name = Juicebox XML Cache
+description = Provides alternate way to generate and manage Juicbox XML data via local caching.
+package = Media
+core = 7.x
+dependencies[] = juicebox (>=2.0)
+files[] = includes/JuiceboxXmlFieldCache.inc

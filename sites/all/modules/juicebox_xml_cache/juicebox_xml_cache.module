@@ -1,0 +1,50 @@
+<?php
+
+
+/**
+ * @file
+ * Defines a helped module that caches XML data for the Juicebox field
+ * formatter.
+ */
+
+
+/**
+ * Implements hook_juicebox_gallery_alter().
+ */
+function juicebox_xml_cache_juicebox_gallery_alter(JuiceboxGalleryInterface $juicebox, $data) {
+  $id_args = $juicebox->getIdArgs();
+  $menu_item = menu_get_item();
+  // We should only set the cache if we are dealing with a field gallery and
+  // we are NOT in the middle of generating the XML.
+  if ($id_args[0] == 'field' && $menu_item['page_callback'] !== 'juicebox_page_xml') {
+    // Check to see if we have a cached value for the current checksum so as to
+    // avoid an expensive cache write operation whenever possible.
+    $cached = cache_get($juicebox->getChecksum(), 'cache_juicebox_xml');
+    if (!$cached) {
+      cache_set($juicebox->getChecksum(), $juicebox->renderXml(), 'cache_juicebox_xml', time() + variable_get('cache_lifetime', 0));
+    }
+  }
+}
+
+
+/**
+ * Implements hook_juicebox_xml_class_alter().
+ */
+function juicebox_xml_cache_juicebox_xml_class_alter(&$xml_loader_class, $args) {
+  // Use this module's XML loader for a field gallery. This loader will attempt
+  // to fetch a cached copy of the XML.
+  if ($args[0] == 'field') {
+    $xml_loader_class = 'JuiceboxXmlFieldCache';
+  }
+}
+
+
+/**
+ * Implements hook_flush_caches().
+ */
+function juicebox_xml_cache_flush_caches() {
+  // Clear our custom cache bin.
+  if (db_table_exists('cache_juicebox_xml')) {
+    return array('cache_juicebox_xml');
+  }
+}

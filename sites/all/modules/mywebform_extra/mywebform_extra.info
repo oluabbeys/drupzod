@@ -1,0 +1,5 @@
+name = Webform Extra
+description = Customizations for the Webform module.
+core = 7.x
+package = Webform
+dependencies[] = webform
