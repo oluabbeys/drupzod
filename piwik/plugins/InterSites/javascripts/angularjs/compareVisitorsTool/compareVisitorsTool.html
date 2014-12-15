@@ -1,0 +1,49 @@
+<div class="compare-visitors-tool">
+
+<h2>{{ 'InterSites_SharedVisitors'|translate }}</h2>
+
+<div>{{ 'InterSites_CommonVisitorsToolIntro'|translate }}:</div>
+
+<div class="notification-area"></div>
+
+<div class="selectors">
+    <div class="selector-row" ng-repeat="site in sitesToCheck track by $index">
+        <div class="selector-cell">
+            <div piwik-siteselector
+                 class="sites_autocomplete"
+                 show-selected-site="true"
+                 show-all-sites-item="false"
+                 switch-site-on-select="false"
+                 ng-model="sitesToCheck[$index]"></div>
+            <a ng-click="sitesToCheck.splice($index, 1)" ng-class="{'invisible': $index < 2}">X</a>
+        </div>
+
+        <div class="site-stats-cell" ng-if="siteStats[$index] && siteStats[$index].nb_uniq_visitors">
+            <span piwik-translate="InterSites_CommonVisitorsTool_SiteStatsDesc">{{ (nbSharedVisitors / siteStats[$index].nb_uniq_visitors) * 100 | number : 2 }}%::<span class="site-name">{{ siteStats[$index].siteName }}</span></span>.
+        </div>
+        <div class="site-stats-cell" ng-if="siteStats[$index] && siteStats[$index].nb_uniq_visitors == 0">
+            <span piwik-translate="InterSites_CommonVisitorsTool_SiteStatsNoVisits"><span class="site-name">{{ siteStats[$index].siteName }}</span></span>.
+        </div>
+    </div>
+
+    <div class="buttons-row">
+        <div style="clear:both" class="buttons-cell">
+            <input type="button" class="submit" ng-click="findSharedVisitors(sitesToCheck)" value="{{ 'InterSites_Go'|translate }}" ng-disabled="isLoadingStats"/>
+            <input type="button" class="submit" ng-click="sitesToCheck.push({})" value="{{ 'InterSites_AddSite'|translate }}" />
+        </div>
+
+        <div class="summary-stats-cell">
+            <img src="plugins/Morpheus/images/loading-blue.gif" ng-show="isLoadingStats" />
+
+            <span ng-if="nbSharedVisitors !== undefined && nbTotalVisitors">
+                <span piwik-translate="InterSites_CommonVisitorsTool_AllSitesStatsDesc">{{ nbSharedVisitors }}::{{ nbTotalVisitors }}::{{ (nbSharedVisitors / nbTotalVisitors) * 100 | number : 2 }}%</span>:<br/>
+                <span ng-repeat="stats in siteStats track by $index"><span ng-show="!$first">,</span><strong> {{ stats.siteName }}</strong></span>.
+            </span>
+            <span ng-if="nbTotalVisitors === 0">
+                {{ 'InterSites_CommonVisitorsTool_AllSitesNoVisits'|translate }}.
+            </span>
+        </div>
+    </div>
+</div>
+
+</div>

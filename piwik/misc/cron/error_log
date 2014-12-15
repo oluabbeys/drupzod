@@ -1,0 +1,12 @@
+[20-Nov-2013 13:05:02 UTC] PHP Fatal error:  The Piwik URL http://zodml.org/piwik/index.php does not seem to be pointing to a Piwik server. Response was ''. in /home/zodmlorg/public_html/piwik/misc/cron/archive.php on line 573
+[20-Nov-2013 14:05:02 UTC] PHP Fatal error:  The Piwik URL http://zodml.org/piwik/index.php does not seem to be pointing to a Piwik server. Response was ''. in /home/zodmlorg/public_html/piwik/misc/cron/archive.php on line 573
+[28-Nov-2014 22:05:01 UTC] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[HY000] [1045] Access denied for user 'zodmlorg'@'localhost' (using password: YES)' in /home/zodmlorg/public_html/piwik/libs/Zend/Db/Adapter/Pdo/Abstract.php:129
+Stack trace:
+#0 /home/zodmlorg/public_html/piwik/libs/Zend/Db/Adapter/Pdo/Abstract.php(129): PDO->__construct('mysql:host=loca...', 'zodmlorg', 'A$hHV1Tx4tmy', Array)
+#1 /home/zodmlorg/public_html/piwik/libs/Zend/Db/Adapter/Pdo/Mysql.php(109): Zend_Db_Adapter_Pdo_Abstract->_connect()
+#2 /home/zodmlorg/public_html/piwik/core/Db/Adapter/Pdo/Mysql.php(51): Zend_Db_Adapter_Pdo_Mysql->_connect()
+#3 /home/zodmlorg/public_html/piwik/core/Db/Adapter.php(44): Piwik\Db\Adapter\Pdo\Mysql->getConnection()
+#4 /home/zodmlorg/public_html/piwik/core/Db.php(101): Piwik\Db\Adapter::factory('PDO\\MMSQL', Array)
+#5 /home/zodmlorg/public_html/piwik/core/Db.php(50): Piwik\Db::createDatabaseObject()
+#6 /home/zodmlorg/public_html/piwik/core/Db.php(693): Piwik\Db::get()
+#7 /home/zodmlorg/public_html/piwik/core/Db.php(18 in /home/zodmlorg/public_html/piwik/libs/Zend/Db/Adapter/Pdo/Abstract.php on line 144

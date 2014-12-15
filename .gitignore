@@ -15,7 +15,6 @@ sites/*/private
 solr-4.5.0.zip
 koha-latest.tar.gz
 stage/
-piwik/
 intranet/
 zodml-intranet/
 blogoldg/
@@ -83,7 +82,6 @@ SpryAssets/
 life/
 bookdrive/
 intrusion/
-update/
 blogoldg/Wp-config.php
 Nigeria/config.php
 Nigeria/config2.php

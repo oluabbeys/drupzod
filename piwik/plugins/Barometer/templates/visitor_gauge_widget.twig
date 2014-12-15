@@ -1,0 +1,19 @@
+<div id="visitorGauge"></div>
+
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+    $('#visitorGauge').barometerWidget({
+        interval: 5000,
+        dataUrlParams: {
+            module: 'API',
+            method: 'Barometer.getVisitorCounter',
+            format: 'json',
+            lastMinutes: 30,
+            lastDays: 30
+        },
+        label: '{{ "Barometer_VisitsInLastNMinutes"|translate }}',
+        valueName: 'visits',
+        maxValueName: 'maxvisits'
+    });
+});
+</script>
