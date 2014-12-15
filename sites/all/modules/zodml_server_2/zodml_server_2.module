@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the zodml server 2 feature.
+ */
+
+include_once 'zodml_server_2.features.inc';
