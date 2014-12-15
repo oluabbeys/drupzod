@@ -1,0 +1,7 @@
+name = zodml server
+description = zodml complete move from server
+core = 7.x
+package = Features
+version = 7.x-1.0
+project = zodml_server
+features[features_api][] = api:2
