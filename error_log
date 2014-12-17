@@ -5425,3 +5425,78 @@
 [16-Dec-2014 22:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
 [16-Dec-2014 22:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
 [17-Dec-2014 06:57:55 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/footer.php on line 5
+[17-Dec-2014 07:14:29 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/footer.php on line 5
+[17-Dec-2014 07:17:35 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/Anthils_of_the_savannah.php on line 231
+[17-Dec-2014 07:18:42 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/footer.php on line 5
+[17-Dec-2014 07:27:17 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/rotator.php on line 6
+[17-Dec-2014 07:27:17 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/footer.php on line 5
+[17-Dec-2014 07:47:01 UTC] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[17-Dec-2014 07:47:01 UTC] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[17-Dec-2014 07:47:01 UTC] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[17-Dec-2014 07:47:01 UTC] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: SCRIPT_NAME in /home/zodmlorg/public_html/includes/bootstrap.inc on line 1632
+[16-Dec-2014 23:47:01 America/Los_Angeles] PHP Notice:  Undefined index: REMOTE_ADDR in /home/zodmlorg/public_html/includes/bootstrap.inc on line 2912
+[17-Dec-2014 07:48:30 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/rotator.php on line 6
+[17-Dec-2014 07:48:30 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/footer.php on line 5
+[17-Dec-2014 07:52:10 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/footer.php on line 5
+[17-Dec-2014 08:05:04 UTC] PHP Warning:  mysql_fetch_array() expects parameter 1 to be resource, boolean given in /home/zodmlorg/public_html/footer.php on line 5
