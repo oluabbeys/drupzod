@@ -376,3 +376,5 @@
 [13-Dec-2014 19:39:02 UTC] PHP Warning:  mysql_connect(): Access denied for user 'zodmlorg'@'localhost' (using password: YES) in /home/zodmlorg/public_html/server/db.php on line 8
 [14-Dec-2014 00:06:10 UTC] PHP Warning:  mysql_connect(): Access denied for user 'zodmlorg'@'localhost' (using password: YES) in /home/zodmlorg/public_html/server/db.php on line 8
 [14-Dec-2014 18:20:17 UTC] PHP Warning:  mysql_connect(): Access denied for user 'zodmlorg'@'localhost' (using password: YES) in /home/zodmlorg/public_html/server/db.php on line 8
+[16-Dec-2014 12:19:28 UTC] PHP Warning:  mysql_connect(): Access denied for user 'zodmlorg'@'localhost' (using password: YES) in /home/zodmlorg/public_html/server/db.php on line 8
+[16-Dec-2014 21:25:37 UTC] PHP Warning:  mysql_connect(): Access denied for user 'zodmlorg'@'localhost' (using password: YES) in /home/zodmlorg/public_html/server/db.php on line 8

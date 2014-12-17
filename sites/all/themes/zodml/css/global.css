@@ -253,13 +253,17 @@ border:solid thick #ff9900;
 margin:0 10px 10px 10px;
 padding:5px;}
 
-#block-views-contact-us-widget-block-1{
+#block-views-contact-us-widget-block-1 {
 border:solid thick #ff9900;
 margin:10px;
 padding:5px;
 }
 
-
+.block-tagclouds{
+border:solid thick #ff9900;
+margin:10px;
+padding:5px;
+}
 
 .sidebar_blog {
 margin:10px;}
