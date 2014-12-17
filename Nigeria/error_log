@@ -1531,3 +1531,15 @@
 [17-Dec-2014 10:42:04 UTC] PHP Warning:  include_once(): Failed opening 'Nigeria/scripts/config.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
 [17-Dec-2014 10:42:04 UTC] PHP Warning:  include_once(Nigeria/scripts/config.php): failed to open stream: No such file or directory in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
 [17-Dec-2014 10:42:04 UTC] PHP Warning:  include_once(): Failed opening 'Nigeria/scripts/config.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 10:54:22 UTC] PHP Warning:  include_once(Nigeria/scripts/config.php): failed to open stream: No such file or directory in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 10:54:22 UTC] PHP Warning:  include_once(): Failed opening 'Nigeria/scripts/config.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 10:54:32 UTC] PHP Warning:  include_once(Nigeria/scripts/config.php): failed to open stream: No such file or directory in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 10:54:32 UTC] PHP Warning:  include_once(): Failed opening 'Nigeria/scripts/config.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 11:04:21 UTC] PHP Warning:  include_once(Nigeria/scripts/config.php): failed to open stream: No such file or directory in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 11:04:21 UTC] PHP Warning:  include_once(): Failed opening 'Nigeria/scripts/config.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 11:08:43 UTC] PHP Warning:  include_once(Nigeria/scripts/config.php): failed to open stream: No such file or directory in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 11:08:43 UTC] PHP Warning:  include_once(): Failed opening 'Nigeria/scripts/config.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 11:09:51 UTC] PHP Warning:  include_once(Nigeria/scripts/config.php): failed to open stream: No such file or directory in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 11:09:51 UTC] PHP Warning:  include_once(): Failed opening 'Nigeria/scripts/config.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 11:10:25 UTC] PHP Warning:  include_once(Nigeria/scripts/config.php): failed to open stream: No such file or directory in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4
+[17-Dec-2014 11:10:25 UTC] PHP Warning:  include_once(): Failed opening 'Nigeria/scripts/config.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/zodmlorg/public_html/Nigeria/rotator.php on line 4

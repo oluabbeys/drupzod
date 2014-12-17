@@ -46,7 +46,8 @@ correction-new/connect.php
 correction-new/connect2.php
 correction-new/access.php
 error_log.txt
-Nigeria/error_log.txt
+error_log
+Nigeria/error_log
 # Old file system
 _private/
 _vti_bin/
