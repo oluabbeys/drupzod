@@ -1,3 +1,4 @@
+<?php  header( 'Location: http://zodml.org/get-involved/donate-zodml/donate-online' ) ;  ?>
 <?php
 $randomnumber = ZODML.rand(1,9).rand(1,9).rand(1,9).rand(1,9).rand(1,9).rand(1,9);
 ?>
