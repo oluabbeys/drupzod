@@ -1,3 +1,4 @@
+<?php  header( 'Location: http://zodml.org/get-involved/donate-zodml' ) ;  ?>
 <?php 
 								ini_set("display_errors", "off");
 								include_once("Nigeria/scripts/config.php");
