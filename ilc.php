@@ -1,4 +1,4 @@
-<?php  header( 'Location: http://zodml.org/projects/prison-knowledge-centre' ) ;  ?>
+<?php  header( 'Location: http://zodml.org/projects/internet-learning-centre' ) ;  ?>
 <?php 
 								ini_set("display_errors", "off");
 								include_once("Nigeria/scripts/config.php");
