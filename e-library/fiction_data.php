@@ -46,4 +46,15 @@ $q = explode(".", $row['pdf']);
                                     				<div style="width:100px; height:120px; float:left; margin:0px 5px 0px 0px;"><img src="../images/<?php echo $image; ?>" width="100" height="120" alt="<?php echo $image; ?>" title="<?php echo $image; ?>"></div>
                                     
                                     				<div style="width:390px; height:160px; float:left; font-size:11px;">
-                                                    	<div style="padding:10px 0px 5px 5px; height:25px; background:url(../images/title_ebook.png) left no-repeat;"><div style="width:50p
+                                                    	<div style="padding:10px 0px 5px 5px; height:25px; background:url(../images/title_ebook.png) left no-repeat;"><div style="width:50px; float:left;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Title:</b></div> <div style="width:330px; height:35px; float:right; font-size:11px;"><?php echo $title; ?></div></div>
+                                                        <div style="padding:10px 0px 5px 5px; height:25px; background:url(../images/author.png) left no-repeat;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Author:</b> <span style="font-size:11px;"><?php echo $author; ?></span></div>
+                                                        <div style="padding:8px 0px 5px 5px; height:35px; background:url(../images/tag.png) left no-repeat;"><div style="width:50px; float:left;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Tags:</b></div> <div style="width:330px; height:35px; float:right; font-size:10px;"><?php echo $keywords; ?></div></div>
+                                                        <a href="pdf_server.php?file=../513zodml008/<?php echo $pdf; ?>" title="Click to download" onClick="javascript: _gaq.push(['_trackPageview', '/downloads/<?php echo $q; ?>']);"><div style="height:30px; width:110px; float:left; margin:0px 10px 0px 0px; background:url(../images/download.png) left no-repeat;"></div></a> <a href="../513zodml008/<?php echo $htm; ?>" title="Click to preview" target="_blank"><div style="height:30px; width:110px; float:left; margin:0px 10px 0px 0px; background:url(../images/preview.png) left no-repeat;"></div></a>
+                                                    </div>
+                                    
+                                    			</div>	
+                                                </div>
+         
+ <?php
+		}
+	 ?>
