@@ -147,11 +147,6 @@ woopra.track();
 </div>
 <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-521f68de301bc049"></script>
-<script type="text/javascript">
-var addthis_config = {
-     data_track_clickback: True
-} 
-
 <!-- AddThis Button END -->
 
 
@@ -256,4 +251,94 @@ var addthis_config = {
                     	
 									<dl id="pagination">
 								<?php
-									/
+									//Show page links
+									for($i=1; $i<=$pages; $i++)
+									{
+										echo '<dt id="'.$i.'">'.$i.'</dt>';
+									}
+								?>
+									</dl>	
+								</div>  
+                                 <!--END OF PAGINATION-->  
+                                 <p>&nbsp;</p>
+                       </td>
+                       <td valign="top"><?php include("rotator.php"); ?></td>
+                       
+                       </tr>
+                       </table>
+          
+</div>
+<!--END OF CONTENT HOLDER-->
+</div>
+
+<!--FOOTER-->
+<div id="footer_new_hold">
+<?php include("footer.php"); ?>
+</div>
+<!--END OF FOOTER-->
+<!--END OF THE BODY HOLDER-->
+<!--comment form-->
+<form id="contactForm" action="../processForm.php" method="post">
+
+  <h2>Send us an email...</h2>
+
+  <ul>
+
+    <li>
+      <label for="senderName" class="label">Your Name</label>
+      <input type="text" name="senderName" id="senderName" placeholder="Please type your name" required maxlength="40" class="input" />
+    </li>
+
+    <li>
+      <label for="senderEmail" class="label">Your Email Address</label>
+      <input type="email" name="senderEmail" id="senderEmail" placeholder="Please type your email address" required maxlength="50" class="input" />
+    </li>
+
+    <li>
+      <label for="message" style="padding-top: .5em;" class="label">Your Message</label>
+      <textarea name="message" id="message" placeholder="Please type your message" required cols="80" rows="10" maxlength="10000" class="textarea"></textarea>
+    </li>
+  <li> <center>
+   <?php
+          require_once('../recaptchalib.php');
+          $publickey = "6LeaNe0SAAAAAD_k-yxZlOyJqFiWdPmSP42ppTpG"; // you got this from the signup page
+          echo recaptcha_get_html($publickey);
+        ?></center>
+        </li>
+  </ul>
+
+  <div id="formButtons">
+    <input type="submit" id="sendMessage" name="sendMessage" value="Send Email" />
+    <input type="button" id="cancel" name="cancel" value="Cancel" />
+  </div>
+
+</form>
+
+<div id="sendingMessage" class="statusMessage"><p>Sending your message. Please wait...</p></div>
+<div id="successMessage" class="statusMessage"><p>Thanks for sending your message! We'll get back to you shortly.</p></div>
+<div id="failureMessage" class="statusMessage"><p>There was a problem sending your message. Please try again.</p></div>
+<div id="incompleteMessage" class="statusMessage"><p>Please complete all the fields in the form before sending.</p></div>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+  _paq.push(["trackPageView"]);
+  _paq.push(["enableLinkTracking"]);
+
+  (function() {
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://zodml.org/piwik/";
+    _paq.push(["setTrackerUrl", u+"piwik.php"]);
+    _paq.push(["setSiteId", "1"]);
+    var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+    g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Piwik Code -->
+
+<!-- Piwik Image Tracker -->
+<noscript>
+<img src="http://zodml.org/piwik/piwik.php?idsite=1&amp;rec=1" style="border:0" alt="" />
+</noscript>
+<!-- End Piwik -->
+</body>
+</html>

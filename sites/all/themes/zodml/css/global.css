@@ -887,8 +887,12 @@ float:left;
 margin: 15px 15px 0 15px;
 }
 
-.views-field-field-image-description{
+#quicktabs-tabpage-state_tabs-4 .views-field-title{
+font: bold 1.4em/1.7em Tahoma;
 margin: 40px auto auto auto;}
+
+.views-field-field-image-description{
+margin: 10px auto auto auto;}
 
 /* DN Cross Label CSS Beginning */
 

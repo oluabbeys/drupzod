@@ -15,6 +15,7 @@ sites/*/private
 solr-4.5.0.zip
 koha-latest.tar.gz
 stage/
+hr/
 intranet/
 zodml-intranet/
 blogoldg/
@@ -36,6 +37,7 @@ tmp/
 shortstory/
 gallery/
 # Files n
+sites.zip
 db.php
 db_books.php
 shorten.php
