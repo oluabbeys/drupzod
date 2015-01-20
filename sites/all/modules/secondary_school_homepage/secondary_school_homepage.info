@@ -1,0 +1,15 @@
+name = secondary school homepage
+description = The is the zodml secondary homepage design implementation
+core = 7.x
+package = Features
+version = 7.x-1.0
+project = secondary_school_homepage
+dependencies[] = image
+dependencies[] = semanticviews
+dependencies[] = views
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[image][] = kid_welcome_img_580x200
+features[image][] = kids_big_banner_580x410
+features[views_view][] = main_home_side_view
+features_exclude[dependencies][ctools] = ctools
