@@ -276,7 +276,7 @@ top:0px;
                              <div style="margin:0px 0px 0px 6px;"><img src="../images/e-library_returning_user.png" width="140" height="30" /></div>
                             	<div style="font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif; font-size:14px; line-height:25px; color:#EC9F00; text-align:left; width:400px; margin:0px 20px 10px 12px;">Sign in with your email address to browse and download e-books.</div>
                                 
-                                    <form id="formail2" action="login.php" method="post">
+                                    <form id="formail2" action="http://zodml.org/e-library/login.php" method="post">
                                     <ul>
                                     
                                     <li><input type="text" name="loginemail" id="loginemail" placeholder="Enter your email" title="Sign in with your email" /></li>
