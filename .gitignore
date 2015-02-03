@@ -15,6 +15,7 @@ sites/*/private
 solr-4.5.0.zip
 koha-latest.tar.gz
 stage/
+sites/all/modules/quizx
 hr/
 intranet/
 zodml-intranet/
