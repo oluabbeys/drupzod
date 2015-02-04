@@ -1211,7 +1211,7 @@ margin:auto auto 10px auto;}
 
 /* @media all and (max-width: 1200px) { */
 /* narrow screen */
-@media all and (min-width: 740px) and (min-device-width: 740px) {
+@media all and (min-width: 740px) and (min-device-width: 740px), and (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape) {
 .tb-megamenu .nav > li > a {
  padding: 5px 10px;
  font-size:0.8em;
@@ -1230,14 +1230,12 @@ padding-top:10px;
 
 }
 
-@media all and (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape){
 
-}
 
 
 /* @media all and (max-width: 1500px) { */
 /* normal screen  for zodml projector screen*/
-@media all and (min-width: 980px) and (min-device-width: 980px){
+@media all and (min-width: 980px) and (min-device-width: 980px),(max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape){
 .tb-megamenu .nav > li > a {
  
   padding: 7px 9px;
@@ -1261,10 +1259,6 @@ h2 {
   margin: 1px 0;
   padding: 1px;
 }
-
-}
-
-@media all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape){
 
 }
 
