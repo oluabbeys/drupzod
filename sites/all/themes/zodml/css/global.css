@@ -615,6 +615,14 @@ position:absolute;
   overflow: hidden;  
   text-overflow:ellipsis;
   font-weight:bold;}
+  
+#title-body-me {
+ overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  
+}
 
 #title-body a:hover{
 color:#ffffff;}
@@ -1261,6 +1269,8 @@ h2 {
 }
 
 }
+
+
 
 /* wide normal 15 inchees screen */
 @media all and (min-width: 1220px){
