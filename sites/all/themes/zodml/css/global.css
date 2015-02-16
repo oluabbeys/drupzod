@@ -1300,6 +1300,12 @@ margin:10px auto 10px auto;
   display: block;
 margin:10px auto 10px auto;
 }
+.sample-image img{
+  height:700px;
+  width: 466px;
+  display: block;
+margin:10px auto 10px auto;
+}
 
 .view-display-id-block #flexslider-1{
 width:500px;
