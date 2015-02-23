@@ -1,3 +1,5 @@
+<?php  header( 'Location: http://zodml.org/discover-nigeria/states/akwa-ibom-state' ) ;  
+?>
 <?php
  error_reporting(0);
 //ini_set("display_errors", "off");
@@ -24,7 +26,7 @@ $url = $row4['url'];
 $cat = $row4['category'];
 $title = $row4['title'];
 $id = $row4['id'];
-$article = $row4['contents'];
+$article = $row4['contentshttp://zodml.org/discover-nigeria/states/akwa-ibom-state
 
 
 session_start();
