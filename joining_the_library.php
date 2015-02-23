@@ -1,4 +1,4 @@
-<?php  header( 'Location: http://www.zodml.org/community-library/join-library' ) ;  ?>
+<?php  //header( 'Location: http://www.zodml.org/community-library/join-library' ) ;  ?>
 <?php 
 								ini_set("display_errors", "off");
 								include_once("Nigeria/scripts/config.php");
