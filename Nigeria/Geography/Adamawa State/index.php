@@ -1,4 +1,5 @@
-<?php  header( 'Location: http://zodml.org/discover-nigeria/states/adamawa-state' ) ;  
+<?php
+  header( 'Location: http://zodml.org/discover-nigeria/states/adamawa-state' ) ;  
 ?>
 <?php
  error_reporting(0);

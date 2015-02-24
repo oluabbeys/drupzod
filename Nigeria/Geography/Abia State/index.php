@@ -1,4 +1,5 @@
-<?php  header( 'Location: http://zodml.org/discover-nigeria/states/abia-state' ) ;  
+<?php 
+   header( 'Location: http://zodml.org/discover-nigeria/states/abia-state' ) ;  
 ?>
 <?php
  error_reporting(0);
