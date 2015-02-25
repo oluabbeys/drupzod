@@ -208,6 +208,8 @@ if (!isset($GLOBALS['Piwik_SearchEngines'])) {
         // Baidu
         'www.baidu.com'                  => array('Baidu', array('wd', 'word', 'kw'), 's?wd={k}', array('UTF-8', 'gb2312')),
         'www1.baidu.com'                 => array('Baidu'),
+        'm.baidu.com'                    => array('Baidu'),
+        'www.baidu.co.th'                => array('Baidu'),
         'zhidao.baidu.com'               => array('Baidu'),
         'tieba.baidu.com'                => array('Baidu'),
         'news.baidu.com'                 => array('Baidu'),
@@ -523,6 +525,9 @@ if (!isset($GLOBALS['Piwik_SearchEngines'])) {
         // Gule Sider
         'www.gulesider.no'               => array('Gule Sider', 'q'),
 
+        // Haosou
+        'www.haosou.com'                 => array('Haosou', 'q', 's?q={k}'),
+
         // HighBeam
         'www.highbeam.com'               => array('HighBeam', 'q', 'Search.aspx?q={k}'),
 
@@ -828,6 +833,10 @@ if (!isset($GLOBALS['Piwik_SearchEngines'])) {
         // Skynet
         'www.skynet.be'                  => array('Skynet', 'q', 'services/recherche/google?q={k}'),
 
+        // sm.cn
+        'm.sm.cn'                        => array('sm.cn', 'q', 's?q={k}'),
+        'm.sp.sm.cn'                     => array('sm.cn'),
+
         // SmartAdressbar
         'search.smartaddressbar.com'     => array('SmartAddressbar', 's', '?s={k}'),
 
@@ -843,6 +852,7 @@ if (!isset($GLOBALS['Piwik_SearchEngines'])) {
 
         // Sogou
         'www.sogou.com'                  => array('Sogou', 'query', 'web?query={k}', 'gb2312'),
+        'm.sogou.com'                    => array('Sogou', 'keyword'),
 
         // Softonic
         'search.softonic.com'            => array('Softonic', 'q', 'default/default?q={k}'),
@@ -903,8 +913,14 @@ if (!isset($GLOBALS['Piwik_SearchEngines'])) {
 
         // Toolbarhome
         'www.toolbarhome.com'            => array('Toolbarhome', 'q', 'search.aspx?q={k}'),
-
         'vshare.toolbarhome.com'         => array('Toolbarhome'),
+
+        // Toppreise.ch
+        'www.toppreise.ch'     => array('Toppreise.ch', 'search', 'index.php?search={k}', 'ISO-8859-1'),
+        'toppreise.ch'         => array('Toppreise.ch', null, null, 'ISO-8859-1'),
+        'fr.toppreise.ch'      => array('Toppreise.ch', null, null, 'ISO-8859-1'),
+        'de.toppreise.ch'      => array('Toppreise.ch', null, null, 'ISO-8859-1'),
+        'en.toppreise.ch'      => array('Toppreise.ch', null, null, 'ISO-8859-1'),
 
         // Trouvez.com
         'www.trouvez.com'                => array('Trouvez.com', 'query'),
@@ -1082,5 +1098,8 @@ if (!isset($GLOBALS['Piwik_SearchEngines'])) {
 
         // Zoznam
         'www.zoznam.sk'                  => array('Zoznam', 's', 'hladaj.fcgi?s={k}&co=svet'),
+
+        // Zxuso
+        'www.zxuso.com'                  => array('Zxuso', 'wd', 'ri/?wd={k}'),
     );
 }

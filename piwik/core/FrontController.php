@@ -253,6 +253,8 @@ class FrontController extends Singleton
     {
         $lastError = error_get_last();
         if (!empty($lastError) && $lastError['type'] == E_ERROR) {
+            Common::sendResponseCode(500);
+
             $controller = FrontController::getInstance();
             $controller->init();
             $message = $controller->dispatch('CorePluginsAdmin', 'safemode', array($lastError));
@@ -262,7 +264,7 @@ class FrontController extends Singleton
     }
 
     /**
-     * Loads the config file and assign to the global registry
+     * Loads the config file
      * This is overridden in tests to ensure test config file is used
      *
      * @return Exception
@@ -308,11 +310,9 @@ class FrontController extends Singleton
         }
         $initialized = true;
 
-        Registry::set('timer', new Timer);
-
         $exceptionToThrow = self::createConfigObject();
 
-        $tmpPath = StaticContainer::getContainer()->get('path.tmp');
+        $tmpPath = StaticContainer::get('path.tmp');
 
         $directoriesToCheck = array(
             $tmpPath,
@@ -323,15 +323,13 @@ class FrontController extends Singleton
             $tmpPath . '/templates_c/',
         );
 
-        Translate::loadEnglishTranslation();
-
         Filechecks::dieIfDirectoriesNotWritable($directoriesToCheck);
 
         $this->handleMaintenanceMode();
         $this->handleProfiler();
         $this->handleSSLRedirection();
 
-        Plugin\Manager::getInstance()->loadPluginTranslations('en');
+        Plugin\Manager::getInstance()->loadPluginTranslations();
         Plugin\Manager::getInstance()->loadActivatedPlugins();
 
         if ($exceptionToThrow) {
@@ -417,14 +415,14 @@ class FrontController extends Singleton
          * **Example**
          *
          *     Piwik::addAction('Request.initAuthenticationObject', function() {
-         *         Piwik\Registry::set('auth', new MyAuthImplementation());
+         *         StaticContainer::getContainer()->set('Piwik\Auth', new MyAuthImplementation());
          *     });
          */
         Piwik::postEvent('Request.initAuthenticationObject');
         try {
-            $authAdapter = Registry::get('auth');
+            $authAdapter = StaticContainer::get('Piwik\Auth');
         } catch (Exception $e) {
-            $message = "Authentication object cannot be found in the Registry. Maybe the Login plugin is not activated?
+            $message = "Authentication object cannot be found in the container. Maybe the Login plugin is not activated?
                         <br />You can activate the plugin by adding:<br />
                         <code>Plugins[] = Login</code><br />
                         under the <code>[Plugins]</code> section in your config/config.ini.php";
@@ -443,7 +441,6 @@ class FrontController extends Singleton
         }
         SettingsServer::raiseMemoryLimitIfNecessary();
 
-        Translate::reloadLanguage();
         \Piwik\Plugin\Manager::getInstance()->postLoadPlugins();
 
         /**
@@ -469,6 +466,8 @@ class FrontController extends Singleton
             && ($module !== 'API' || ($action && $action !== 'index'))
         ) {
             Session::start();
+
+            $this->closeSessionEarlyForFasterUI();
         }
 
         if (is_null($parameters)) {
@@ -536,6 +535,25 @@ class FrontController extends Singleton
             return;
         }
         Url::redirectToHttps();
+    }
+
+    private function closeSessionEarlyForFasterUI()
+    {
+        $isDashboardReferrer = !empty($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'module=CoreHome&action=index') !== false;
+        $isAllWebsitesReferrer = !empty($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'module=MultiSites&action=index') !== false;
+
+        if ($isDashboardReferrer
+            && !empty($_POST['token_auth'])
+            && Common::getRequestVar('widget', 0, 'int') === 1
+        ) {
+            Session::close();
+        }
+
+        if (($isDashboardReferrer || $isAllWebsitesReferrer)
+            && Common::getRequestVar('viewDataTable', '', 'string') === 'sparkline'
+        ) {
+            Session::close();
+        }
     }
 
     private function handleProfiler()
@@ -611,4 +629,5 @@ class FrontController extends Singleton
         Piwik::postEvent('Request.dispatch.end', array(&$result, $module, $action, $parameters));
         return $result;
     }
+
 }
