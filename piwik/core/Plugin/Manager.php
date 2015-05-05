@@ -21,6 +21,7 @@ use Piwik\Log;
 use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin;
+use Piwik\PluginDeactivatedException;
 use Piwik\Singleton;
 use Piwik\Theme;
 use Piwik\Tracker;
@@ -42,6 +43,8 @@ class Manager extends Singleton
     protected $pluginsToLoad = array();
 
     protected $doLoadPlugins = true;
+
+    private $pluginsLoadedAndActivated;
 
     /**
      * @var Plugin[]
@@ -266,6 +269,19 @@ class Manager extends Singleton
     }
 
     /**
+     * Checks whether the given plugin is activated, if not triggers an exception.
+     *
+     * @param  string $pluginName
+     * @throws PluginDeactivatedException
+     */
+    public function checkIsPluginActivated($pluginName)
+    {
+        if (!$this->isPluginActivated($pluginName)) {
+            throw new PluginDeactivatedException($pluginName);
+        }
+    }
+
+    /**
      * Returns `true` if plugin is loaded (in memory).
      *
      * @param string $name Name of plugin, eg, `'Acions'`.
@@ -412,6 +428,7 @@ class Manager extends Singleton
      */
     private function clearCache($pluginName)
     {
+        $this->resetTransientCache();
         Filesystem::deleteAllCacheOnUpdate($pluginName);
     }
 
@@ -664,6 +681,7 @@ class Manager extends Singleton
      */
     public function loadPlugins(array $pluginsToLoad)
     {
+        $this->resetTransientCache();
         $this->pluginsToLoad = $this->makePluginsToLoad($pluginsToLoad);
         $this->reloadActivatedPlugins();
     }
@@ -751,15 +769,21 @@ class Manager extends Singleton
      */
     public function getPluginsLoadedAndActivated()
     {
-        $plugins = $this->getLoadedPlugins();
-        $enabled = $this->getActivatedPlugins();
+        if (is_null($this->pluginsLoadedAndActivated)) {
+            $enabled = $this->getActivatedPlugins();
 
-        if (empty($enabled)) {
-            return array();
+            if (empty($enabled)) {
+                return array();
+            }
+
+            $plugins = $this->getLoadedPlugins();
+            $enabled = array_combine($enabled, $enabled);
+            $plugins = array_intersect_key($plugins, $enabled);
+
+            $this->pluginsLoadedAndActivated = $plugins;
         }
-        $enabled = array_combine($enabled, $enabled);
-        $plugins = array_intersect_key($plugins, $enabled);
-        return $plugins;
+
+        return $this->pluginsLoadedAndActivated;
     }
 
     /**
@@ -922,6 +946,11 @@ class Manager extends Singleton
         return "\\Piwik\\Plugins\\$pluginName\\$className";
     }
 
+    private function resetTransientCache()
+    {
+        $this->pluginsLoadedAndActivated = null;
+    }
+
     /**
      * Unload plugin
      *
@@ -930,6 +959,8 @@ class Manager extends Singleton
      */
     public function unloadPlugin($plugin)
     {
+        $this->resetTransientCache();
+
         if (!($plugin instanceof Plugin)) {
             $oPlugin = $this->loadPlugin($plugin);
             if ($oPlugin === null) {
@@ -948,6 +979,8 @@ class Manager extends Singleton
      */
     public function unloadPlugins()
     {
+        $this->resetTransientCache();
+
         $pluginsLoaded = $this->getLoadedPlugins();
         foreach ($pluginsLoaded as $plugin) {
             $this->unloadPlugin($plugin);
@@ -978,6 +1011,8 @@ class Manager extends Singleton
      */
     public function addLoadedPlugin($pluginName, Plugin $newPlugin)
     {
+        $this->resetTransientCache();
+
         $this->loadedPlugins[$pluginName] = $newPlugin;
     }
 
@@ -1034,7 +1069,8 @@ class Manager extends Singleton
             $this->executePluginInstall($plugin);
             $pluginsInstalled[] = $pluginName;
             $this->updatePluginsInstalledConfig($pluginsInstalled);
-            Updater::recordComponentSuccessfullyUpdated($plugin->getPluginName(), $plugin->getVersion());
+            $updater = new Updater();
+            $updater->markComponentSuccessfullyUpdated($plugin->getPluginName(), $plugin->getVersion());
             $saveConfig = true;
         }
 

@@ -32,6 +32,7 @@
         "ClickHere": "Click here for more information.",
         "ClickToChangePeriod": "Click again to change the period.",
         "Close": "Close",
+        "ClickToSearch": "Click to search",
         "ColumnActionsPerVisit": "Actions per Visit",
         "ColumnActionsPerVisitDocumentation": "The average number of actions (page views, site searches, downloads or outlinks) that were performed during the visits.",
         "ColumnAverageGenerationTime": "Avg. generation time",
@@ -305,6 +306,8 @@
         "OverlayRowActionTooltipTitle": "Open Page Overlay",
         "Overview": "Overview",
         "Pages": "Pages",
+        "Pagination": "%s - %s of %s",
+        "PaginationWithoutTotal": "%s - %s",
         "ParameterMustIntegerBetween": "Parameter %s must be an integer value between %s and %s.",
         "Password": "Password",
         "Period": "Period",
@@ -454,7 +457,7 @@
         "Yesterday": "Yesterday",
         "YouAreCurrentlyUsing": "You are currently using Piwik %s.",
         "YouAreViewingDemoShortMessage": "You are currently viewing the demo of Piwik",
-        "YouMustBeLoggedIn": "You must be logged in to access this functionnality.",
+        "YouMustBeLoggedIn": "You must be logged in to access this functionality.",
         "YourChangesHaveBeenSaved": "Your changes have been saved."
     },
     "Mobile": {

@@ -37,6 +37,8 @@ import urllib2
 import urlparse
 import subprocess
 import functools
+import traceback
+import socket
 
 try:
     import json
@@ -96,8 +98,9 @@ EXCLUDED_USER_AGENTS = (
     'yandex',
 )
 
-PIWIK_MAX_ATTEMPTS = 3
-PIWIK_DELAY_AFTER_FAILURE = 2
+PIWIK_DEFAULT_MAX_ATTEMPTS = 3
+PIWIK_DEFAULT_DELAY_AFTER_FAILURE = 10
+DEFAULT_SOCKET_TIMEOUT = 300
 
 PIWIK_EXPECTED_IMAGE = base64.b64decode(
     'R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
@@ -180,6 +183,8 @@ class RegexFormat(BaseFormat):
         return self.match(line)
 
     def match(self,line):
+        if not self.regex:
+            return None
         match_result = self.regex.match(line)
         if match_result:
             self.matched = match_result.groupdict()
@@ -191,7 +196,7 @@ class RegexFormat(BaseFormat):
         try:
             return self.matched[key]
         except KeyError:
-            raise BaseFormatException()
+            raise BaseFormatException("Cannot find group '%s'." % key)
 
     def get_all(self,):
         return self.matched
@@ -209,7 +214,7 @@ class W3cExtendedFormat(RegexFormat):
         'time': '[\d+:]+)[.\d]*?', # TODO should not assume date & time will be together not sure how to fix ATM.
         'cs-uri-stem': '(?P<path>/\S*)',
         'cs-uri-query': '(?P<query_string>\S*)',
-        'c-ip': '"?(?P<ip>[\d*.]*)"?',
+        'c-ip': '"?(?P<ip>[\d*.-]*)"?',
         'cs(User-Agent)': '(?P<user_agent>".*?"|\S+)',
         'cs(Referer)': '(?P<referrer>\S+)',
         'sc-status': '(?P<status>\d+)',
@@ -244,7 +249,10 @@ class W3cExtendedFormat(RegexFormat):
         # if we're reading from stdin, we can't seek, so don't read any more than the Fields line
         header_lines = []
         while fields_line is None:
-            line = file.readline()
+            line = file.readline().strip()
+
+            if not line:
+                continue
 
             if not line.startswith('#'):
                 break
@@ -278,14 +286,17 @@ class W3cExtendedFormat(RegexFormat):
             expected_fields[field_name] = field_regex
 
         # Skip the 'Fields: ' prefix.
-        fields_line = fields_line[9:]
-        for field in fields_line.split():
+        fields_line = fields_line[9:].strip()
+        for field in re.split('\s+', fields_line):
             try:
                 regex = expected_fields[field]
             except KeyError:
-                regex = '\S+'
+                regex = '(?:".*?"|\S+)'
             full_regex.append(regex)
         full_regex = '\s+'.join(full_regex)
+
+        logging.debug("Based on 'Fields:' line, computed regex to be %s", full_regex)
+
         self.regex = re.compile(full_regex)
 
     def check_for_iis_option(self):
@@ -323,7 +334,13 @@ class AmazonCloudFrontFormat(W3cExtendedFormat):
         'x-event': '(?P<event_action>\S+)',
         'x-sname': '(?P<event_name>\S+)',
         'cs-uri-stem': '(?:rtmp:/)?(?P<path>/\S*)',
-        'c-user-agent': '(?P<user_agent>".*?"|\S+)'
+        'c-user-agent': '(?P<user_agent>".*?"|\S+)',
+
+        # following are present to match cloudfront instead of W3C when we know it's cloudfront
+        'x-edge-location': '(?P<x_edge_location>".*?"|\S+)',
+        'x-edge-result-type': '(?P<x_edge_result_type>".*?"|\S+)',
+        'x-edge-request-id': '(?P<x_edge_request_id>".*?"|\S+)',
+        'x-host-header': '(?P<x_host_header>".*?"|\S+)'
     })
 
     def __init__(self):
@@ -336,24 +353,27 @@ class AmazonCloudFrontFormat(W3cExtendedFormat):
             return 'cloudfront_rtmp'
         elif key == 'status' and 'status' not in self.matched:
             return '200'
+        elif key == 'user_agent':
+            user_agent = super(AmazonCloudFrontFormat, self).get(key)
+            return urllib2.unquote(user_agent)
         else:
             return super(AmazonCloudFrontFormat, self).get(key)
 
-_HOST_PREFIX = '(?P<host>[\w\-\.]*)(?::\d+)? '
+_HOST_PREFIX = '(?P<host>[\w\-\.]*)(?::\d+)?\s+'
 _COMMON_LOG_FORMAT = (
-    '(?P<ip>\S+) \S+ \S+ \[(?P<date>.*?) (?P<timezone>.*?)\] '
-    '"\S+ (?P<path>.*?) \S+" (?P<status>\S+) (?P<length>\S+)'
+    '(?P<ip>\S+)\s+\S+\s+\S+\s+\[(?P<date>.*?)\s+(?P<timezone>.*?)\]\s+'
+    '"\S+\s+(?P<path>.*?)\s+\S+"\s+(?P<status>\S+)\s+(?P<length>\S+)'
 )
 _NCSA_EXTENDED_LOG_FORMAT = (_COMMON_LOG_FORMAT +
-    ' "(?P<referrer>.*?)" "(?P<user_agent>.*?)"'
+    '\s+"(?P<referrer>.*?)"\s+"(?P<user_agent>.*?)"'
 )
 _S3_LOG_FORMAT = (
-    '\S+ (?P<host>\S+) \[(?P<date>.*?) (?P<timezone>.*?)\] (?P<ip>\S+) '
-    '\S+ \S+ \S+ \S+ "\S+ (?P<path>.*?) \S+" (?P<status>\S+) \S+ (?P<length>\S+) '
-    '\S+ \S+ \S+ "(?P<referrer>.*?)" "(?P<user_agent>.*?)"'
+    '\S+\s+(?P<host>\S+)\s+\[(?P<date>.*?)\s+(?P<timezone>.*?)\]\s+(?P<ip>\S+)\s+'
+    '\S+\s+\S+\s+\S+\s+\S+\s+"\S+\s+(?P<path>.*?)\s+\S+"\s+(?P<status>\S+)\s+\S+\s+(?P<length>\S+)\s+'
+    '\S+\s+\S+\s+\S+\s+"(?P<referrer>.*?)"\s+"(?P<user_agent>.*?)"'
 )
 _ICECAST2_LOG_FORMAT = ( _NCSA_EXTENDED_LOG_FORMAT +
-    ' (?P<session_time>\S+)'
+    '\s+(?P<session_time>\S+)'
 )
 
 FORMATS = {
@@ -567,6 +587,11 @@ class Configuration(object):
             help="Replay piwik.php requests found in custom logs (only piwik.php requests expected). \nSee http://piwik.org/faq/how-to/faq_17033/"
         )
         option_parser.add_option(
+            '--replay-tracking-expected-tracker-file', dest='replay_tracking_expected_tracker_file', default='piwik.php',
+            help="The expected suffix for tracking request paths. Only logs whose paths end with this will be imported. Defaults "
+            "to 'piwik.php' so only requests to the piwik.php file will be imported."
+        )
+        option_parser.add_option(
             '--output', dest='output',
             help="Redirect output (stdout and stderr) to the specified file"
         )
@@ -582,11 +607,6 @@ class Configuration(object):
         option_parser.add_option(
             '--debug-force-one-hit-every-Ns', dest='force_one_action_interval', default=False, type='float',
             help="Debug option that will force each recorder to record one hit every N secs."
-        )
-        option_parser.add_option(
-            '--invalidate-dates', dest='invalidate_dates', default=None,
-            help="Invalidate reports for the specified dates (format: YYYY-MM-DD,YYYY-MM-DD,...). "
-                 "By default, all dates found in the logs will be invalidated.",
         )
         option_parser.add_option(
             '--force-lowercase-path', dest='force_lowercase_path', default=False, action='store_true',
@@ -665,6 +685,18 @@ class Configuration(object):
                  "parameter, supply --regex-group-to-page-cvar=\"userid=User Name\". This will track usernames in a "
                  "custom variable named 'User Name'. See documentation for --log-format-regex for list of available "
                  "regex groups."
+        )
+        option_parser.add_option(
+            '--retry-max-attempts', dest='max_attempts', default=PIWIK_DEFAULT_MAX_ATTEMPTS, type='int',
+            help="The maximum number of times to retry a failed tracking request."
+        )
+        option_parser.add_option(
+            '--retry-delay', dest='delay_after_failure', default=PIWIK_DEFAULT_DELAY_AFTER_FAILURE, type='int',
+            help="The number of seconds to wait before retrying a failed tracking request."
+        )
+        option_parser.add_option(
+            '--request-timeout', dest='request_timeout', default=DEFAULT_SOCKET_TIMEOUT, type='int',
+            help="The maximum number of seconds to wait before terminating an HTTP request to Piwik."
         )
         return option_parser
 
@@ -1005,6 +1037,12 @@ Performance summary
 
     Total time: %(total_time)d seconds
     Requests imported per second: %(speed_recording)s requests per second
+
+Processing your log data
+------------------------
+
+    In order for your logs to be processed by Piwik, you may need to run the following command:
+     ./console core:archive --force-all-websites --force-all-periods=315576000 --force-date-last-n=1000 --url='%(url)s'
 ''' % {
 
     'count_lines_recorded': self.count_lines_recorded.value,
@@ -1056,6 +1094,7 @@ Performance summary
             self.count_lines_recorded.value,
             self.time_start, self.time_stop,
         )),
+    'url': config.options.piwik_url
 }
 
     ##
@@ -1090,7 +1129,11 @@ class Piwik(object):
     """
 
     class Error(Exception):
-        pass
+
+        def __init__(self, message, code = None):
+            super(Exception, self).__init__(message)
+
+            self.code = code
 
     @staticmethod
     def _call(path, args, headers=None, url=None, data=None):
@@ -1111,7 +1154,7 @@ class Piwik(object):
 
         headers['User-Agent'] = 'Piwik/LogImport'
         request = urllib2.Request(url + path, data, headers)
-        response = urllib2.urlopen(request)
+        response = urllib2.urlopen(request, timeout = config.options.request_timeout)
         result = response.read()
         response.close()
         return result
@@ -1176,20 +1219,28 @@ class Piwik(object):
 
                     raise urllib2.URLError(error_message)
                 return response
-            except (urllib2.URLError, httplib.HTTPException, ValueError), e:
-                logging.debug('Error when connecting to Piwik: %s', e)
-                errors += 1
-                if errors == PIWIK_MAX_ATTEMPTS:
-                    if isinstance(e, urllib2.HTTPError):
-                        # See Python issue 13211.
-                        message = e.msg
-                    elif isinstance(e, urllib2.URLError):
-                        message = e.reason
-                    else:
-                        message = str(e)
-                    raise Piwik.Error(message)
+            except (urllib2.URLError, httplib.HTTPException, ValueError, socket.timeout), e:
+                logging.info('Error when connecting to Piwik: %s', e)
+
+                code = None
+                if isinstance(e, urllib2.HTTPError):
+                    # See Python issue 13211.
+                    message = e.msg
+                    code = e.code
+                elif isinstance(e, urllib2.URLError):
+                    message = e.reason
                 else:
-                    time.sleep(PIWIK_DELAY_AFTER_FAILURE)
+                    message = str(e)
+
+                errors += 1
+                if errors == config.options.max_attempts:
+                    logging.info("Max number of attempts reached, server is unreachable!")
+
+                    raise Piwik.Error(message, code)
+                else:
+                    logging.info("Retrying request, attempt number %d" % (errors + 1))
+
+                    time.sleep(config.options.delay_after_failure)
 
     @classmethod
     def call(cls, path, args, expected_content=None, headers=None, data=None, on_failure=None):
@@ -1543,21 +1594,29 @@ class Recorder(object):
                 'token_auth': config.options.piwik_token_auth,
                 'requests': [self._get_hit_args(hit) for hit in hits]
             }
-            result = piwik.call(
-                '/piwik.php', args={},
-                expected_content=None,
-                headers={'Content-type': 'application/json'},
-                data=data,
-                on_failure=self._on_tracking_failure
-            )
-
-            # make sure the request succeeded and returned valid json
             try:
-                result = json.loads(result)
-            except ValueError, e:
-                fatal_error("Incorrect response from tracking API: '%s'\nIs the BulkTracking plugin disabled?" % result)
+                piwik.call(
+                    '/piwik.php', args={},
+                    expected_content=None,
+                    headers={'Content-type': 'application/json'},
+                    data=data,
+                    on_failure=self._on_tracking_failure
+                )
+            except Piwik.Error, e:
+                # if the server returned 400 code, BulkTracking may not be enabled
+                if e.code == 400:
+                    fatal_error("Server returned status 400 (Bad Request).\nIs the BulkTracking plugin disabled?")
+
+                raise
 
         stats.count_lines_recorded.advance(len(hits))
+
+    def _is_json(self, result):
+        try:
+            json.loads(result)
+            return True
+        except ValueError, e:
+            return False
 
     def _on_tracking_failure(self, response, data):
         """
@@ -1687,7 +1746,10 @@ class Parser(object):
 
     def check_http_error(self, hit):
         if hit.status[0] in ('4', '5'):
-            if config.options.enable_http_errors:
+            if config.options.replay_tracking:
+                # process error logs for replay tracking, since we don't care if piwik error-ed the first time
+                return True
+            elif config.options.enable_http_errors:
                 hit.is_error = True
                 return True
             else:
@@ -1731,7 +1793,7 @@ class Parser(object):
                 else:
                     match = candidate_format.check_format(lineOrFile)
             except Exception, e:
-                logging.debug('Error in format checking: %s', str(e))
+                logging.debug('Error in format checking: %s', traceback.format_exc())
                 pass
 
             if match:
@@ -1741,6 +1803,9 @@ class Parser(object):
                 try:
                     # if there's more info in this match, use this format
                     match_groups = len(match.groups())
+
+                    logging.debug('Format match contains %d groups' % match_groups)
+
                     if format_groups < match_groups:
                         format = candidate_format
                         format_groups = match_groups
@@ -2014,7 +2079,7 @@ class Parser(object):
 
             if config.options.replay_tracking:
                 # we need a query string and we only consider requests with piwik.php
-                if not hit.query_string or not hit.path.lower().endswith('piwik.php'):
+                if not hit.query_string or not hit.path.lower().endswith(config.options.replay_tracking_expected_tracker_file):
                     invalid_line(line, 'no query string, or ' + hit.path.lower() + ' does not end with piwik.php')
                     continue
 

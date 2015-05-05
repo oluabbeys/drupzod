@@ -5,7 +5,7 @@
         "DayOfWeek": "Dia de la setmana",
         "LocalTime": "Visites segons l'hora local",
         "NHour": "%sh",
-        "PluginDescription": "Informe sobre l'hora local i la del servidor. L'hora del servidor pot ser útil per programar un manteniment al lloc web.",
+        "PluginDescription": "Mostra l'hora local i l'hora del servidor en que els visitants naveguen pel vostre lloc web o aplicació.",
         "ServerTime": "Visites segons l'hora del servidor",
         "SubmenuTimes": "Hores",
         "VisitsByDayOfWeek": "Visites per día de la setmana",

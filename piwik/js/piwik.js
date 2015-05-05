@@ -8,6 +8,8 @@
  * @license http://piwik.org/free-software/bsd/ BSD-3 Clause (also in js/LICENSE.txt)
  * @license magnet:?xt=urn:btih:c80d50af7d3db9be66a4d0a86db0286e4fd33292&dn=bsd-3-clause.txt BSD-3-Clause
  */
+// NOTE: if you change this above Piwik comment block, you must also change `$byteStart` in js/tracker.php
+
 // Refer to README.md for build instructions when minifying this file for distribution.
 
 /*
@@ -31,6 +33,8 @@
  ************************************************************/
 /*jslint evil: true, regexp: false, bitwise: true, white: true */
 /*global JSON2:true */
+/*global window:true */
+/*property JSON:true */
 /*members "", "\b", "\t", "\n", "\f", "\r", "\"", "\\", apply,
     call, charCodeAt, getUTCDate, getUTCFullYear, getUTCHours,
     getUTCMinutes, getUTCMonth, getUTCSeconds, hasOwnProperty, join,
@@ -43,7 +47,7 @@
 // methods in a closure to avoid creating global variables.
 
 if (typeof JSON2 !== 'object') {
-    JSON2 = {};
+    JSON2 = window.JSON || {};
 }
 
 (function () {
@@ -408,13 +412,13 @@ if (typeof JSON2 !== 'object') {
     exec,
     res, width, height, devicePixelRatio,
     pdf, qt, realp, wma, dir, fla, java, gears, ag,
-    hook, getHook, getVisitorId, getVisitorInfo, setUserId, getUserId, setSiteId, setTrackerUrl, appendToTrackingUrl, getRequest, addPlugin,
+    hook, getHook, getVisitorId, getVisitorInfo, setUserId, getUserId, setSiteId, getSiteId, setTrackerUrl, getTrackerUrl, appendToTrackingUrl, getRequest, addPlugin,
     getAttributionInfo, getAttributionCampaignName, getAttributionCampaignKeyword,
     getAttributionReferrerTimestamp, getAttributionReferrerUrl,
     setCustomData, getCustomData,
     setCustomRequestProcessing,
     setCustomVariable, getCustomVariable, deleteCustomVariable, storeCustomVariablesInCookie,
-    setDownloadExtensions, addDownloadExtensions,
+    setDownloadExtensions, addDownloadExtensions, removeDownloadExtensions,
     setDomains, setIgnoreClasses, setRequestMethod, setRequestContentType,
     setReferrerUrl, setCustomUrl, setAPIUrl, setDocumentTitle,
     setDownloadClasses, setLinkClasses,
@@ -424,12 +428,12 @@ if (typeof JSON2 !== 'object') {
     setVisitorCookieTimeout, setSessionCookieTimeout, setReferralCookieTimeout,
     setConversionAttributionFirstReferrer,
     disablePerformanceTracking, setGenerationTimeMs,
-    doNotTrack, setDoNotTrack, msDoNotTrack,
+    doNotTrack, setDoNotTrack, msDoNotTrack, getValuesFromVisitorIdCookie,
     addListener, enableLinkTracking, enableJSErrorTracking, setLinkTrackingTimer,
     setHeartBeatTimer, killFrame, redirectFile, setCountPreRendered,
     trackGoal, trackLink, trackPageView, trackSiteSearch, trackEvent,
     setEcommerceView, addEcommerceItem, trackEcommerceOrder, trackEcommerceCartUpdate,
-    deleteCookies, offsetTop, offsetLeft, offsetHeight, offsetWidth, nodeType, defaultView,
+    deleteCookie, deleteCookies, offsetTop, offsetLeft, offsetHeight, offsetWidth, nodeType, defaultView,
     innerHTML, scrollLeft, scrollTop, currentStyle, getComputedStyle, querySelectorAll, splice,
     getAttribute, hasAttribute, attributes, nodeName, findContentNodes, findContentNodes, findContentNodesWithinNode,
     findPieceNode, findTargetNodeNoDefault, findTargetNode, findContentPiece, children, hasNodeCssClass,
@@ -455,7 +459,9 @@ if (typeof JSON2 !== 'object') {
     trackVisibleContentImpressions, isTrackOnlyVisibleContentEnabled, port, isUrlToCurrentDomain,
     isNodeAuthorizedToTriggerInteraction, replaceHrefIfInternalLink, getConfigDownloadExtensions, disableLinkTracking,
     substr, setAnyAttribute, wasContentTargetAttrReplaced, max, abs, childNodes, compareDocumentPosition, body,
-    getConfigVisitorCookieTimeout, getRemainingVisitorCookieTimeout
+    getConfigVisitorCookieTimeout, getRemainingVisitorCookieTimeout,
+    newVisitor, uuid, createTs, visitCount, currentVisitTs, lastVisitTs, lastEcommerceOrderTs
+
  */
 /*global _paq:true */
 /*members push */
@@ -2114,7 +2120,7 @@ if (typeof Piwik !== 'object') {
          *
          * See: Tracker.setTrackerUrl() and Tracker.setSiteId()
          */
-        function Tracker(trackerUrl, siteId, uuid) {
+        function Tracker(trackerUrl, siteId) {
 
             /************************************************************
              * Private members
@@ -2161,6 +2167,9 @@ if (typeof Piwik !== 'object') {
                 // User ID
                 configUserId = '',
 
+                // Visitor UUID
+                visitorUUID = '',
+
                 // Document URL
                 configCustomUrl,
 
@@ -2168,7 +2177,7 @@ if (typeof Piwik !== 'object') {
                 configTitle = documentAlias.title,
 
                 // Extensions to be treated as download links
-                configDownloadExtensions = '7z|aac|apk|ar[cj]|as[fx]|avi|azw3|bin|csv|deb|dmg|docx?|epub|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mobi|mp(2|3|4|e?g)|mov(ie)?|ms[ip]|od[bfgpst]|og[gv]|pdf|phps|png|pptx?|qtm?|ra[mr]?|rpm|sea|sit|tar|t?bz2?|tgz|torrent|txt|wav|wm[av]|wpd||xlsx?|xml|z|zip',
+                configDownloadExtensions = ['7z','aac','apk','arc','arj','asf','asx','avi','azw3','bin','csv','deb','dmg','doc','docx','epub','exe','flv','gif','gz','gzip','hqx','ibooks','jar','jpg','jpeg','js','mobi','mp2','mp3','mp4','mpg','mpeg','mov','movie','msi','msp','odb','odf','odg','ods','odt','ogg','ogv','pdf','phps','png','ppt','pptx','qt','qtm','ra','ram','rar','rpm','sea','sit','tar','tbz','tbz2','bz','bz2','tgz','torrent','txt','wav','wma','wmv','wpd','xls','xlsx','xml','z','zip'],
 
                 // Hosts or alias(es) to not treat as outlinks
                 configHostsAlias = [domainAlias],
@@ -2291,10 +2300,7 @@ if (typeof Piwik !== 'object') {
                 hash = sha1,
 
                 // Domain hash value
-                domainHash,
-
-                // Visitor UUID
-                visitorUUID = uuid;
+                domainHash;
 
             /*
              * Set cookie value
@@ -2622,78 +2628,145 @@ if (typeof Piwik !== 'object') {
             }
 
             /*
+             * Generate a pseudo-unique ID to fingerprint this user
+             * 16 hexits = 64 bits
+             * note: this isn't a RFC4122-compliant UUID
+             */
+            function generateRandomUuid() {
+                return hash(
+                    (navigatorAlias.userAgent || '') +
+                    (navigatorAlias.platform || '') +
+                    JSON2.stringify(browserFeatures) +
+                    (new Date()).getTime() +
+                    Math.random()
+                ).slice(0, 16);
+            }
+
+            /*
              * Load visitor ID cookie
              */
             function loadVisitorIdCookie() {
                 var now = new Date(),
                     nowTs = Math.round(now.getTime() / 1000),
-                    id = getCookie(getCookieName('id')),
-                    tmpContainer;
+                    visitorIdCookieName = getCookieName('id'),
+                    id = getCookie(visitorIdCookieName),
+                    cookieValue,
+                    uuid;
 
+                // Visitor ID cookie found
                 if (id) {
-                    tmpContainer = id.split('.');
+                    cookieValue = id.split('.');
 
                     // returning visitor flag
-                    tmpContainer.unshift('0');
+                    cookieValue.unshift('0');
 
-                } else {
-                    // uuid - generate a pseudo-unique ID to fingerprint this user;
-                    // note: this isn't a RFC4122-compliant UUID
-                    if (!visitorUUID) {
-                        visitorUUID = hash(
-                            (navigatorAlias.userAgent || '') +
-                            (navigatorAlias.platform || '') +
-                            JSON2.stringify(browserFeatures) +
-                            now.getTime() +
-                            Math.random()
-                        ).slice(0, 16); // 16 hexits = 64 bits
+                    if(visitorUUID.length) {
+                        cookieValue[1] = visitorUUID;
                     }
-
-                    tmpContainer = [
-                        // new visitor
-                        '1',
-
-                        // uuid
-                        visitorUUID,
-
-                        // creation timestamp - seconds since Unix epoch
-                        nowTs,
-
-                        // visitCount - 0 = no previous visit
-                        0,
-
-                        // current visit timestamp
-                        nowTs,
-
-                        // last visit timestamp - blank = no previous visit
-                        '',
-
-                        // last ecommerce order timestamp
-                        ''
-                    ];
+                    return cookieValue;
                 }
 
-                return tmpContainer;
+                if(visitorUUID.length) {
+                    uuid = visitorUUID;
+                } else if ('0' === hasCookies()){
+                    uuid = '';
+                } else {
+                    uuid = generateRandomUuid();
+                }
+
+                // No visitor ID cookie, let's create a new one
+                cookieValue = [
+                    // new visitor
+                    '1',
+
+                    // uuid
+                    uuid,
+
+                    // creation timestamp - seconds since Unix epoch
+                    nowTs,
+
+                    // visitCount - 0 = no previous visit
+                    0,
+
+                    // current visit timestamp
+                    nowTs,
+
+                    // last visit timestamp - blank = no previous visit
+                    '',
+
+                    // last ecommerce order timestamp
+                    ''
+                ];
+
+                return cookieValue;
             }
+
+
+            /**
+             * Loads the Visitor ID cookie and returns a named array of values
+             */
+            function getValuesFromVisitorIdCookie() {
+                var cookieVisitorIdValue = loadVisitorIdCookie(),
+                    newVisitor = cookieVisitorIdValue[0],
+                    uuid = cookieVisitorIdValue[1],
+                    createTs = cookieVisitorIdValue[2],
+                    visitCount = cookieVisitorIdValue[3],
+                    currentVisitTs = cookieVisitorIdValue[4],
+                    lastVisitTs = cookieVisitorIdValue[5];
+
+                // case migrating from pre-1.5 cookies
+                if (!isDefined(cookieVisitorIdValue[6])) {
+                    cookieVisitorIdValue[6] = "";
+                }
+
+                var lastEcommerceOrderTs = cookieVisitorIdValue[6];
+
+                return {
+                    newVisitor: newVisitor,
+                    uuid: uuid,
+                    createTs: createTs,
+                    visitCount: visitCount,
+                    currentVisitTs: currentVisitTs,
+                    lastVisitTs: lastVisitTs,
+                    lastEcommerceOrderTs: lastEcommerceOrderTs
+                };
+            }
+
 
             function getRemainingVisitorCookieTimeout() {
                 var now = new Date(),
                     nowTs = now.getTime(),
-                    visitorInfo = loadVisitorIdCookie();
+                    cookieCreatedTs = getValuesFromVisitorIdCookie().createTs;
 
-                var createTs = parseInt(visitorInfo[2], 10);
+                var createTs = parseInt(cookieCreatedTs, 10);
                 var originalTimeout = (createTs * 1000) + configVisitorCookieTimeout - nowTs;
                 return originalTimeout;
             }
 
             /*
-             * Sets the Visitor ID cookie: either the first time loadVisitorIdCookie is called
-             * or when there is a new visit or a new page view
+             * Sets the Visitor ID cookie
              */
-            function setVisitorIdCookie(uuid, createTs, visitCount, nowTs, lastVisitTs, lastEcommerceOrderTs) {
-                var timeout = getRemainingVisitorCookieTimeout();
+            function setVisitorIdCookie(visitorIdCookieValues) {
+                if(!configTrackerSiteId) {
+                    // when called before Site ID was set
+                    return;
+                }
 
-                setCookie(getCookieName('id'), uuid + '.' + createTs + '.' + visitCount + '.' + nowTs + '.' + lastVisitTs + '.' + lastEcommerceOrderTs, timeout, configCookiePath, configCookieDomain);
+                var now = new Date(),
+                    nowTs = Math.round(now.getTime() / 1000);
+
+                if(!isDefined(visitorIdCookieValues)) {
+                    visitorIdCookieValues = getValuesFromVisitorIdCookie();
+                }
+
+                var cookieValue = visitorIdCookieValues.uuid + '.' +
+                    visitorIdCookieValues.createTs + '.' +
+                    visitorIdCookieValues.visitCount + '.' +
+                    nowTs + '.' +
+                    visitorIdCookieValues.lastVisitTs + '.' +
+                    visitorIdCookieValues.lastEcommerceOrderTs;
+
+                setCookie(getCookieName('id'), cookieValue, getRemainingVisitorCookieTimeout(), configCookiePath, configCookieDomain);
             }
 
             /*
@@ -2730,17 +2803,40 @@ if (typeof Piwik !== 'object') {
                 ];
             }
 
+            function deleteCookie(cookieName, path, domain) {
+                setCookie(cookieName, '', -86400, path, domain);
+            }
+
+            function isPossibleToSetCookieOnDomain(domainToTest)
+            {
+                var valueToSet = 'testvalue';
+                setCookie('test', valueToSet, 10000, null, domainToTest);
+
+                if (getCookie('test') === valueToSet) {
+                    deleteCookie('test', null, domainToTest);
+
+                    return true;
+                }
+
+                return false;
+            }
+
             function deleteCookies() {
                 var savedConfigCookiesDisabled = configCookiesDisabled;
 
                 // Temporarily allow cookies just to delete the existing ones
                 configCookiesDisabled = false;
-                setCookie(getCookieName('id'), '', -86400, configCookiePath, configCookieDomain);
-                setCookie(getCookieName('ses'), '', -86400, configCookiePath, configCookieDomain);
-                setCookie(getCookieName('cvar'), '', -86400, configCookiePath, configCookieDomain);
-                setCookie(getCookieName('ref'), '', -86400, configCookiePath, configCookieDomain);
+                deleteCookie(getCookieName('id'), configCookiePath, configCookieDomain);
+                deleteCookie(getCookieName('ses'), configCookiePath, configCookieDomain);
+                deleteCookie(getCookieName('cvar'), configCookiePath, configCookieDomain);
+                deleteCookie(getCookieName('ref'), configCookiePath, configCookieDomain);
 
                 configCookiesDisabled = savedConfigCookiesDisabled;
+            }
+
+            function setSiteId(siteId) {
+                configTrackerSiteId = siteId;
+                setVisitorIdCookie();
             }
 
             function sortObjectByKeys(value) {
@@ -2771,6 +2867,13 @@ if (typeof Piwik !== 'object') {
             }
 
             /**
+             * Creates the session cookie
+             */
+            function setSessionCookie() {
+                setCookie(getCookieName('ses'), '*', configSessionCookieTimeout, configCookiePath, configCookieDomain);
+            }
+
+            /**
              * Returns the URL to call piwik.php,
              * with the standard parameters (plugins, resolution, url, referrer, etc.).
              * Sends the pageview and browser settings with every request in case of race conditions.
@@ -2779,24 +2882,16 @@ if (typeof Piwik !== 'object') {
                 var i,
                     now = new Date(),
                     nowTs = Math.round(now.getTime() / 1000),
-                    newVisitor,
-                    uuid,
-                    visitCount,
-                    createTs,
-                    currentVisitTs,
-                    lastVisitTs,
-                    lastEcommerceOrderTs,
                     referralTs,
                     referralUrl,
                     referralUrlMaxLength = 1024,
                     currentReferrerHostName,
                     originalReferrerHostName,
                     customVariablesCopy = customVariables,
-                    sesname = getCookieName('ses'),
-                    refname = getCookieName('ref'),
-                    cvarname = getCookieName('cvar'),
-                    id = loadVisitorIdCookie(),
-                    ses = getCookie(sesname),
+                    cookieSessionName = getCookieName('ses'),
+                    cookieReferrerName = getCookieName('ref'),
+                    cookieCustomVariablesName = getCookieName('cvar'),
+                    cookieSessionValue = getCookie(cookieSessionName),
                     attributionCookie = loadReferrerAttributionCookie(),
                     currentUrl = configCustomUrl || locationHrefAlias,
                     campaignNameDetected,
@@ -2810,19 +2905,7 @@ if (typeof Piwik !== 'object') {
                     return '';
                 }
 
-                newVisitor = id[0];
-                uuid = asyncTracker.getVisitorId();
-                createTs = id[2];
-                visitCount = id[3];
-                currentVisitTs = id[4];
-                lastVisitTs = id[5];
-                // case migrating from pre-1.5 cookies
-                if (!isDefined(id[6])) {
-                    id[6] = "";
-                }
-
-                lastEcommerceOrderTs = id[6];
-
+                var cookieVisitorIdValues = getValuesFromVisitorIdCookie();
                 if (!isDefined(currentEcommerceOrderTs)) {
                     currentEcommerceOrderTs = "";
                 }
@@ -2841,17 +2924,17 @@ if (typeof Piwik !== 'object') {
                 referralTs = attributionCookie[2];
                 referralUrl = attributionCookie[3];
 
-                if (!ses) {
+                if (!cookieSessionValue) {
                     // cookie 'ses' was not found: we consider this the start of a 'session'
 
                     // here we make sure that if 'ses' cookie is deleted few times within the visit
                     // and so this code path is triggered many times for one visit,
                     // we only increase visitCount once per Visit window (default 30min)
                     var visitDuration = configSessionCookieTimeout / 1000;
-                    if (!lastVisitTs
-                            || (nowTs - lastVisitTs) > visitDuration) {
-                        visitCount++;
-                        lastVisitTs = currentVisitTs;
+                    if (!cookieVisitorIdValues.lastVisitTs
+                        || (nowTs - cookieVisitorIdValues.lastVisitTs) > visitDuration) {
+                        cookieVisitorIdValues.visitCount++;
+                        cookieVisitorIdValues.lastVisitTs = cookieVisitorIdValues.currentVisitTs;
                     }
 
 
@@ -2860,7 +2943,7 @@ if (typeof Piwik !== 'object') {
                     // Or if it was set but we must attribute to the most recent one
                     // Note: we are working on the currentUrl before purify() since we can parse the campaign parameters in the hash tag
                     if (!configConversionAttributionFirstReferrer
-                            || !campaignNameDetected.length) {
+                        || !campaignNameDetected.length) {
                         for (i in configCampaignNameParameters) {
                             if (Object.prototype.hasOwnProperty.call(configCampaignNameParameters, i)) {
                                 campaignNameDetected = getParameter(currentUrl, configCampaignNameParameters[i]);
@@ -2888,16 +2971,16 @@ if (typeof Piwik !== 'object') {
                     originalReferrerHostName = referralUrl.length ? getHostName(referralUrl) : '';
 
                     if (currentReferrerHostName.length && // there is a referrer
-                            !isSiteHostName(currentReferrerHostName) && // domain is not the current domain
-                            (!configConversionAttributionFirstReferrer || // attribute to last known referrer
-                            !originalReferrerHostName.length || // previously empty
-                            isSiteHostName(originalReferrerHostName))) { // previously set but in current domain
+                        !isSiteHostName(currentReferrerHostName) && // domain is not the current domain
+                        (!configConversionAttributionFirstReferrer || // attribute to last known referrer
+                        !originalReferrerHostName.length || // previously empty
+                        isSiteHostName(originalReferrerHostName))) { // previously set but in current domain
                         referralUrl = configReferrerUrl;
                     }
 
                     // Set the referral cookie if we have either a Referrer URL, or detected a Campaign (or both)
                     if (referralUrl.length
-                            || campaignNameDetected.length) {
+                        || campaignNameDetected.length) {
                         referralTs = nowTs;
                         attributionCookie = [
                             campaignNameDetected,
@@ -2906,27 +2989,28 @@ if (typeof Piwik !== 'object') {
                             purify(referralUrl.slice(0, referralUrlMaxLength))
                         ];
 
-                        setCookie(refname, JSON2.stringify(attributionCookie), configReferralCookieTimeout, configCookiePath, configCookieDomain);
+                        setCookie(cookieReferrerName, JSON2.stringify(attributionCookie), configReferralCookieTimeout, configCookiePath, configCookieDomain);
                     }
                 }
+
                 // build out the rest of the request
                 request += '&idsite=' + configTrackerSiteId +
-                    '&rec=1' +
-                    '&r=' + String(Math.random()).slice(2, 8) + // keep the string to a minimum
-                    '&h=' + now.getHours() + '&m=' + now.getMinutes() + '&s=' + now.getSeconds() +
-                    '&url=' + encodeWrapper(purify(currentUrl)) +
-                    (configReferrerUrl.length ? '&urlref=' + encodeWrapper(purify(configReferrerUrl)) : '') +
-                    ((configUserId && configUserId.length) ? '&uid=' + encodeWrapper(configUserId) : '') +
-                    '&_id=' + uuid + '&_idts=' + createTs + '&_idvc=' + visitCount +
-                    '&_idn=' + newVisitor + // currently unused
-                    (campaignNameDetected.length ? '&_rcn=' + encodeWrapper(campaignNameDetected) : '') +
-                    (campaignKeywordDetected.length ? '&_rck=' + encodeWrapper(campaignKeywordDetected) : '') +
-                    '&_refts=' + referralTs +
-                    '&_viewts=' + lastVisitTs +
-                    (String(lastEcommerceOrderTs).length ? '&_ects=' + lastEcommerceOrderTs : '') +
-                    (String(referralUrl).length ? '&_ref=' + encodeWrapper(purify(referralUrl.slice(0, referralUrlMaxLength))) : '') +
-                    (charSet ? '&cs=' + encodeWrapper(charSet) : '') +
-                    '&send_image=0';
+                '&rec=1' +
+                '&r=' + String(Math.random()).slice(2, 8) + // keep the string to a minimum
+                '&h=' + now.getHours() + '&m=' + now.getMinutes() + '&s=' + now.getSeconds() +
+                '&url=' + encodeWrapper(purify(currentUrl)) +
+                (configReferrerUrl.length ? '&urlref=' + encodeWrapper(purify(configReferrerUrl)) : '') +
+                ((configUserId && configUserId.length) ? '&uid=' + encodeWrapper(configUserId) : '') +
+                '&_id=' + cookieVisitorIdValues.uuid + '&_idts=' + cookieVisitorIdValues.createTs + '&_idvc=' + cookieVisitorIdValues.visitCount +
+                '&_idn=' + cookieVisitorIdValues.newVisitor + // currently unused
+                (campaignNameDetected.length ? '&_rcn=' + encodeWrapper(campaignNameDetected) : '') +
+                (campaignKeywordDetected.length ? '&_rck=' + encodeWrapper(campaignKeywordDetected) : '') +
+                '&_refts=' + referralTs +
+                '&_viewts=' + cookieVisitorIdValues.lastVisitTs +
+                (String(cookieVisitorIdValues.lastEcommerceOrderTs).length ? '&_ects=' + cookieVisitorIdValues.lastEcommerceOrderTs : '') +
+                (String(referralUrl).length ? '&_ref=' + encodeWrapper(purify(referralUrl.slice(0, referralUrlMaxLength))) : '') +
+                (charSet ? '&cs=' + encodeWrapper(charSet) : '') +
+                '&send_image=0';
 
                 // browser features
                 for (i in browserFeatures) {
@@ -2951,7 +3035,7 @@ if (typeof Piwik !== 'object') {
                     return '';
                 }
 
-                var sortedCustomVarPage  = sortObjectByKeys(customVariablesPage);
+                var sortedCustomVarPage = sortObjectByKeys(customVariablesPage);
                 var sortedCustomVarEvent = sortObjectByKeys(customVariablesEvent);
 
                 request += appendCustomVariablesToRequest(sortedCustomVarPage, 'cvar');
@@ -2971,7 +3055,7 @@ if (typeof Piwik !== 'object') {
                     }
 
                     if (configStoreCustomVariablesInCookie) {
-                        setCookie(cvarname, JSON2.stringify(customVariables), configSessionCookieTimeout, configCookiePath, configCookieDomain);
+                        setCookie(cookieCustomVariablesName, JSON2.stringify(customVariables), configSessionCookieTimeout, configCookiePath, configCookieDomain);
                     }
                 }
 
@@ -2980,14 +3064,15 @@ if (typeof Piwik !== 'object') {
                     if (configPerformanceGenerationTime) {
                         request += '&gt_ms=' + configPerformanceGenerationTime;
                     } else if (performanceAlias && performanceAlias.timing
-                            && performanceAlias.timing.requestStart && performanceAlias.timing.responseEnd) {
+                        && performanceAlias.timing.requestStart && performanceAlias.timing.responseEnd) {
                         request += '&gt_ms=' + (performanceAlias.timing.responseEnd - performanceAlias.timing.requestStart);
                     }
                 }
 
                 // update cookies
-                setVisitorIdCookie(uuid, createTs, visitCount, nowTs, lastVisitTs, isDefined(currentEcommerceOrderTs) && String(currentEcommerceOrderTs).length ? currentEcommerceOrderTs : lastEcommerceOrderTs);
-                setCookie(sesname, '*', configSessionCookieTimeout, configCookiePath, configCookieDomain);
+                cookieVisitorIdValues.lastEcommerceOrderTs = isDefined(currentEcommerceOrderTs) && String(currentEcommerceOrderTs).length ? currentEcommerceOrderTs : cookieVisitorIdValues.lastEcommerceOrderTs;
+                setVisitorIdCookie(cookieVisitorIdValues);
+                setSessionCookie();
 
                 // tracker plugin hook
                 request += executePluginMethod(pluginMethod);
@@ -3159,7 +3244,7 @@ if (typeof Piwik !== 'object') {
             /*
              * Link or Download?
              */
-            function getLinkType(className, href, isInLink) {
+            function getLinkType(className, href, isInLink, hasDownloadAttribute) {
                 if (startsUrlWithTrackerUrl(href)) {
                     return 0;
                 }
@@ -3169,13 +3254,13 @@ if (typeof Piwik !== 'object') {
                     linkPattern = getClassesRegExp(configLinkClasses, 'link'),
 
                 // does file extension indicate that it is a download?
-                    downloadExtensionsPattern = new RegExp('\\.(' + configDownloadExtensions + ')([?&#]|$)', 'i');
+                    downloadExtensionsPattern = new RegExp('\\.(' + configDownloadExtensions.join('|') + ')([?&#]|$)', 'i');
 
                 if (linkPattern.test(className)) {
                     return 'link';
                 }
 
-                if (downloadPattern.test(className) || downloadExtensionsPattern.test(href)) {
+                if (hasDownloadAttribute || downloadPattern.test(className) || downloadExtensionsPattern.test(href)) {
                     return 'download';
                 }
 
@@ -3233,7 +3318,7 @@ if (typeof Piwik !== 'object') {
 
                 if (!scriptProtocol.test(sourceHref)) {
                     // track outlinks and all downloads
-                    var linkType = getLinkType(sourceElement.className, sourceHref, isSiteHostName(sourceHostName));
+                    var linkType = getLinkType(sourceElement.className, sourceHref, isSiteHostName(sourceHostName), query.hasNodeAttribute(sourceElement, 'download'));
 
                     if (linkType) {
                         return {
@@ -3844,6 +3929,8 @@ if (typeof Piwik !== 'object') {
                     }
                 }
             }
+
+
             function enableTrackOnlyVisibleContent (checkOnSroll, timeIntervalInMs, tracker) {
 
                 if (isTrackOnlyVisibleContentEnabled) {
@@ -3937,6 +4024,7 @@ if (typeof Piwik !== 'object') {
                     },
                     devicePixelRatio = (new RegExp('Mac OS X.*Safari/')).test(navigatorAlias.userAgent) ? windowAlias.devicePixelRatio || 1 : 1;
 
+                // detect browser features except IE < 11 (IE 11 user agent is no longer MSIE)
                 if (!((new RegExp('MSIE')).test(navigatorAlias.userAgent))) {
                     // general plugin detection
                     if (navigatorAlias.mimeTypes && navigatorAlias.mimeTypes.length) {
@@ -4004,6 +4092,7 @@ if (typeof Piwik !== 'object') {
              */
             detectBrowserFeatures();
             updateDomainHash();
+            setVisitorIdCookie();
 
 /*<DEBUG>*/
             /*
@@ -4060,9 +4149,6 @@ if (typeof Piwik !== 'object') {
                 getTrackedContentImpressions: function () {
                     return trackedContentImpressions;
                 },
-                getTrackerUrl: function () {
-                    return configTrackerUrl;
-                },
                 clearEnableTrackOnlyVisibleContent: function () {
                     isTrackOnlyVisibleContentEnabled = false;
                 },
@@ -4079,10 +4165,10 @@ if (typeof Piwik !== 'object') {
                 /**
                  * Get visitor ID (from first party cookie)
                  *
-                 * @return string Visitor ID in hexits (or null, if not yet known)
+                 * @return string Visitor ID in hexits (or empty string, if not yet known)
                  */
                 getVisitorId: function () {
-                    return configUserId.length ? sha1(configUserId).substr(0, 16) : (loadVisitorIdCookie())[1];
+                    return getValuesFromVisitorIdCookie().uuid;
                 },
 
                 /**
@@ -4091,6 +4177,8 @@ if (typeof Piwik !== 'object') {
                  * @return array
                  */
                 getVisitorInfo: function () {
+                    // Note: in a new method, we could return also return getValuesFromVisitorIdCookie()
+                    //       which returns named parameters rather than returning integer indexed array
                     return loadVisitorIdCookie();
                 },
 
@@ -4155,13 +4243,32 @@ if (typeof Piwik !== 'object') {
                     configTrackerUrl = trackerUrl;
                 },
 
+
+                /**
+                 * Returns the Piwik server URL
+                 * @returns string
+                 */
+                getTrackerUrl: function () {
+                    return configTrackerUrl;
+                },
+
+
+                /**
+                 * Returns the site ID
+                 *
+                 * @returns int
+                 */
+                getSiteId: function() {
+                    return configTrackerSiteId;
+                },
+
                 /**
                  * Specify the site ID
                  *
                  * @param int|string siteId
                  */
                 setSiteId: function (siteId) {
-                    configTrackerSiteId = siteId;
+                    setSiteId(siteId);
                 },
 
                 /**
@@ -4170,7 +4277,11 @@ if (typeof Piwik !== 'object') {
                  * @param string User ID
                  */
                 setUserId: function (userId) {
+                    if(!isDefined(userId) || !userId.length) {
+                        return;
+                    }
                     configUserId = userId;
+                    visitorUUID = hash(configUserId).substr(0, 16);
                 },
 
                 /**
@@ -4268,7 +4379,7 @@ if (typeof Piwik !== 'object') {
                 /**
                  * Set custom variable within this visit
                  *
-                 * @param int index
+                 * @param int index Custom variable slot ID from 1-5
                  * @param string name
                  * @param string value
                  * @param string scope Scope of Custom Variable:
@@ -4307,7 +4418,7 @@ if (typeof Piwik !== 'object') {
                 /**
                  * Get custom variable
                  *
-                 * @param int index
+                 * @param int index Custom variable slot ID from 1-5
                  * @param string scope Scope of Custom Variable: "visit" or "page" or "event"
                  */
                 getCustomVariable: function (index, scope) {
@@ -4337,7 +4448,7 @@ if (typeof Piwik !== 'object') {
                 /**
                  * Delete custom variable
                  *
-                 * @param int index
+                 * @param int index Custom variable slot ID from 1-5
                  */
                 deleteCustomVariable: function (index, scope) {
                     // Only delete if it was there already
@@ -4368,19 +4479,46 @@ if (typeof Piwik !== 'object') {
                 /**
                  * Set list of file extensions to be recognized as downloads
                  *
-                 * @param string extensions
+                 * @param string|array extensions
                  */
                 setDownloadExtensions: function (extensions) {
+                    if(isString(extensions)) {
+                        extensions = extensions.split('|');
+                    }
                     configDownloadExtensions = extensions;
                 },
 
                 /**
                  * Specify additional file extensions to be recognized as downloads
                  *
-                 * @param string extensions
+                 * @param string|array extensions  for example 'custom' or ['custom1','custom2','custom3']
                  */
                 addDownloadExtensions: function (extensions) {
-                    configDownloadExtensions += '|' + extensions;
+                    var i;
+                    if(isString(extensions)) {
+                        extensions = extensions.split('|');
+                    }
+                    for (i=0; i < extensions.length; i++) {
+                        configDownloadExtensions.push(extensions[i]);
+                    }
+                },
+
+                /**
+                 * Removes specified file extensions from the list of recognized downloads
+                 *
+                 * @param string|array extensions  for example 'custom' or ['custom1','custom2','custom3']
+                 */
+                removeDownloadExtensions: function (extensions) {
+                    var i, newExtensions = [];
+                    if(isString(extensions)) {
+                        extensions = extensions.split('|');
+                    }
+                    for (i=0; i < configDownloadExtensions.length; i++) {
+                        if (indexOfArray(extensions, configDownloadExtensions[i]) === -1) {
+                            newExtensions.push(configDownloadExtensions[i]);
+                        }
+                    }
+                    configDownloadExtensions = newExtensions;
                 },
 
                 /**
@@ -4525,8 +4663,12 @@ if (typeof Piwik !== 'object') {
                  * @param string domain
                  */
                 setCookieDomain: function (domain) {
-                    configCookieDomain = domainFixup(domain);
-                    updateDomainHash();
+                    var domainFixed = domainFixup(domain);
+
+                    if (isPossibleToSetCookieOnDomain(domainFixed)) {
+                        configCookieDomain = domainFixed;
+                        updateDomainHash();
+                    }
                 },
 
                 /**
@@ -5160,7 +5302,7 @@ if (typeof Piwik !== 'object') {
 
                 if (applyFirst[methodName] > 1) {
                     if (console !== undefined && console && console.error) {
-                        console.error('The method ' + methodName + ' is registered more than once in "_paq" variable. Only the last call has an effect. Please have a look at the multiple Piwik trackers documentation: http://developer.piwik.org/api-reference/tracking-javascript#multiple-piwik-trackers');
+                        console.error('The method ' + methodName + ' is registered more than once in "_paq" variable. Only the last call has an effect. Please have a look at the multiple Piwik trackers documentation: http://developer.piwik.org/guides/tracking-javascript-guide#multiple-piwik-trackers');
                     }
                 }
 
@@ -5201,7 +5343,13 @@ if (typeof Piwik !== 'object') {
              * @return Tracker
              */
             getTracker: function (piwikUrl, siteId) {
-                return new Tracker(piwikUrl, siteId, asyncTracker.getVisitorId());
+                if(!isDefined(siteId)) {
+                    siteId = this.getAsyncTracker().getSiteId();
+                }
+                if(!isDefined(piwikUrl)) {
+                    piwikUrl = this.getAsyncTracker().getTrackerUrl();
+                }
+                return new Tracker(piwikUrl, siteId);
             },
 
             /**

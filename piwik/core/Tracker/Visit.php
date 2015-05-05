@@ -11,7 +11,7 @@ namespace Piwik\Tracker;
 
 use Piwik\Common;
 use Piwik\Config;
-use Piwik\DataAccess\ArchiveInvalidator;
+use Piwik\Archive\ArchiveInvalidator;
 use Piwik\Date;
 use Piwik\Exception\UnexpectedWebsiteFoundException;
 use Piwik\Network\IPUtils;
@@ -53,6 +53,8 @@ class Visit implements VisitInterface
      */
     protected $userSettings;
     protected $visitorCustomVariables = array();
+
+    public static $dimensions;
 
     /**
      * @param Request $request
@@ -584,16 +586,18 @@ class Visit implements VisitInterface
 
     protected function getAllVisitDimensions()
     {
-        $dimensions = VisitDimension::getAllDimensions();
+        if (is_null(self::$dimensions)) {
+            self::$dimensions = VisitDimension::getAllDimensions();
 
-        $dimensionNames = array();
-        foreach($dimensions as $dimension) {
-            $dimensionNames[] = $dimension->getColumnName();
+            $dimensionNames = array();
+            foreach(self::$dimensions as $dimension) {
+                $dimensionNames[] = $dimension->getColumnName();
+            }
+
+            Common::printDebug("Following dimensions have been collected from plugins: " . implode(", ", $dimensionNames));
         }
 
-        Common::printDebug("Following dimensions have been collected from plugins: " . implode(", ", $dimensionNames));
-
-        return $dimensions;
+        return self::$dimensions;
     }
 
     private function getVisitStandardLength()

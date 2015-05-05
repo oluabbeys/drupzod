@@ -111,12 +111,12 @@ class Common
      */
     public static function isGoalPluginEnabled()
     {
-        return \Piwik\Plugin\Manager::getInstance()->isPluginActivated('Goals');
+        return Plugin\Manager::getInstance()->isPluginActivated('Goals');
     }
 
     public static function isActionsPluginEnabled()
     {
-        return \Piwik\Plugin\Manager::getInstance()->isPluginActivated('Actions');
+        return Plugin\Manager::getInstance()->isPluginActivated('Actions');
     }
 
     /**
@@ -379,9 +379,13 @@ class Common
      */
     private static function undoMagicQuotes($value)
     {
-        if (version_compare(PHP_VERSION, '5.4', '<') &&
-            get_magic_quotes_gpc()) {
+        static $shouldUndo;
 
+        if (!isset($shouldUndo)) {
+            $shouldUndo = version_compare(PHP_VERSION, '5.4', '<') && get_magic_quotes_gpc();
+        }
+
+        if ($shouldUndo) {
             $value = stripslashes($value);
         }
 
@@ -470,7 +474,7 @@ class Common
         }
 
         $value = self::sanitizeInputValues($requestArrayToUse[$varName]);
-        if (!is_null($varType)) {
+        if (isset($varType)) {
             $ok = false;
 
             if ($varType === 'string') {
@@ -531,7 +535,7 @@ class Common
     }
 
     /**
-     * Configureable hash() algorithm (defaults to md5)
+     * Configurable hash() algorithm (defaults to md5)
      *
      * @param string $str String to be hashed
      * @param bool $raw_output
@@ -638,26 +642,6 @@ class Common
     }
 
     /**
-     * Convert IP address (in network address format) to presentation format.
-     * This is a backward compatibility function for code that only expects
-     * IPv4 addresses (i.e., doesn't support IPv6).
-     *
-     * @see IP::N2P()
-     *
-     * This function does not support the long (or its string representation)
-     * returned by the built-in ip2long() function, from Piwik 1.3 and earlier.
-     *
-     * @deprecated 1.4
-     *
-     * @param string $ip IP address in network address format
-     * @return string
-     */
-    public static function long2ip($ip)
-    {
-        return IP::long2ip($ip);
-    }
-
-    /**
      * JSON encode wrapper
      * - missing or broken in some php 5.x versions
      *
@@ -733,14 +717,14 @@ class Common
     /**
      * Returns the list of parent classes for the given class.
      *
-     * @param  string    $klass   A class name.
+     * @param  string    $class   A class name.
      * @return string[]  The list of parent classes in order from highest ancestor to the descended class.
      */
-    public static function getClassLineage($klass)
+    public static function getClassLineage($class)
     {
-        $klasses = array_merge(array($klass), array_values(class_parents($klass, $autoload = false)));
+        $classes = array_merge(array($class), array_values(class_parents($class, $autoload = false)));
 
-        return array_reverse($klasses);
+        return array_reverse($classes);
     }
 
     /*
@@ -1097,7 +1081,7 @@ class Common
     /**
      * Returns the continent of a given country
      *
-     * @param string $country 2 letters isocode
+     * @param string $country 2 letters iso code
      *
      * @return string  Continent (3 letters code : afr, asi, eur, amn, ams, oce)
      */
@@ -1219,7 +1203,8 @@ class Common
             401 => 'Unauthorized',
             403 => 'Forbidden',
             404 => 'Not Found',
-            500 => 'Internal Server Error'
+            500 => 'Internal Server Error',
+            503 => 'Service Unavailable',
         );
 
         if (!array_key_exists($code, $messages)) {
@@ -1260,7 +1245,7 @@ class Common
      * Marks an orphaned object for garbage collection.
      *
      * For more information: {@link https://github.com/piwik/piwik/issues/374}
-     * @param $var The object to destroy.
+     * @param mixed $var The object to destroy.
      * @api
      */
     public static function destroy(&$var)
@@ -1280,6 +1265,11 @@ class Common
     {
         if (isset($GLOBALS['PIWIK_TRACKER_DEBUG']) && $GLOBALS['PIWIK_TRACKER_DEBUG']) {
 
+            if(!headers_sent()) {
+                // prevent XSS in tracker debug output
+                header('Content-type: text/plain');
+            }
+
             if (is_object($info)) {
                 $info = var_export($info, true);
             }
@@ -1288,11 +1278,11 @@ class Common
                 $info = Common::sanitizeInputValues($info);
                 $out = var_export($info, true);
                 foreach (explode("\n", $out) as $line) {
-                    Log::debug($line);
+                    echo $line . "\n";
                 }
             } else {
                 foreach (explode("\n", $info) as $line) {
-                    Log::debug(htmlspecialchars($line, ENT_QUOTES));
+                    echo $line . "\n";
                 }
             }
         }

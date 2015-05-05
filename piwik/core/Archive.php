@@ -8,9 +8,10 @@
  */
 namespace Piwik;
 
+use Piwik\Archive\Chunk;
 use Piwik\Archive\Parameters;
 use Piwik\ArchiveProcessor\Rules;
-use Piwik\DataAccess\ArchiveInvalidator;
+use Piwik\Archive\ArchiveInvalidator;
 use Piwik\DataAccess\ArchiveSelector;
 use Piwik\Period\Factory as PeriodFactory;
 
@@ -196,10 +197,9 @@ class Archive
      *                             or date range (ie, 'YYYY-MM-DD,YYYY-MM-DD').
      * @param bool|false|string $segment Segment definition or false if no segment should be used. {@link Piwik\Segment}
      * @param bool|false|string $_restrictSitesToLogin Used only when running as a scheduled task.
-     * @param bool $skipAggregationOfSubTables Whether the archive, when it is processed, should also aggregate all sub-tables
-     * @return Archive
+     * @return static
      */
-    public static function build($idSites, $period, $strDate, $segment = false, $_restrictSitesToLogin = false, $skipAggregationOfSubTables = false)
+    public static function build($idSites, $period, $strDate, $segment = false, $_restrictSitesToLogin = false)
     {
         $websiteIds = Site::getIdSitesFromIdSitesString($idSites, $_restrictSitesToLogin);
 
@@ -220,7 +220,7 @@ class Archive
         $idSiteIsAll    = $idSites == self::REQUEST_ALL_WEBSITES_FLAG;
         $isMultipleDate = Period::isMultiplePeriod($strDate, $period);
 
-        return Archive::factory($segment, $allPeriods, $websiteIds, $idSiteIsAll, $isMultipleDate, $skipAggregationOfSubTables);
+        return static::factory($segment, $allPeriods, $websiteIds, $idSiteIsAll, $isMultipleDate);
     }
 
     /**
@@ -242,11 +242,10 @@ class Archive
      * @param bool $isMultipleDate Whether multiple dates are being queried or not. If true, then
      *                             the result of querying functions will be indexed by period,
      *                             regardless of whether `count($periods) == 1`.
-     * @param bool $skipAggregationOfSubTables Whether the archive should skip aggregation of all sub-tables
      *
      * @return Archive
      */
-    public static function factory(Segment $segment, array $periods, array $idSites, $idSiteIsAll = false, $isMultipleDate = false, $skipAggregationOfSubTables = false)
+    public static function factory(Segment $segment, array $periods, array $idSites, $idSiteIsAll = false, $isMultipleDate = false)
     {
         $forceIndexedBySite = false;
         $forceIndexedByDate = false;
@@ -259,9 +258,9 @@ class Archive
             $forceIndexedByDate = true;
         }
 
-        $params = new Parameters($idSites, $periods, $segment, $skipAggregationOfSubTables);
+        $params = new Parameters($idSites, $periods, $segment);
 
-        return new Archive($params, $forceIndexedBySite, $forceIndexedByDate);
+        return new static($params, $forceIndexedBySite, $forceIndexedByDate);
     }
 
     /**
@@ -321,6 +320,8 @@ class Archive
      *                                to the subtable ID to return. If set to 'all', all subtables
      *                                of each requested report are returned.
      * @return array An array of appropriately indexed blob data.
+     *
+     * @deprecated since Piwik 2.12. Use one of the getDatable* methods instead.
      */
     public function getBlob($names, $idSubtable = null)
     {
@@ -353,6 +354,24 @@ class Archive
     {
         $data = $this->get($names, 'numeric');
         return $data->getDataTable($this->getResultIndices());
+    }
+
+    /**
+     * Similar to {@link getDataTableFromNumeric()} but merges all children on the created DataTable.
+     *
+     * This is the same as doing `$this->getDataTableFromNumeric()->mergeChildren()` but this way it is much faster.
+     *
+     * @return DataTable|DataTable\Map
+     *
+     * @internal Currently only used by MultiSites.getAll plugin. Feel free to remove internal tag if needed somewhere
+     *           else. If no longer needed by MultiSites.getAll please remove this method. If you need this to work in
+     *           a bit different way feel free to refactor as always.
+     */
+    public function getDataTableFromNumericAndMergeChildren($names)
+    {
+        $data  = $this->get($names, 'numeric');
+        $resultIndexes = $this->getResultIndices();
+        return $data->getMergedDataTable($resultIndexes);
     }
 
     /**
@@ -449,23 +468,19 @@ class Archive
      * @param string $segment @see {@link build()}
      * @param bool $expanded If true, loads all subtables. See {@link getDataTableExpanded()}
      * @param int|null $idSubtable See {@link getDataTableExpanded()}
-     * @param bool $skipAggregationOfSubTables Whether or not we should skip the aggregation of all sub-tables and only aggregate parent DataTable.
      * @param int|null $depth See {@link getDataTableExpanded()}
      * @throws \Exception
      * @return DataTable|DataTable\Map See {@link getDataTable()} and
      *                                 {@link getDataTableExpanded()} for more
      *                                 information
+     * @deprecated Since Piwik 2.12.0 Use Archive::createDataTableFromArchive() instead
      */
     public static function getDataTableFromArchive($name, $idSite, $period, $date, $segment, $expanded,
-                                                   $idSubtable = null, $skipAggregationOfSubTables = false, $depth = null)
+                                                   $idSubtable = null, $depth = null)
     {
         Piwik::checkUserHasViewAccess($idSite);
 
-        if ($skipAggregationOfSubTables && ($expanded || $idSubtable)) {
-            throw new \Exception("Not expected to skipAggregationOfSubTables when expanded=1 or idSubtable is set.");
-        }
-
-        $archive = Archive::build($idSite, $period, $date, $segment, $_restrictSitesToLogin = false, $skipAggregationOfSubTables);
+        $archive = Archive::build($idSite, $period, $date, $segment, $_restrictSitesToLogin = false);
         if ($idSubtable === false) {
             $idSubtable = null;
         }
@@ -481,9 +496,40 @@ class Archive
         return $dataTable;
     }
 
-    private function appendIdSubtable($recordName, $id)
+    /**
+     * Helper function that creates an Archive instance and queries for report data using
+     * query parameter data. API methods can use this method to reduce code redundancy.
+     *
+     * @param string $recordName The name of the report to return.
+     * @param int|string|array $idSite @see {@link build()}
+     * @param string $period @see {@link build()}
+     * @param string $date @see {@link build()}
+     * @param string $segment @see {@link build()}
+     * @param bool $expanded If true, loads all subtables. See {@link getDataTableExpanded()}
+     * @param bool $flat If true, loads all subtables and disabled all recursive filters.
+     * @param int|null $idSubtable See {@link getDataTableExpanded()}
+     * @param int|null $depth See {@link getDataTableExpanded()}
+     * @return DataTable|DataTable\Map
+     */
+    public static function createDataTableFromArchive($recordName, $idSite, $period, $date, $segment, $expanded = false, $flat = false, $idSubtable = null, $depth = null)
     {
-        return $recordName . "_" . $id;
+        if ($flat && !$idSubtable) {
+            $expanded = true;
+        }
+
+        $dataTable = self::getDataTableFromArchive($recordName, $idSite, $period, $date, $segment, $expanded, $idSubtable, $depth);
+
+        $dataTable->queueFilter('ReplaceColumnNames');
+
+        if ($expanded) {
+            $dataTable->queueFilterSubtables('ReplaceColumnNames');
+        }
+
+        if ($flat) {
+            $dataTable->disableRecursiveFilters();
+        }
+
+        return $dataTable;
     }
 
     private function getSiteIdsThatAreRequestedInThisArchiveButWereNotInvalidatedYet()
@@ -556,9 +602,8 @@ class Archive
      * @param null|int $idSubtable
      * @return Archive\DataCollection
      */
-    private function get($archiveNames, $archiveDataType, $idSubtable = null)
+    protected function get($archiveNames, $archiveDataType, $idSubtable = null)
     {
-
         if (!is_array($archiveNames)) {
             $archiveNames = array($archiveNames);
         }
@@ -567,13 +612,19 @@ class Archive
         if ($idSubtable !== null
             && $idSubtable != self::ID_SUBTABLE_LOAD_ALL_SUBTABLES
         ) {
-            foreach ($archiveNames as &$name) {
-                $name = $this->appendIdsubtable($name, $idSubtable);
+            // this is also done in ArchiveSelector. It should be actually only done in ArchiveSelector but DataCollection
+            // does require to have the subtableId appended. Needs to be changed in refactoring to have it only in one
+            // place.
+            $dataNames = array();
+            foreach ($archiveNames as $name) {
+                $dataNames[] = ArchiveSelector::appendIdsubtable($name, $idSubtable);
             }
+        } else {
+            $dataNames = $archiveNames;
         }
 
         $result = new Archive\DataCollection(
-            $archiveNames, $archiveDataType, $this->params->getIdSites(), $this->params->getPeriods(), $defaultRow = null);
+            $dataNames, $archiveDataType, $this->params->getIdSites(), $this->params->getPeriods(), $defaultRow = null);
 
         $archiveIds = $this->getArchiveIds($archiveNames);
 
@@ -581,22 +632,21 @@ class Archive
             return $result;
         }
 
-        $loadAllSubtables = $idSubtable == self::ID_SUBTABLE_LOAD_ALL_SUBTABLES;
-        $archiveData = ArchiveSelector::getArchiveData($archiveIds, $archiveNames, $archiveDataType, $loadAllSubtables);
+        $archiveData = ArchiveSelector::getArchiveData($archiveIds, $archiveNames, $archiveDataType, $idSubtable);
+
+        $isNumeric = $archiveDataType == 'numeric';
+
         foreach ($archiveData as $row) {
             // values are grouped by idsite (site ID), date1-date2 (date range), then name (field name)
-            $idSite = $row['idsite'];
-            $periodStr = $row['date1'] . "," . $row['date2'];
+            $periodStr = $row['date1'] . ',' . $row['date2'];
 
-            if ($archiveDataType == 'numeric') {
-                $value = $this->formatNumericValue($row['value']);
+            if ($isNumeric) {
+                $row['value'] = $this->formatNumericValue($row['value']);
             } else {
-                $value = $this->uncompress($row['value']);
-                $result->addMetadata($idSite, $periodStr, 'ts_archived', $row['ts_archived']);
+                $result->addMetadata($row['idsite'], $periodStr, 'ts_archived', $row['ts_archived']);
             }
 
-            $resultRow = & $result->get($idSite, $periodStr);
-            $resultRow[$row['name']] = $value;
+            $result->set($row['idsite'], $periodStr, $row['name'], $row['value']);
         }
 
         return $result;
@@ -607,6 +657,9 @@ class Archive
      * queried. This function will use the idarchive cache if it has the right data,
      * query archive tables for IDs w/o launching archiving, or launch archiving and
      * get the idarchive from ArchiveProcessor instances.
+     *
+     * @param string $archiveNames
+     * @return array
      */
     private function getArchiveIds($archiveNames)
     {
@@ -698,7 +751,7 @@ class Archive
     private function cacheArchiveIdsWithoutLaunching($plugins)
     {
         $idarchivesByReport = ArchiveSelector::getArchiveIds(
-            $this->params->getIdSites(), $this->params->getPeriods(), $this->params->getSegment(), $plugins, $this->params->isSkipAggregationOfSubTables());
+            $this->params->getIdSites(), $this->params->getPeriods(), $this->params->getSegment(), $plugins);
 
         // initialize archive ID cache for each report
         foreach ($plugins as $plugin) {
@@ -726,8 +779,7 @@ class Archive
                     $this->params->getIdSites(),
                     $this->params->getSegment(),
                     $this->getPeriodLabel(),
-                    $plugin,
-                    $this->params->isSkipAggregationOfSubTables()
+                    $plugin
         );
     }
 
@@ -778,11 +830,6 @@ class Archive
         return round((float)$value, 2);
     }
 
-    private function uncompress($data)
-    {
-        return @gzuncompress($data);
-    }
-
     /**
      * Initializes the archive ID cache ($this->idarchives) for a particular 'done' flag.
      *
@@ -794,6 +841,8 @@ class Archive
      * If this  function is not called, then periods with no visits will not add
      * entries to the cache. If the archive is used again, SQL will be executed to
      * try and find the archive IDs even though we know there are none.
+     *
+     * @param string $doneFlag
      */
     private function initializeArchiveIdCache($doneFlag)
     {
@@ -863,7 +912,7 @@ class Archive
      */
     private function prepareArchive(array $archiveGroups, Site $site, Period $period)
     {
-        $parameters = new ArchiveProcessor\Parameters($site, $period, $this->params->getSegment(), $this->params->isSkipAggregationOfSubTables());
+        $parameters = new ArchiveProcessor\Parameters($site, $period, $this->params->getSegment());
         $archiveLoader = new ArchiveProcessor\Loader($parameters);
 
         $periodString = $period->getRangeString();

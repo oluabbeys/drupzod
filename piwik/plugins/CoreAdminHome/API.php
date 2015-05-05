@@ -10,17 +10,28 @@ namespace Piwik\Plugins\CoreAdminHome;
 
 use Exception;
 use Piwik\Container\StaticContainer;
-use Piwik\DataAccess\ArchiveInvalidator;
+use Piwik\Archive\ArchiveInvalidator;
 use Piwik\Db;
 use Piwik\Piwik;
 use Piwik\Scheduler\Scheduler;
 use Piwik\Site;
+use Psr\Log\LoggerInterface;
 
 /**
  * @method static \Piwik\Plugins\CoreAdminHome\API getInstance()
  */
 class API extends \Piwik\Plugin\API
 {
+    /**
+     * @var Scheduler
+     */
+    private $scheduler;
+
+    public function __construct(Scheduler $scheduler)
+    {
+        $this->scheduler = $scheduler;
+    }
+
     /**
      * Will run all scheduled tasks due to run at this time.
      *
@@ -31,10 +42,7 @@ class API extends \Piwik\Plugin\API
     {
         Piwik::checkUserHasSuperUserAccess();
 
-        /** @var Scheduler $scheduler */
-        $scheduler = StaticContainer::getContainer()->get('Piwik\Scheduler\Scheduler');
-
-        return $scheduler->run();
+        return $this->scheduler->run();
     }
 
     /**

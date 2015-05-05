@@ -15,6 +15,7 @@ use Piwik\Piwik;
 use Piwik\SettingsPiwik;
 use Piwik\Site;
 use Piwik\Tracker\TrackerCodeGenerator;
+use Piwik\Url;
 use Piwik\View;
 
 /**
@@ -27,6 +28,8 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      */
     public function index()
     {
+        Piwik::checkUserHasSomeAdminAccess();
+
         return $this->renderTemplate('index');
     }
 
@@ -117,5 +120,21 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         header('Content-type: text/php');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         return file_get_contents($path . $filename);
+    }
+
+    public function siteWithoutData()
+    {
+        $javascriptGenerator = new TrackerCodeGenerator();
+        $piwikUrl = Url::getCurrentUrlWithoutFileName();
+
+        return $this->renderTemplate('siteWithoutData', array(
+            'siteName'     => $this->site->getName(),
+            'trackingHelp' => $this->renderTemplate('_displayJavascriptCode', array(
+                'displaySiteName' => Common::unsanitizeInputValue($this->site->getName()),
+                'jsTag'           => $javascriptGenerator->generate($this->idSite, $piwikUrl),
+                'idSite'          => $this->idSite,
+                'piwikUrl'        => $piwikUrl,
+            )),
+        ));
     }
 }

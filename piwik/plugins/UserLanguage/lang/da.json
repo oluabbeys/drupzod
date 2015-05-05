@@ -186,6 +186,6 @@
         "Language_zh": "Kinesisk",
         "Language_zu": "Zulu",
         "LanguageCode": "Sprogkode",
-        "PluginDescription": "Rapporter om sprogindstillinger for dine brugere."
+        "PluginDescription": "Rapporter sproget, som anvendes af de besøgendes browsere."
     }
 }

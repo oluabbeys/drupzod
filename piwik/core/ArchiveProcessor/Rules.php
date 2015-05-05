@@ -10,7 +10,6 @@ namespace Piwik\ArchiveProcessor;
 
 use Exception;
 use Piwik\Config;
-use Piwik\Container\StaticContainer;
 use Piwik\DataAccess\ArchiveWriter;
 use Piwik\Date;
 use Piwik\Log;
@@ -46,13 +45,12 @@ class Rules
      * @param Segment $segment
      * @param string $periodLabel
      * @param string $plugin
-     * @param bool $isSkipAggregationOfSubTables
      * @return string
      */
-    public static function getDoneStringFlagFor(array $idSites, $segment, $periodLabel, $plugin, $isSkipAggregationOfSubTables)
+    public static function getDoneStringFlagFor(array $idSites, $segment, $periodLabel, $plugin)
     {
         if (!self::shouldProcessReportsAllPlugins($idSites, $segment, $periodLabel)) {
-            return self::getDoneFlagArchiveContainsOnePlugin($segment, $plugin, $isSkipAggregationOfSubTables);
+            return self::getDoneFlagArchiveContainsOnePlugin($segment, $plugin);
         }
         return self::getDoneFlagArchiveContainsAllPlugins($segment);
     }
@@ -83,31 +81,14 @@ class Rules
         return $segmentsToProcess;
     }
 
-    public static function getDoneFlagArchiveContainsOnePlugin(Segment $segment, $plugin, $isSkipAggregationOfSubTables = false)
+    public static function getDoneFlagArchiveContainsOnePlugin(Segment $segment, $plugin)
     {
-        $partial = self::isFlagArchivePartial($plugin, $isSkipAggregationOfSubTables);
-        return 'done' . $segment->getHash() . '.' . $plugin . $partial ;
+        return 'done' . $segment->getHash() . '.' . $plugin ;
     }
 
     private static function getDoneFlagArchiveContainsAllPlugins(Segment $segment)
     {
         return 'done' . $segment->getHash();
-    }
-
-    /**
-     * @param $plugin
-     * @param $isSkipAggregationOfSubTables
-     * @return string
-     */
-    private static function isFlagArchivePartial($plugin, $isSkipAggregationOfSubTables)
-    {
-        $partialArchive = '';
-        if ($plugin != "VisitsSummary" // VisitsSummary is always called when segmenting and should not have its own .partial archive
-            && $isSkipAggregationOfSubTables
-        ) {
-            $partialArchive = '.partial';
-        }
-        return $partialArchive;
     }
 
     /**
@@ -117,7 +98,7 @@ class Rules
      * @param $segment
      * @return array
      */
-    public static function getDoneFlags(array $plugins, Segment $segment, $isSkipAggregationOfSubTables)
+    public static function getDoneFlags(array $plugins, Segment $segment)
     {
         $doneFlags = array();
         $doneAllPlugins = self::getDoneFlagArchiveContainsAllPlugins($segment);
@@ -125,55 +106,10 @@ class Rules
 
         $plugins = array_unique($plugins);
         foreach ($plugins as $plugin) {
-            $doneOnePlugin = self::getDoneFlagArchiveContainsOnePlugin($segment, $plugin, $isSkipAggregationOfSubTables);
+            $doneOnePlugin = self::getDoneFlagArchiveContainsOnePlugin($segment, $plugin);
             $doneFlags[$plugin] = $doneOnePlugin;
         }
         return $doneFlags;
-    }
-
-    /**
-     * Returns false if we should not purge data for this month,
-     * or returns a timestamp indicating outdated archives older than this timestamp (processed before) can be purged.
-     *
-     * Note: when calling this function it is assumed that the callee will purge the outdated archives afterwards.
-     *
-     * @param \Piwik\Date $date
-     * @return int|bool  Outdated archives older than this timestamp should be purged
-     */
-    public static function shouldPurgeOutdatedArchives(Date $date)
-    {
-        $key = self::FLAG_TABLE_PURGED . "blob_" . $date->toString('Y_m');
-        $timestamp = Option::get($key);
-
-        // we shall purge temporary archives after their timeout is finished, plus an extra 6 hours
-        // in case archiving is disabled or run once a day, we give it this extra time to run
-        // and re-process more recent records...
-        $temporaryArchivingTimeout = self::getTodayArchiveTimeToLive();
-        $hoursBetweenPurge = 6;
-        $purgeEveryNSeconds = max($temporaryArchivingTimeout, $hoursBetweenPurge * 3600);
-
-        // we only delete archives if we are able to process them, otherwise, the browser might process reports
-        // when &segment= is specified (or custom date range) and would below, delete temporary archives that the
-        // browser is not able to process until next cron run (which could be more than 1 hour away)
-        if (self::isRequestAuthorizedToArchive()
-            && (!$timestamp
-                || $timestamp < time() - $purgeEveryNSeconds)
-        ) {
-            Option::set($key, time());
-
-            if (self::isBrowserTriggerEnabled()) {
-                // If Browser Archiving is enabled, it is likely there are many more temporary archives
-                // We delete more often which is safe, since reports are re-processed on demand
-                $purgeArchivesOlderThan = Date::factory(time() - 2 * $temporaryArchivingTimeout)->getDateTime();
-            } else {
-                // If cron core:archive command is building the reports, we should keep all temporary reports from today
-                $purgeArchivesOlderThan = Date::factory('yesterday')->getDateTime();
-            }
-            return $purgeArchivesOlderThan;
-        }
-
-        Log::info("Purging temporary archives: skipped.");
-        return false;
     }
 
     public static function getMinTimeProcessedForTemporaryArchive(
@@ -341,5 +277,4 @@ class Rules
 
         return $possibleValues;
     }
-
 }

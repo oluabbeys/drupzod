@@ -12,7 +12,6 @@
         "DistinctSearchEngines": "унікальні пошукові машини",
         "DistinctWebsites": "унікальні веб-сайти",
         "Keywords": "Ключові слова",
-        "PluginDescription": "Звіти та дані реферерів: пошукові машини, ключові слова, веб-сайти, відслідковування кампаній, прямі заходи.",
         "Referrers": "Реферер",
         "SearchEngines": "Пошукові системи",
         "SubmenuSearchEngines": "Пошукові системи і ключові слова",
@@ -23,7 +22,7 @@
         "TypeSearchEngines": "%s з пошукових систем",
         "TypeWebsites": "%s з веб-сайтів",
         "UsingNDistinctUrls": "(використовуючи %s унікальні URL)",
-        "Websites": "Веб-сайти",
+        "Websites": "Сайти",
         "WidgetExternalWebsites": "Список зовнішніх веб-сайтів"
     }
 }

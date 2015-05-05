@@ -89,10 +89,8 @@ class IniReader
         if ($this->useNativeFunction) {
             $array = $this->readWithNativeFunction($ini);
         } else {
-            $array = $this->readWithAlternativeImplementation($ini, true);
+            $array = $this->readWithAlternativeImplementation($ini);
         }
-
-        $array = $this->decode($array, $array);
 
         return $array;
     }
@@ -221,7 +219,9 @@ class IniReader
             }
         }
 
-        return $result + $globals;
+        $finalResult = $result + $globals;
+
+        return $this->decode($finalResult, $finalResult);
     }
 
     /**
@@ -274,7 +274,7 @@ class IniReader
         $value = $this->decodeBoolean($value, $rawValue);
         $value = $this->decodeNull($value, $rawValue);
 
-        if (is_numeric($value)) {
+        if (is_numeric($value) && $this->noLossWhenCastToInt($value)) {
             return $value + 0;
         }
 
@@ -298,5 +298,10 @@ class IniReader
             return null;
         }
         return $value;
+    }
+
+    private function noLossWhenCastToInt($value)
+    {
+        return (string) ($value + 0) === $value;
     }
 }

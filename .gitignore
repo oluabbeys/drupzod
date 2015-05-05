@@ -10,12 +10,20 @@ sites/*/private
 #sites/default/files
 #sites/default/private
 
+localhost (2).sql
+
+localhost (3).sql
+softver.txt
 
 # Directories
 solr-4.5.0.zip
 koha-latest.tar.gz
 stage/
+stage1/
+stage1.zip
+stage1 (3).zip
 stageb/
+
 sites/all/modules/quizx
 hr/
 intranet/
