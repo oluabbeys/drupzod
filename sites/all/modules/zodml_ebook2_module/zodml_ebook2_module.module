@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the zodml-ebook-module feature.
+ */
+
+include_once 'zodml_ebook2_module.features.inc';

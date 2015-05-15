@@ -1181,7 +1181,20 @@ color:#ff9900;}
 }
 /*Secondary school end */
 
+/* ebook start */
 
+.ebook-category-title{
+margin: 30px 0 5px 0;
+text-align:center;
+font: bold 14px/20px Tahoma;
+
+}
+.ebook-category-download, .ebook-category-image{
+margin: 5px 0;
+text-align:center;
+}
+
+/*ebook end */
 
 /* @media all and (max-width: 500px) { */
 /* global */
