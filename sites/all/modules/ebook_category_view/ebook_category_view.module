@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the ebook category view feature.
+ */
+
+include_once 'ebook_category_view.features.inc';
