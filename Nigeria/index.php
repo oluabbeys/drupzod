@@ -1,4 +1,6 @@
 <?php 
+   header( 'Location: http://zodml.org/discover-nigeria' ) ;  
+?><?php 
 								ini_set("display_errors", "off");
 								include_once("scripts/config.php");
 								$sql2 = mysql_query("SELECT * FROM contentsupdate WHERE id=16");
