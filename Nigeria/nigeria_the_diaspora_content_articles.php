@@ -1,4 +1,7 @@
 <?php 
+   header( 'Location: http://zodml.org/discover-nigeria/people' ) ;  
+?>
+<?php 
 include("scripts/config.php");
 //Getting the value being passed on from people categories page
 if(isset($_GET['article_id'])){

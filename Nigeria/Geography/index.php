@@ -1,4 +1,6 @@
 <?php 
+   header( 'Location: http://zodml.org/discover-nigeria/states' ) ;  
+?><?php 
 ini_set('display_errors', 'off');
 include("../scripts/config.php");
 

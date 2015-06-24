@@ -1,7 +1,3 @@
-<?php
-
-header("location:http://zodml.org/Nigeria/");
-
-
-
+<?php 
+   header( 'Location: http://zodml.org/discover-nigeria' ) ;  
 ?>

@@ -1,3 +1,6 @@
+<?php 
+   header( 'Location: http://zodml.org/discover-nigeria/heritage-and-culture' ) ;  
+?>
 <?php
 //ini_set('display_errors','off');
 function myTruncate($string, $limit, $break=".", $pad="....") { 

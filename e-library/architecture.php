@@ -1,3 +1,4 @@
+<?php  header( 'Location: http://zodml.org/elibrary/architecture' ) ;  ?>
 <?php
 include("../Nigeria/scripts/config2.php");
 $per_page = 10; 
@@ -132,7 +133,8 @@ woopra.track();
 </script>
 <!-- End of Woopra Code -->
 
-<!-- AddThis Button BEGIN -->
+<!-- 
+ Button BEGIN -->
 <div class="addthis_toolbox addthis_floating_style addthis_32x32_style" style="right:25px;top:25px;">
 <a class="addthis_button_twitter"></a>
 <a class="addthis_button_facebook"></a>

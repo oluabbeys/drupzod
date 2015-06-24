@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the secondary school homepage feature.
- */
-
-include_once 'secondary_school_homepage.features.inc';

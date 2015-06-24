@@ -1,3 +1,4 @@
+<?php  header( 'Location: http://zodml.org/elibrary/children' ) ;  ?>
 <?php
 include("../Nigeria/scripts/config2.php");
 $per_page = 10; 

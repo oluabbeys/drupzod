@@ -1,3 +1,4 @@
+<?php  header( 'Location: http://www.zodml.org/elibrary/sociology-and-anthropology' ) ;  ?>
 <?php
 include("../Nigeria/scripts/config2.php");
 $per_page = 10; 

@@ -1,3 +1,6 @@
+<?php 
+   header( 'Location: http://zodml.org/discover-nigeria' ) ;  
+?>
 <?php
 //ini_set('display_errors','off');
 
