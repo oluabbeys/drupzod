@@ -160,18 +160,7 @@ margin: 10px 0 0 0;
 
 
 
-#block-views-main-home-side-view-block .odd img
-{
- padding:0;
 
- margin: 10px 10px 0 0px !important; 
-}
-
-#block-views-main-home-side-view-block .even img
-{
- padding:0; 
- margin: 10px 0px 0 0 !important;
- }
 #block-views-welcom-view-block{
  padding:0; 
 margin: 10px 0 0 0;
@@ -771,6 +760,10 @@ margin : 10px 0;}
 
 .view-dn-state-front-ads .views-field-field-landing-page-image{
 margin : 0 0 10px 0;}
+
+.view-id-call_to_action{
+margin : 10px 0 0 0;}
+
 
 .context-discover-nigeria .pager{
 margin : 0 0 10px 0;
