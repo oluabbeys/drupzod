@@ -69,12 +69,13 @@ function quiz_question_theme() {
 function quiz_question_node_info() {
   $node_info = array();
   foreach (_quiz_question_get_implementations(NULL, TRUE) as $type => $definition) {
-    $node_info[$type] = array(
-      'name' => $definition['name'],
-      'base' => 'quiz_question',
-      'description' => $definition['description']
-    );
-    //$info[$type] = $node_info + $defaults;
+    if (!isset($definition['node']) || $definition['node']) {
+      $node_info[$type] = array(
+        'name' => $definition['name'],
+        'base' => 'quiz_question',
+        'description' => $definition['description']
+      );
+    }
   }
   return $node_info;
 }
@@ -116,10 +117,13 @@ function quiz_question_access_to_score($vid, $rid) {
 /**
  * Implements hook_form().
  */
-function quiz_question_form(&$node, &$form_state) {
-  $question = _quiz_question_get_instance($node);
-  $form = $question->getNodeForm($form_state);
-  return $form;
+function quiz_question_form_node_form_alter(&$form, &$form_state) {
+  $type = $form['#node']->type;
+  if (array_key_exists($type, _quiz_question_get_implementations())) {
+    $question = _quiz_question_get_instance($form['#node']);
+    $quiz_question_form = $question->getNodeForm($form_state);
+    $form = array_merge($quiz_question_form, $form);
+  }
 }
 
 /**
@@ -143,7 +147,7 @@ function quiz_question_answering_form($form, $form_state, $node, $include_nid_in
 
   $form['#attributes']['class'] = array('answering-form');
 
-  $is_last = _quiz_is_last_question();
+  $is_last = _quiz_get_num_questions_left() < 2;
   $form['navigation']['#theme'] = 'quiz_question_navigation_form';
   if ($quiz->mark_doubtful) {
     $form['is_doubtful'] = array(
@@ -178,19 +182,22 @@ function quiz_question_answering_form($form, $form_state, $node, $include_nid_in
     '#type' => 'submit',
     '#value' => $is_last ? t('Finish') : t('Next'),
   );
-  
-  if ($is_last) {
-  	$form['#attributes']['class'][] = 'confirm';
-  	$form['#attributes']['data-confirm-message'] = t('By proceeding you won\'t be able to go back and edit your answers');
-  	$form['#attached'] = array(
+
+  if ($is_last && $quiz->backwards_navigation && !$quiz->repeat_until_correct) {
+    // Display a confirmation dialogue if this is the last question and a user
+    // is able to navigate backwards but not forced to answer correctly.
+    $form['#attributes']['class'][] = 'quiz-answer-confirm';
+    $form['#attributes']['data-confirm-message'] = t("By proceeding you won't be able to go back and edit your answers.");
+    $form['#attached'] = array(
       'js' => array(drupal_get_path('module', 'quiz') . '/theme/quiz_confirm.js'),
-  	);
+    );
   }
   if ($quiz->allow_skipping) {
     $form['navigation']['op']  = array(
       '#type' => 'submit',
       '#value' => $is_last ? t('Leave blank and finish') : t('Leave blank'),
       '#attributes' => array('class' => array('q-skip-button')),
+      '#access' => ($node->type == 'quiz_directions') ? FALSE : TRUE,
     );
     if ($quiz->allow_jumping) {
       $form['jump_to_question'] = array(
@@ -199,6 +206,17 @@ function quiz_question_answering_form($form, $form_state, $node, $include_nid_in
       );
     }
   }
+
+  // Add hidden next button as the first button, so it is the default for the form
+  $form['navigation']['submit-hidden'] = $form['navigation']['submit'];
+  $form['navigation']['submit-hidden']['#weight'] = -20;
+
+  // Add a hidden form element with the default operation to take if the form is
+  // submitted with the enter key in IE 8 or other browser that don't submit a default
+  // button in this case.
+  $form['navigation']['default_submit'] = $form['navigation']['submit'];
+  $form['navigation']['default_submit']['#type'] = 'hidden';
+
   return $form;
 }
 
@@ -234,6 +252,9 @@ function quiz_question_evaluate_question($question, $result_id, $answer = NULL) 
   if (empty($answer) && isset($_POST['tries'])) {
     // FIXME this use of POST array is hacky. We will try to use FAPI mor accurately in Quiz 5.x
     $answer = $_POST['tries'];
+  }
+  if (empty($answer) && isset($_FILES['files']['type']['tries']) && !empty($_FILES['files']['type']['tries'])) {
+    $answer = $_FILES;
   }
   unset($_POST['tries']);
   $response = _quiz_question_response_get_instance($result_id, $question, $answer);
@@ -412,7 +433,7 @@ function quiz_question_config($form, $context) {
   // Go through all question types and merge their config forms
   foreach ($q_types as $type => $values) {
     $function = $type . '_config';
-    if ($admin_form = $function()) {
+    if (function_exists($function) && $admin_form = $function()) {
       $form[$type] = $admin_form;
       $form[$type]['#type'] = 'fieldset';
       $form[$type]['#title'] = $values['name'];
@@ -470,6 +491,12 @@ function quiz_question_node_insert($node) {
   if ($node->type == 'quiz') {
     quiz_question_refresh_latest_quizzes($node->nid);
   }
+  if (array_key_exists($node->type, _quiz_question_get_implementations())) {
+    _quiz_question_get_instance($node)->save(TRUE);
+    if (isset($node->quiz_nid) && $node->quiz_nid > 0) {
+      quiz_question_refresh_latest_quizzes($node->quiz_nid);
+    }
+  }
 }
 
 /**
@@ -479,6 +506,9 @@ function quiz_question_node_update($node) {
   // Make sure the latest quizzes table is maintained when a quiz changes
   if ($node->type == 'quiz') {
     quiz_question_refresh_latest_quizzes($node->nid);
+  }
+  if (array_key_exists($node->type, _quiz_question_get_implementations())) {
+    _quiz_question_get_instance($node)->save();
   }
 }
 
@@ -490,15 +520,8 @@ function quiz_question_node_delete($node) {
   if ($node->type == 'quiz') {
     quiz_question_remove_latest_quizzes($node->nid);
   }
-}
-
-/**
- * Implements hook_insert().
- */
-function quiz_question_insert(stdClass $node) {
-  _quiz_question_get_instance($node)->save(TRUE);
-  if (isset($node->quiz_nid) && $node->quiz_nid > 0) {
-    quiz_question_refresh_latest_quizzes($node->quiz_nid);
+  if (array_key_exists($node->type, _quiz_question_get_implementations())) {
+    _quiz_delete_question($node, FALSE);
   }
 }
 
@@ -515,26 +538,14 @@ function quiz_question_view($node, $view_mode) {
     return $node;
   }
   $content = '';
-
-  if (_quiz_is_taking_context()) {
-    /*
-     * @todo: I see no reason why this should be a part of view anymore.
-     * In quiz 5 we should stop using hook_view to view the answering form
-     */
-    $form = drupal_get_form('quiz_question_answering_form', $node);
-    $form_markup = drupal_render($form);
-
-    if (!empty($form_markup)) {
-      $node->content['body']['#markup'] = $form_markup;
+  if (!_quiz_is_taking_context()) {
+    switch ($view_mode) {
+      case 'teaser':
+        $node->content['question_teaser'] = _quiz_question_teaser_content($node);
+        break;
+      default:
+        $content = _quiz_question_get_instance($node, TRUE)->getNodeView();
     }
-  }
-  elseif ($view_mode == 'teaser') {
-    $node->content['question_teaser'] = _quiz_question_teaser_content($node);
-  }
-  else {
-    // normal node view
-    //$question = _quiz_question_get_instance($node, TRUE);
-    $content = _quiz_question_get_instance($node, TRUE)->getNodeView();
   }
 
   // put it into the node->content
@@ -544,18 +555,24 @@ function quiz_question_view($node, $view_mode) {
   return $node;
 }
 
-/**
- * Implements hook_update().
- */
-function quiz_question_update($node) {
-  _quiz_question_get_instance($node)->save();
-}
+function quiz_question_node_view($node) {
+  if (_quiz_is_taking_context() && array_key_exists($node->type, _quiz_question_get_implementations())) {
+    if (empty($node->no_answer_form)) {
+      /*
+       * @todo: I see no reason why this should be a part of view anymore.
+       * In quiz 5 we should stop using hook_view to view the answering form
+       */
+      $form = drupal_get_form('quiz_question_answering_form', $node);
+      $form_markup = drupal_render($form);
 
-/**
- * Implements hook_delete().
- */
-function quiz_question_delete(&$node) {
-  _quiz_delete_question($node, FALSE);
+      if (!empty($form_markup)) {
+        $node->content['question_form'] = array(
+          '#markup' => $form_markup,
+          '#weight' => 30,
+        );
+      }
+    }
+  }
 }
 
 /**
@@ -921,5 +938,53 @@ function quiz_question_add_body_field($type) {
   $instance = field_read_instance('node', 'body', $type);
   $instance['widget']['weight'] = -10;
   $instance['widget']['settings']['rows'] = 6;
+
+  // Make the question body visible by default for the question view mode
+  $instance['display']['question'] = array(
+    'label' => 'hidden',
+    'type' => 'text_default',
+    'weight' => 1,
+    'settings' => array(),
+    'module' => 'text',
+  );
+
   field_update_instance($instance);
+}
+
+/**
+ * Implements hook_node_access_records().
+ */
+function quiz_question_node_access_records($node) {
+  $grants = array();
+  // Restricting view access to question nodes outside quizzes.
+  $question_types = _quiz_question_get_implementations();
+  $question_types = array_keys($question_types);
+  if (in_array($node->type, $question_types)) {
+    // This grant is for users having 'view quiz question outside of a quiz'
+    // permission. We set a priority of 2 because OG has a 1 priority and we
+    // want to get around it.
+    $grants[] = array(
+      'realm' => 'quiz_question',
+      'gid' => 1,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 2,
+    );
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_node_grants().
+ */
+function quiz_question_node_grants($account, $op) {
+  $grants = array();
+  if ($op == 'view') {
+    if (user_access('view quiz question outside of a quiz')) {
+      // Granting view access
+      $grants['quiz_question'][] = 1;
+    }
+  }
+  return $grants;
 }

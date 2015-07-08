@@ -761,7 +761,11 @@ margin : 10px 0;}
 .view-dn-state-front-ads .views-field-field-landing-page-image{
 margin : 0 0 10px 0;}
 
-.view-id-call_to_action{
+//for local display
+.view-id-call_to_action {
+margin : 10px 0 0 0;}
+
+#block-views-30f4c530441058ee083ca0dbbdb0590d img{
 margin : 10px 0 0 0;}
 
 

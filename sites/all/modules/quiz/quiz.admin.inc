@@ -632,7 +632,9 @@ function _quiz_categorized_update_terms(&$form, &$form_state) {
         $existing['nid'] = $form_state['values']['nid'];
         $existing['vid'] = $form_state['values']['vid'];
         $existing['tid'] = $key;
-        $existing['weight'] = 1;
+        if (empty($existing['weight'])) {
+          $existing['weight'] = 1;
+        }
         $changed[] = $form[$key]['name']['#markup'];
         drupal_write_record('quiz_terms', $existing, array('vid', 'tid'));
         break;
@@ -1267,7 +1269,7 @@ function _quiz_question_browser_form(&$hidden_questions, $questions, $form_state
   $query->fields('u', array('name'));
   $query->leftJoin('users', 'u', 'n.uid = u.uid');
   $query->condition('type', array_keys($question_types), 'IN');
-  $query->condition('n.language', $quiz->language, '=');
+  $query->condition('n.language', array($quiz->language, LANGUAGE_NONE));
   if (count($child_nid)) {
     $query->condition('nid', $child_nid, 'NOT IN');
   }
@@ -1809,6 +1811,7 @@ function theme_quiz_node_form($variables) {
  * @ingroup themeable
  */
 function theme_quiz_admin_summary($variables) {
+  global $user;
   $quiz = $variables['quiz'];
   $questions = $variables['questions'];
   $score = $variables['score'];
@@ -1835,7 +1838,8 @@ function theme_quiz_admin_summary($variables) {
 
   // Get the feedback for all questions.
   require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'quiz') . '/quiz.pages.inc';
-  $report_form = drupal_get_form('quiz_report_form', $questions, TRUE, TRUE, TRUE);
+  $allow_scoring = quiz_allow_score_access($quiz);
+  $report_form = drupal_get_form('quiz_report_form', $questions, TRUE, TRUE, $allow_scoring);
   $output .= drupal_render($report_form);
   return $output;
 }

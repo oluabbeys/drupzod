@@ -75,6 +75,61 @@ function quiz_views_api() {
 }
 
 /**
+ * Implements hook_ctools_plugin_directory() to let the system know
+ * where our task and task_handler plugins are.
+ */
+function quiz_ctools_plugin_directory($owner, $plugin_type) {
+  if ($owner == 'page_manager') {
+    return 'plugins/page_manager/' . $plugin_type;
+  }
+  if ($owner == 'ctools' && $plugin_type == 'content_types') {
+    return 'plugins/content_types';
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function quiz_ctools_plugin_api($module, $api) {
+
+  if ($module == 'page_manager' && $api == 'pages_default') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function quiz_entity_info_alter(&$info) {
+  // Add a new view mode for displaying the question when taking a quiz
+  $info['node']['view modes'] += array(
+    'question' => array(
+      'label' => t('Question'),
+      'custom settings' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_h5p_filtered_params_alter
+ * 
+ * @param type $filtered
+ */
+function quiz_h5p_filtered_params_alter(&$filtered) {
+  if (_quiz_is_taking_context()) {
+    if (isset($filtered->behaviour)) {
+      $quiz = quiz_get_quiz_from_menu();
+      if (isset($filtered->behaviour->enableRetry)) {
+        $filtered->behaviour->enableRetry = FALSE;
+      }
+      if (isset($filtered->behaviour->enableSolutionsButton)) {
+        $filtered->behaviour->enableSolutionsButton = $quiz->display_feedback && $quiz->feedback_time == QUIZ_FEEDBACK_QUESTION;
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_permission().
  */
 function quiz_permission() {
@@ -682,6 +737,9 @@ function quiz_form_quiz_node_form_submit($form, &$form_state) {
  * Implements hook_insert().
  */
 function quiz_insert($node) {
+  // Need to set max_score if this is a cloned node
+  $max_score = 0;
+
   // Apply defaults.
   $defaults = _quiz_load_user_settings(variable_get('quiz_def_uid', 1)) + _quiz_get_node_defaults();
   foreach ($defaults as $key => $value) {
@@ -695,6 +753,23 @@ function quiz_insert($node) {
   // Copy all the questions belonging to the quiz if this is a new translation.
   if ($node->is_new && isset($node->translation_source)) {
     quiz_copy_questions($node);
+  }
+
+  // Add references to all the questions belonging to the quiz if this is a cloned quiz (node_clone compatibility)
+  if ($node->is_new && isset($node->clone_from_original_nid)) {
+    $old_quiz = node_load($node->clone_from_original_nid, NULL, TRUE);
+    
+    $max_score = $old_quiz->max_score;
+    
+    $questions = quiz_get_questions($old_quiz->nid, $old_quiz->vid, TRUE, TRUE, FALSE, TRUE);
+  
+    // Format the current questions for referencing
+    foreach ($questions as $nid => $q) {
+      $questions[$nid]->state = $q->question_status;
+      $questions[$nid]->refresh = 0;
+    }
+    
+    quiz_set_questions($node, $questions);
   }
 
   _quiz_common_presave_actions($node);
@@ -711,6 +786,7 @@ function quiz_insert($node) {
       'nid'                         => $node->nid,
       'aid'                         => !empty($node->aid) ? $node->aid : 0,
       'number_of_random_questions'  => $node->number_of_random_questions,
+      'max_score_for_random'        => $node->max_score_for_random,
       'randomization'               => $node->randomization,
       'backwards_navigation'        => $node->backwards_navigation,
       'repeat_until_correct'        => $node->repeat_until_correct,
@@ -735,7 +811,8 @@ function quiz_insert($node) {
       'allow_resume'                => $node->allow_resume,
       'allow_jumping'               => $node->allow_jumping,
       'show_passed'                 => $node->show_passed,
-      'mark_doubtful'               => $node->mark_doubtful
+      'mark_doubtful'               => $node->mark_doubtful,
+      'max_score'                   => $max_score,
     ))
     ->execute();
 
@@ -942,6 +1019,7 @@ function _quiz_get_node_defaults() {
     'quiz_open' => _quiz_form_prepare_date(),
     'quiz_close' => _quiz_form_prepare_date(NULL, variable_get('quiz_default_close', 30)),
     'mark_doubtful' => 0,
+    'max_score' => 0,
   );
 }
 
@@ -998,7 +1076,7 @@ function quiz_load($nodes) {
  */
 //function quiz_view($node, $teaser = FALSE, $page = FALSE) {
 function quiz_view($node, $view_mode) {
-  drupal_alter('quiz_view', $node, $teaser, $page);
+  drupal_alter('quiz_view', $node, $view_mode);
   node_invoke($node, 'prepare');
 
   // Number of questions is needed on the statistics page.
@@ -1014,7 +1092,7 @@ function quiz_view($node, $view_mode) {
     // Check the permission before displaying start button.
     if (user_access('access quiz')) {
       // Add a link to the take tab as a button if this isn't a teaser view.
-      if (!$teaser) {
+      if ($view_mode !== 'teaser') {
         $quiz_form = drupal_get_form('quiz_start_quiz_button_form', $node);
         $node->content['take'] = array(
           '#markup' => drupal_render($quiz_form),
@@ -1951,6 +2029,12 @@ function quiz_take_quiz($quiz) {
     $_SESSION['quiz_' . $quiz->nid]['question_duration'] -= REQUEST_TIME - $_SESSION['quiz_' . $quiz->nid]['question_start_time'];
   }
 
+  // Check to see if the question navigation form was submitted using the enter key
+  // in a browser that doesn't pass a default submit operation value when this happens.
+  if (!isset($_POST['op']) && isset($_POST['default_submit'])) {
+    $_POST['op'] = $_POST['default_submit'];
+  }
+
   // For quiz progress block
   // To be able to jump from one question to another
   if (isset($_GET['jump_to_question'])) {
@@ -2033,11 +2117,13 @@ function quiz_take_quiz($quiz) {
       $report = module_invoke($module, 'get_report', $former_question_array['nid'], $former_question_array['vid'], $_SESSION['quiz_' . $quiz->nid]['result_id']);
       $path = drupal_get_path('module', 'quiz');
       require_once DRUPAL_ROOT . '/' . $path . '/quiz.pages.inc';
-      if ($report) {
-        $report_form = drupal_get_form('quiz_report_form', array($report), TRUE, TRUE, TRUE);
+      if ($report && $report->type != 'quiz_directions') {
+        $allow_scoring = quiz_allow_score_access($quiz);
+        $report_form = drupal_get_form('quiz_report_form', array($report), TRUE, TRUE, $allow_scoring);
+        $label = (_quiz_get_num_questions_left() < 1) ? t('See results') : t('Next question');
         $report_form['op'] = array(
           '#type' => 'submit',
-          '#value' => t('Next question'),
+          '#value' => $label,
         );
         return $report_form;
       }
@@ -2302,7 +2388,7 @@ function _quiz_take_quiz_init($quiz) {
  */
 function quiz_take_question_view($question_node, $quiz_node) {
   $question_node->allow_skipping = $quiz_node->allow_skipping;
-  node_build_content($question_node, 'teaser');
+  node_build_content($question_node, 'question');
   module_invoke_all('node_build_alter', $question_node, FALSE);
   //$question_node->body = drupal_render($question_node->content);
   return theme('quiz_single_question_node', array('question_node' => $question_node));
@@ -2354,11 +2440,11 @@ function quiz_store_question_result($quiz, $result, $options) {
     $scale = db_query("SELECT (max_score_for_random / (
                   SELECT max_score
                   FROM {quiz_question_properties}
-                  WHERE nid = :nid AND vid = :vid
+                  WHERE nid = :question_nid AND vid = :question_vid
                 )) as scale
                 FROM {quiz_node_properties}
-                WHERE vid = :vid
-               ", array(':nid' => $result->nid, ':vid' => $result->vid, ':vid' => $quiz->vid))->fetchField();
+                WHERE vid = :quiz_vid
+               ", array(':question_nid' => $result->nid, ':question_vid' => $result->vid, ':quiz_vid' => $quiz->vid))->fetchField();
   }
   elseif ($quiz->randomization == 3) {
     if (isset($options['question_data']['tid'])) {
@@ -2511,7 +2597,7 @@ function quiz_quiz_finished($quiz, $score, $session_data) {
     );
     $params = array(
       'points' => $score['numeric_score'],
-      'description' => t('Attened @title @quiz on @time', $variables),
+      'description' => t('Attended @title @quiz on @time', $variables),
       'tid' => $selected_tid,
       'uid' => $taker->uid,
     );
@@ -2551,7 +2637,7 @@ function quiz_quiz_scored($quiz, $score, $rid) {
     );
     $params = array(
       'points' => $score['numeric_score'],
-      'description' => t('Attened @title @quiz on @time', $variables),
+      'description' => t('Attended @title @quiz on @time', $variables),
       'tid' => $selected_tid,
     );
     if ($quiz->userpoints_tid != 0) {
@@ -2741,6 +2827,7 @@ function quiz_is_passed($uid, $nid, $vid) {
     WHERE qnrs.vid = :vid
       AND qnrs.nid = :nid
       AND qnrs.uid = :uid
+      AND qnrs.is_evaluated = 1
       AND score >= pass_rate', array(':vid' => $vid, ':nid' => $nid, ':uid' => $uid))->fetchField();
   // Force into boolean context.
   return ($passed !== FALSE && $passed > 0);
@@ -2763,13 +2850,13 @@ function quiz_is_passed($uid, $nid, $vid) {
 function quiz_start_check($quiz, $rid) {
   global $user;
 
-  $user_is_admin = user_access('edit any quiz content') || (user_access('edit own quiz content') && $quiz->uid == $user->uid);
+  $user_is_admin = node_access('update', $quiz);
 
   // Make sure this is available.
   if ($quiz->quiz_always != 1) {
     // Compare current GMT time to the open and close dates (which should still
     // be in GMT time).
-    $now = gmmktime();
+    $now = time();
 
     if ($now >= $quiz->quiz_close || $now < $quiz->quiz_open) {
       if ($user_is_admin) {
@@ -2843,7 +2930,7 @@ function quiz_availability($quiz) {
 
   // Compare current GMT time to the open and close dates (which should still be
   // in GMT time).
-  $now = gmmktime();
+  $now = time();
 
   if ($now >= $quiz->quiz_close || $now < $quiz->quiz_open) {
     return t('This quiz is closed');
@@ -2944,7 +3031,7 @@ function quiz_calculate_score($quiz, $rid) {
     'question_count' => $count,
     'possible_score' => $possible_score,
     'numeric_score' => $total_score,
-    'percentage_score' => ($possible_score == 0) ? 0 : round(($total_score * 100) / $possible_score),
+    'percentage_score' => ($possible_score == 0) ? 100 : round(($total_score * 100) / $possible_score),
     'is_evaluated' => $is_evaluated,
   );
 }
@@ -3139,8 +3226,9 @@ function quiz_set_questions(&$quiz, $questions, $set_new_revision = FALSE) {
   if ($set_new_revision) {
     // Create a new Quiz VID, even if nothing changed.
     $quiz->revision = 1;
+
+    node_save($quiz);
   }
-  node_save($quiz);
 
   // When node_save() calls all of the node API hooks, old quiz info is
   // automatically inserted into quiz_node_relationship. We could get clever and
@@ -3597,6 +3685,9 @@ function _quiz_get_question_types() {
     drupal_set_message(t('You need to install and enable at least one question type(multichoice for instance) to use quiz.'), 'warning', FALSE);
     return array();
   }
+  else {
+    drupal_alter('quiz_question_info', $quiz_questions);
+  }
 
   return $quiz_questions;
 }
@@ -3668,7 +3759,10 @@ function quiz_get_questions($quiz_nid = NULL, $quiz_vid = NULL, $include_all_typ
   $query->leftJoin('quiz_node_relationship', 'qnr', 'nr.vid = qnr.child_vid');
 
   if ($include_all_types === TRUE) {
-    $query->condition('n.type', array_keys(_quiz_get_question_types()), 'IN');
+    $question_types = _quiz_get_question_types();
+    if (count($question_types) > 0) {
+      $query->condition('n.type', array_keys($question_types), 'IN');
+    }
   }
 
   if (!is_null($quiz_vid)) {
@@ -4040,6 +4134,18 @@ function _quiz_check_num_always(&$node) {
   db_delete('quiz_node_relationship')
     ->condition('parent_vid', $node->vid)
     ->execute();
+}
+
+/**
+ * Checks if the user has access to save score for his quiz.
+ */
+function quiz_allow_score_access($quiz, $account = NULL) {
+  global $user;
+  if ($account == NULL) {
+    $account = $user;
+  }
+  $access = user_access('score any quiz') || (user_access('score own quiz') && $quiz->uid && $account->uid);
+  return $access;
 }
 
 /**
@@ -4415,8 +4521,8 @@ function _quiz_is_empty_html($html) {
 }
 
 /**
- * Check if this is the last question of the quiz
+ * Return the number of questions that are left to answer
  */
-function _quiz_is_last_question() {
-  return count($_SESSION['quiz_' . intval(arg(1))]['quiz_questions']) < 2;
+function _quiz_get_num_questions_left() {
+  return count($_SESSION['quiz_' . intval(arg(1))]['quiz_questions']);
 }

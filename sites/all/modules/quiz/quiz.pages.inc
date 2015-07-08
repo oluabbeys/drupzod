@@ -240,7 +240,7 @@ function quiz_get_score_array($rid, $quiz_vid, $is_evaluated) {
           FROM {quiz_node_properties}
           WHERE vid = :vid', array(':vid' => $quiz_vid))->fetchObject();
   $total_score = db_query('SELECT SUM(points_awarded)
-          FROM (quiz_node_results_answers)
+          FROM {quiz_node_results_answers}
           WHERE result_id = :result_id', array(':result_id' => $rid))->fetchField();
 
   return array(
@@ -333,6 +333,7 @@ function theme_quiz_get_user_results($variables) {
         $post_score = ' %<br><em>' . $grade . '</em></span>';
       }
       else {
+        $pre_score = '';
         $post_score = ' %';
       }
       $score = $pre_score . $result['score'] . $post_score;
@@ -592,6 +593,7 @@ function theme_quiz_take_summary($variables) {
  * @ingroup themeable
  */
 function theme_quiz_user_summary($variables) {
+  global $user;
   $quiz = $variables['quiz'];
   $questions = $variables['questions'];
   $score = $variables['score'];
@@ -625,7 +627,8 @@ function theme_quiz_user_summary($variables) {
     $output .= '<div id="quiz_summary">' . $summary['result'] . '</div>' . "\n";
   }
   // Get the feedback for all questions.
-  $form = drupal_get_form('quiz_report_form', $questions, FALSE, TRUE);
+  $allow_scoring = quiz_allow_score_access($quiz);
+  $form = drupal_get_form('quiz_report_form', $questions, FALSE, TRUE, $allow_scoring);
   $output .= drupal_render($form);
   return $output;
 }
@@ -654,7 +657,7 @@ function theme_quiz_single_question_node($variables) {
   $node = $variables['question_node'];
   // This might seem meaningless, but it is designed this way to allow themes to add more
   // meaningful stuff here...
-  return drupal_render($node->content['body']);
+  return drupal_render($node->content);
 }
 
 /**

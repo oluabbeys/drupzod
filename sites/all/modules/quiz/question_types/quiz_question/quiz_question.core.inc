@@ -111,6 +111,11 @@ abstract class QuizQuestion {
       );
     }
 
+    if ($_GET['q'] == 'system/ajax' && !empty($form_state['complete form']['get']['#value'])) {
+      // If this is ajax request, add stored $_GET values if possible.
+      $_GET = array_merge($form_state['complete form']['get']['#value'], $_GET);
+    }
+
     // Quiz id used here to tie creation of a question to a specific quiz
     if (isset($_GET['quiz_nid']) && is_numeric($_GET['quiz_nid'])) {
       $vid = (_quiz_is_int($_GET['quiz_vid'], 0)) ? $_GET['quiz_vid'] : NULL;
@@ -433,12 +438,6 @@ abstract class QuizQuestion {
       '#type' => 'hidden',
       '#value' => $this->node->nid,
     );
-    $body = field_get_items('node', $this->node, 'body');
-    $form['question'] = array(
-      '#markup' => check_markup($body[0]['value'], $body[0]['format']),
-      '#prefix' => '<div class="quiz-question-body">',
-      '#suffix' => '</div>',
-    );
     return $form;
   }
 
@@ -752,7 +751,7 @@ abstract class QuizQuestionResponse {
    */
   public function getMaxScore($weight_adjusted = TRUE) {
     if (!isset($this->question->max_score)) {
-      $this->question->max_score = $this->question->getMaximumScore();
+      $this->question->max_score = 1;
     }
     if (isset($this->question->score_weight) && $weight_adjusted) {
       return round($this->question->max_score * $this->question->score_weight);
@@ -890,8 +889,9 @@ abstract class QuizQuestionResponse {
    */
   public function getReportFormQuestion($showpoints = TRUE, $showfeedback = TRUE) {
     $node = node_load($this->question->nid);
-    $items = field_get_items('node', $node, 'body');
-    return field_view_value('node', $node, 'body', $items[0]);
+    $node->no_answer_form = TRUE;
+    node_build_content($node, 'question');
+    return $node->content;
   }
 
   /**

@@ -3,11 +3,11 @@
 }
 
 .flickr-photo-box {
-  padding: 10px;
   float: left;
-  text-align: center;
   width: 260px;
   height: 260px;
+  padding: 10px;
+  text-align: center;
 }
 
 .flickr-photoset-img {
@@ -15,64 +15,37 @@
 }
 
 .flickr-photoset-box {
-  padding: 10px;
   float: left;
+  padding: 10px;
   text-align: center;
-  width: 130px;
-  height: 130px;
 }
 
-span.flickr-wrap, span.flickr-photoset-single {
+span.flickr-wrap,
+span.flickr-photoset-single {
+  position: relative;
   display: inline-block;
-  vertical-align: top;
   margin: 0 5px 5px 0;
+  vertical-align: top;
 }
 
 span.flickr-credit {
   display: block;
-  line-height: 100%;
+  overflow: hidden;
+  padding: 0 0 4px 4px;
   font-size: 80%;
-}
-
-@media screen {
-  @font-face {
-    font-family: 'CC-ICONS';
-    font-style: normal;
-    font-weight: normal;
-    src: url('http://mirrors.creativecommons.org/presskit/cc-icons.ttf') format('truetype');
-  }
-  span.flickr-cc, span.flickr-copyright {
-    /*The normal size is not well recognizable*/
-    font-size: large;
-    float: right;
-    /*An equivalent to baseline shift to space icons from the line above*/
-    position: relative;
-    top: .20em;
-    margin-bottom: 5px;
-  }
-  span.flickr-cc {
-    /*Creative commons icon font*/
-    font-family: 'CC-ICONS';
-  }
-  /* Necessary to make the copyright symbol most similar to the cc-icons.*/
-  span.flickr-copyright {
-    font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;
-    font-weight: bold;
-  }
+  line-height: 100%;
 }
 
 .flickr-slideshow {
-  height: 0;
+  position: relative;
+  overflow: hidden;
   width: 100%;
+  height: 0;
   /*Change percentage below to change ratio. Currently 16:9 (as most screens).*/
   padding-bottom: 56.25%;
-  overflow: hidden;
-  position: relative;
 }
 
 .flickr-slideshow object {
-  width: 100%;
-  height: 100%;
   position: absolute;
   top: 0;
   left: 0;
@@ -97,7 +70,13 @@ span.flickr-tags {
   font-style: italic;
 }
 
-.flickr-wrap, .flickr-wrap img, .flickr-wrap .flickr-credit {
+.flickr-wrap,
+.flickr-wrap img,
+.flickr-wrap .flickr-credit {
+  /*See http://stackoverflow.com/a/11390432/523688*/
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
   max-width: 100%;
 }
 
@@ -106,11 +85,22 @@ div.flickr-photoset {
 }
 
 span.flickr-empty {
-  margin: 10px;
   display: inline-block;
+  margin: 10px;
 }
 
 .page-flickr-sets h1#page-title {
   display: none;
 }
 
+.tips span.ctools-toggle {
+  float: none !important;
+}
+
+span.grayed-out {
+  color: darkgray;
+}
+
+span.grayed-out-help {
+  color: #666;
+}

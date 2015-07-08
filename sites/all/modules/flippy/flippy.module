@@ -354,7 +354,7 @@ function flippy_build_list($node) {
     $query = db_select('node', 'n');
     $query->condition('type', $node->type)
       ->condition('status', 1)
-      ->condition('nid', $node->nid, '!=')
+      ->condition('n.nid', $node->nid, '!=')
       ->condition(db_or()
         ->condition('n.language', array($language->language, LANGUAGE_NONE), 'IN')
         ->condition('n.language', $node->language, '=')
@@ -420,14 +420,14 @@ function flippy_build_list($node) {
         ->condition($sort, $node->{$sort}, $before)
         ->condition(db_and()
           ->condition($sort, $node->{$sort}, '=')
-          ->condition('nid', $node->nid, $before)
+          ->condition('n.nid', $node->nid, $before)
         )
       );
       $next->condition(db_or()
         ->condition($sort, $node->{$sort}, $after)
         ->condition(db_and()
           ->condition($sort, $node->{$sort}, '=')
-          ->condition('nid', $node->nid, $after)
+          ->condition('n.nid', $node->nid, $after)
         )
       );
       // set the ordering
@@ -532,7 +532,7 @@ function template_preprocess_flippy(&$vars) {
     if (is_numeric($truncate)) {
       foreach ($links as $key => &$link) {
         if (strlen($link['title']) > $truncate) {
-          $link['title'] = substr($link['title'], 0, $truncate) . variable_get('flippy_ellipse_' . $vars['node']->type, '...');
+          $link['title'] = mb_substr($link['title'], 0, $truncate) . variable_get('flippy_ellipse_' . $vars['node']->type, '...');
         }
       }
     }
@@ -546,11 +546,13 @@ function template_preprocess_flippy(&$vars) {
   }
 
   if (variable_get('flippy_loop_'. $vars['node']->type, NULL)) {
-    if (!$vars['links']['last']['href']) {
-      $vars['links']['next']['href'] = $vars['links']['first']['href'];
+    if (!$vars['links']['next']['href']) {
+      $vars['links']['next']['href'] = empty($nav['first']) ? '' : drupal_get_path_alias('node/' . $nav['first']['nid'], 'und');
+      $vars['links']['next']['title'] = (empty($nav['first']) || empty($vars['links']['next']['title'])) ? '' : token_replace($vars['links']['next']['title'], array('node' => $list_nodes[$nav['first']['nid']]));
     }
-    if (!$vars['links']['first']['href']) {
-      $vars['links']['prev']['href'] = $vars['links']['last']['href'];
+    if (!$vars['links']['prev']['href']) {
+      $vars['links']['prev']['href'] = empty($nav['last']) ? '' : drupal_get_path_alias('node/' . $nav['last']['nid'], 'und');
+      $vars['links']['prev']['title'] = (empty($nav['last']) ||  empty($vars['links']['prev']['title'])) ? '' : token_replace($vars['links']['prev']['title'], array('node' => $list_nodes[$nav['last']['nid']]));
     }
   }
   $vars['show_empty'] = variable_get('flippy_show_empty_' . $vars['node']->type, TRUE);
