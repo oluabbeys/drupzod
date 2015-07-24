@@ -10,6 +10,9 @@ sites/*/private
 #sites/default/files
 #sites/default/private
 
+piwik.zip
+owa
+piwik_bck/
 localhost (2).sql
 
 localhost (3).sql

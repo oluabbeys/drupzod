@@ -1,3 +1,4 @@
+<?php  header( 'Location: http://zodml.org/discover-nigeria/did-you-know-archives' ) ;  ?>
 <?php
 include("Nigeria/scripts/config.php");
 $per_page = 10; 
