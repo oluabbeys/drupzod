@@ -1,0 +1,34 @@
+name = Entity Reference
+description = Provides a field that can reference other entities.
+core = 7.x
+package = Fields
+dependencies[] = entity
+dependencies[] = ctools
+
+; Migrate handler.
+files[] = entityreference.migrate.inc
+
+; Our plugins interfaces and abstract implementations.
+files[] = plugins/selection/abstract.inc
+files[] = plugins/selection/views.inc
+files[] = plugins/behavior/abstract.inc
+
+files[] = views/entityreference_plugin_display.inc
+files[] = views/entityreference_plugin_style.inc
+files[] = views/entityreference_plugin_row_fields.inc
+files[] = views/views_handler_filter_entityreference_autocomplete.inc
+
+; Tests.
+files[] = tests/entityreference.handlers.test
+files[] = tests/entityreference.taxonomy.test
+files[] = tests/entityreference.admin.test
+files[] = tests/entityreference.feeds.test
+files[] = tests/entityreference.revisions.test
+
+
+; Information added by drush on 2015-07-09
+version = "7.x-1.1+4-dev"
+core = "7.x"
+project = "entityreference"
+datestamp = "1436448341"
+
