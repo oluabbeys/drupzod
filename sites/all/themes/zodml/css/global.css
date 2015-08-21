@@ -154,8 +154,6 @@ background-color:#333;}
 .block-interns-and-volunteer .block-title{display: none;}
 
 
-
-
 #block-views-welcom-view-block{
  padding:0; 
 margin: 10px 0 0 0;
@@ -719,6 +717,14 @@ div.warning {
   float: left;
   margin: 10px;
 }
+
+.block-imageblock-25, .block-imageblock-26{
+margin: 12px 0 0 0;}
+
+#block-views-libraries-view-block-block-4 img{
+margin-bottom: 10px;
+   }
+
 
 /*DISCOVER NIGERIA CSS --BEGINNING*/
 .context-discover-nigeria{
