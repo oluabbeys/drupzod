@@ -56,16 +56,6 @@ Disallow: /?q=user/register/
 Disallow: /?q=user/login/
 Disallow: /?q=user/logout/
 
-
-
-Disallow: /_private/
-Disallow: /_vti_bin/
-Disallow: /_vti_cnf/
-Disallow: /_vti_log/
-Disallow: /_vti_pvt/
-Disallow: /_vti_txt/
-Disallow: /cgi-bin/
-Disallow: /bin/
 Disallow: /correction-new/
 Disallow: /dlc/
 Disallow: /Nigeria2/
@@ -103,11 +93,7 @@ Disallow: /zodml_sciencessss
 Disallow: /stage/
 Disallow: /intranet/
 Disallow: /intrazod/
-Disallow: /blogoldg/
+Disallow: /owa/
 Disallow: /new_ebook/
 Disallow: /new_ebook_image/
-
-
-#Begin Attracta SEO Tools Sitemap. Do not remove
-sitemap: http://cdn.attracta.com/sitemap/1866825.xml.gz
-#End Attracta SEO Tools Sitemap. Do not remove
+Disallow: /blogoldg/
