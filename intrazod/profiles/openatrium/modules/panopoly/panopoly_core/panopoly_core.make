@@ -5,17 +5,15 @@ core = 7.x
 
 ; Panels and Chaos Tools Magic
 
-projects[ctools][version] = 1.7
+projects[ctools][version] = 1.8
 projects[ctools][subdir] = contrib
-projects[ctools][patch][2280853] = http://www.drupal.org/files/issues/ctools-keyboard-trap-2280853-37.patch
 projects[ctools][patch][1910608] = https://www.drupal.org/files/issues/views_content-ajax-1910608-29.patch
 projects[ctools][patch][1901106] = https://www.drupal.org/files/issues/1901106-ctools-views_content-override-ajax-30.patch
 projects[ctools][patch][2023705] = http://drupal.org/files/2023705-ctools-autosubmit-2_0.patch
 projects[ctools][patch][2448989] = https://www.drupal.org/files/issues/2448989-ctools-from_field_children-8.patch
-projects[ctools][patch][2422123] = https://www.drupal.org/files/issues/ctools-fix_entity_view_hooks_invoked_twice-2422123-15.patch
 projects[ctools][patch][2483415] = https://www.drupal.org/files/issues/ctools-more_than_one_comment_pager-2483415-1.patch
-projects[ctools][patch][1032218] = https://www.drupal.org/files/issues/ctools_context_optional_always_empty-1032218-13.patch
 projects[ctools][patch][2493041] = https://www.drupal.org/files/issues/ctools-n2493041-3.patch
+projects[ctools][patch][2555469] = https://www.drupal.org/files/issues/2555469-ctools-comments-node_tag_new-2.patch
 
 projects[panels][version] = 3.5
 projects[panels][subdir] = contrib
@@ -33,7 +31,7 @@ projects[panelizer][download][revision] = 6b76359
 projects[panelizer][patch][2514068] = https://www.drupal.org/files/issues/2514068-panelizer-cache_key-2.patch
 projects[panelizer][patch][1549608] = https://www.drupal.org/files/issues/1549608-panelizer-cache-24.patch
 
-projects[fieldable_panels_panes][version] = 1.6
+projects[fieldable_panels_panes][version] = 1.7
 projects[fieldable_panels_panes][subdir] = contrib
 
 projects[pm_existing_pages][version] = 1.4
@@ -53,9 +51,8 @@ projects[views][patch][1735096] = https://www.drupal.org/files/issues/1735096-vi
 projects[views][patch][2411922] = https://www.drupal.org/files/issues/2411922-views-group_name-3.patch
 projects[views][patch][2473389] = https://www.drupal.org/files/issues/2473389-views-exta-args-3.patch
 
-projects[views_autocomplete_filters][version] = 1.1
+projects[views_autocomplete_filters][version] = 1.2
 projects[views_autocomplete_filters][subdir] = contrib
-projects[views_autocomplete_filters][patch][2277453] = http://drupal.org/files/issues/ViewsAutocompleteFilters-no_results_on_some_environments-2277453-1.patch
 projects[views_autocomplete_filters][patch][2374709] = http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
 projects[views_autocomplete_filters][patch][2317351] = http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
 
