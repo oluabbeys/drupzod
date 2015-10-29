@@ -147,7 +147,11 @@ DirectoryIndex index.php index.html index.htm
  # RewriteCond %{REQUEST_URI} "/blog/" it works with blog not with piwik, piwik might likely go back to directory
   # RewriteRule (.*) $1 [L]
 
-
 RedirectMatch 301 ^/piwik/(.*)$ http://piwik.zodml.org/$1
 RedirectMatch 301 ^/intranet/(.*)$ http://intranet.zodml.org/$1
 RedirectMatch 301 ^/intrazod/(.*)$ http://intrazod.zodml.org/$1
+
+RewriteCond %{HTTP_HOST} ^zodml\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.zodml\.com$
+RewriteRule ^/?$ "http\:\/\/zodml\.org" [R=301,L]
+

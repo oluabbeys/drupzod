@@ -1,0 +1,13 @@
+name = Access Code Product
+description = "CoovaRADIUS Access Code Product Integration"
+version = "6.x-1.0"
+datestamp = "1204733413"
+dependencies[] = "coova_cart"
+core = 6.x
+
+; Information added by drupal.org packaging script on 2013-09-30
+version = "6.x-1.x-dev"
+core = "6.x"
+project = "hotspot"
+datestamp = "1380582098"
+

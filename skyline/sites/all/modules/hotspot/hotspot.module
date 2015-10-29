@@ -1,0 +1,201 @@
+<?php /* -*- mode: php; -*- */
+/**
+ * Drupal HotSpot Module * http://drupal.org/project/Hotspot
+ * Copyright 2008-2011 (c) Coova Technologies, LLC.
+ * Licensed under the GNU General Public License.
+ */
+
+require_once drupal_get_path('module', 'hotspot').'/hotspot.inc';
+
+/**
+ * Implementation of hook_perm().
+ */
+function hotspot_perm() {
+  return array('administer hotspot');
+}
+
+
+/**
+ * Implementation of hook_help().
+ */
+function hotspot_help($section) {
+  switch ($section) {
+  case 'admin/modules#description':
+    return t("Integrate with CoovaChilli to use Drupal as a captive portal.");
+  }
+}
+
+function hotspot_theme() {
+  return array('hotspot_nochilli' => array(),
+	       'hotspot_disabled' => array(),
+	       'hotspot_loginform' => array(),
+	       'hotspot_jshtml' => array(),
+	       'hotspot_notyet' => array(),
+	       'hotspot_success' => array(),
+	       'hotspot_already' => array(),
+	       'hotspot_failed' => array(),
+	       'hotspot_block' => array(),
+	       'hotspot_page' => array(),
+	       );
+}
+
+/**
+ * Implements hook_menu.
+ */
+function hotspot_menu() {
+  $items = array();
+
+  $items['hotspot'] = 
+    array('page callback' => 'hotspot_render',
+	  'access arguments' => array('access content'),
+	  'file' => 'hotspot.pages.inc',
+	  'type' => MENU_LOCAL_TASK,
+	  );
+
+  // TODO: make support optional
+  $items['hotspot/colubris'] = 
+    array('page callback' => 'hotspot_render',
+	  'access arguments' => array('access content'),
+	  'file' => 'colubris.pages.inc',
+	  'type' => MENU_LOCAL_TASK,
+	  );
+
+  $items['hotspot/status'] = 
+    array('page callback' => 'hotspot_render_status',
+	  'access arguments' => array('access content'),
+	  'file' => 'hotspot.pages.inc',
+	  'type' => MENU_CALLBACK,
+	  );
+
+  $items['hotspot/uam/auth'] = 
+    array('page callback' => 'hotspot_uam_auth',
+	  'access arguments' => array('access content'),
+	  'file' => 'hotspot.utils.inc',
+	  'type' => MENU_LOCAL_TASK,
+	  );
+  
+  $items['admin/settings/hotspot'] = 
+    array('title' => 'Hotspot',
+	  'description' => 'Configure Hotspot settings',
+	  'page callback' => 'drupal_get_form',
+	  'page arguments' => array('hotspot_admin_settings'),
+	  'access arguments' => array('administer site configuration'),
+	  'file' => 'admin.settings.inc',
+	  );
+  
+  return $items;
+}
+
+/**
+ *  Initialize the module for the request
+ */
+function hotspot_init() {
+  global $user;
+
+  $GLOBALS['conf']['cache'] = FALSE;
+
+  if ($_SESSION['hotspot'] == 'true' && hotspot_setting('method', 'redir') == 'js') {
+    drupal_add_js(drupal_get_path('module', 'hotspot').'/ChilliLibrary.js');
+    drupal_add_js(drupal_get_path('module', 'hotspot').'/chilliController.js');
+    drupal_add_js(_get_include_contents(drupal_get_path('module', 'hotspot').'/chillijs.php'), 'inline');
+    drupal_add_css(drupal_get_path('module', 'hotspot').'/chillicss.php');
+  }
+
+  hotspot_check_cookie();
+}
+
+function _get_include_contents($filename) {
+  if (is_file($filename)) {
+    ob_start();
+    include $filename;
+    $contents = ob_get_contents();
+    ob_end_clean();
+    return $contents;
+  }
+  return false;
+}
+
+function hotspot_setting($name, $def = false) {
+  if (function_exists('ewt_setting')) {
+    return ewt_setting($name, $def, 'hotspot_');
+  }
+  return variable_get('hotspot_'.$name, $def);
+}
+
+
+function hotspot_content($fmt = 'jshtml') {
+
+  if ($fmt == 'jshtml') {
+#    $js = file_get_contents(drupal_get_path('module', 'hotspot').'/chillijs.php');
+#    $css = file_get_contents(drupal_get_path('module', 'hotspot').'/chillicss.php');   
+#    $output = '<style>'.$css.'</style><script>'.$js.'</script>';
+    $output .= theme('hotspot_'.$fmt);
+    
+    return $output;
+  } 
+
+  if ($a = module_invoke_all('hotspot_content', $fmt)) {
+    foreach ($a as $b) $html .= $b;
+    return $html;
+  }
+
+  return theme('hotspot_'.$fmt);
+}
+
+
+/**
+ * Provides login blog that only shows up when the user logs in.
+ */
+function hotspot_block($op = 'list', $delta = 0, $edit = array())
+{
+  global $user;
+  
+  if ($op == 'list') {
+    $blocks[0]['info'] = t('Hotspot status block');
+    return $blocks;
+  }
+  else if ($op == 'view') {
+    list($arg0) = split('/',$_REQUEST['q']);
+    if ($arg0 == 'hotspot') { return ''; }
+    
+    $block = array();
+    
+    if ($_SESSION['hotspot'] == 'true') {
+      $block['subject'] = t('HotSpot');
+      $block['content'] = hotspot_content('block');
+    }
+    
+    return $block;
+  }
+}
+ 
+
+function theme_hotspot_block() 
+{
+  return '
+<div id="chilliPage">
+  <div id="logonPage" style="display:none;">
+    You are not on-line.
+    <p><a href="'.url('hotspot').'">Get on-line now!</a></p>
+  </div>
+  <div id="statusPage" style="display:none;">
+    <div>
+      <span id="statusMessage">Connected</span> - <a href="#" onClick="return disconnect();">logout</a>
+    </div>
+    <div>
+      <span id="sessionTimeLabel" class="chilliLabel">Session Time</span>
+      <span id="sessionTime" class="chilliValue">
+        <span id="time">Not available</span>
+        <span id="timelimit"><!-- --></span>
+        <span id="timeleft"><!-- --></span>
+      </span>
+    </div>
+  </div>
+  <div id="waitPage" style="display:none;">Please wait...</div>
+  <div id="errorPage" style="display:none;">
+    <span id="errorMessage">Error</span>
+  </div>
+</div>';
+
+}
+

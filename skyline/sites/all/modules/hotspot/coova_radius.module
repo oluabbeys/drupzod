@@ -1,0 +1,793 @@
+<?php /* -*- mode: php; -*- */
+/**
+ * Drupal HotSpot Module * http://drupal.org/project/Hotspot
+ * Copyright 2008-2011 (c) Coova Technologies, LLC.
+ * Licensed under the GNU General Public License.
+ */
+
+/**
+ * Implementation of hook_perm().
+ */
+function coova_radius_perm() {
+  return array('administer coova radius');
+}
+
+
+/**
+ * Implementation of hook_help().
+ */
+function coova_radius_help($section) {
+  switch ($section) {
+  case 'admin/modules#description':
+    return t("Integrate with CoovaRADIUS to use Drupal as a captive portal.");
+  }
+}
+
+/**
+ * Implements hook_menu.
+ */
+function coova_radius_menu() {
+  global $ewtSettings;
+
+  $items = array();
+
+  $service_name = coova_radius_setting('service_name', 'CoovaRADIUS');
+
+  if (coova_radius_setting('admin_settings', true)) {
+    $items['admin/settings/coova_radius'] = 
+      array('title' => 'CoovaRADIUS',
+	    'description' => 'Configure CoovaRADIUS settings',
+	    'page callback' => 'drupal_get_form',
+	    'page arguments' => array('coova_radius_admin_settings'),
+	    'access arguments' => array('administer site configuration'),
+	    'file' => 'coova_radius.admin.inc',
+	    );
+    $items['admin/coova_radius'] = 
+      array('title' => 'CoovaRADIUS',
+	    'description' => 'Configure CoovaRADIUS',
+	    'page callback' => 'coova_radius_ewt_admin_menu',
+	    'page arguments' => array(1),
+	    'access arguments' => array('administer coova radius'),
+	    'file' => 'coova_radius.admin.inc',
+	    'weight' => -20,
+	    );
+  }
+
+  if (coova_radius_setting('user_tab', '') != '') {
+    $items['user/%user/radius'] = 
+      array('title' => $service_name,
+	    'description' => 'Configure your '.$service_name.' account',
+	    'page callback' => 'coova_radius_ewt_usage',
+	    'page arguments' => array(1),
+	    'access callback' => 'coova_radius_user_access',
+	    'access arguments' => array(1),
+	    'file' => 'coova_radius.account.inc',
+	    'type' => MENU_LOCAL_TASK,
+	    'weight' => -10,
+	    );
+  }
+
+  return $items;
+}
+
+function coova_radius_user_access($nuser) {
+  global $user;
+  return isset($user->uid) && $nuser->uid == $user->uid;
+}
+
+function coova_radius_setting($name, $def = false) {
+  return ewt_setting($name, $def, 'coova_radius_');
+}
+
+function coova_radius_user($op, &$edit, &$account, $category = NULL) {
+  global $user;
+  switch ($op) {
+    case 'login':
+      
+      break;
+
+    case 'insert':
+      // The user account is being added. The module should save its custom additions to the user object into the database and set the saved fields to NULL in $edit. 
+
+      $roles = coova_radius_setting('provision_user_roles', '');
+      break;
+      
+    case 'login':
+
+      // The user just logged in. 
+      $path = coova_radius_setting('user_login_url', 'none');
+
+      if ($path != 'none')
+	drupal_goto($path);
+
+      $cUserRealm = null;
+      $cForeignRealm = ewt_setting('realm', '');
+
+      if (coova_radius_setting('provisioning', '') == 'admins') {
+	$ewt = coova_radius_client();
+	$cUser = $ewt->getUser($account->name, $cUserRealm);
+	$uid = $cUser['uid'];
+	
+	if (! $uid) {
+
+	  $result = $ewt->createAdministrativeUser($account->name,
+						   $cUserRealm, 
+						   $cForeignRealm,
+						   $ewt->createPassword(10), 
+						   $ewt->createPassword(10), 
+						   $ewt->createPassword(10), 
+						   $user->uid, null);
+	  
+	  $uid = $result['uid'];
+	  $cUser = $ewt->getUser($account->user, $cUserRealm);
+	}
+      }
+      break;
+
+    case 'view':
+      // The user's account information is being displayed. The module should format its custom additions for display, and add them to the $account->content array. 
+      if ($user->uid) {
+	$service = coova_radius_setting('user_profile', '');
+	if ($service != '') {
+	  if ($service == 'true') { $service = 'drupal-profile'; }
+	  $account->content['coova_radius'] = 
+	    array('#type' => 'user_profile_category',
+		  '#weight' => 0,
+		  '#title' => t(coova_radius_setting('service_name', 'CoovaRADIUS')),
+		  'link' => 
+		  array(
+			'#type' => 'user_profile_item',
+			'#value' => preg_match('/[Mm]enu/', $service) ? ewt_menu_div($service) : ewt_div($service)
+			),
+		  );
+	}
+      }
+      break;
+  }
+}
+
+function coova_radius_client() {
+  require_once drupal_get_path('module', 'hotspot').'/CoovaRADIUSClient.php';
+  return new CoovaRADIUSClient(ewt_setting('api_url'),
+			       ewt_setting('api_username', ''),
+			       ewt_setting('api_password', ''));
+}
+
+function coova_radius_hotspot_smartclient($username, $password) {
+  $ewt = coova_radius_client();
+  $res = $ewt->provisionSmartClient($_SESSION['called'], 
+				    $_SESSION['mac'],
+				    $username,
+				    $password);
+  if ($res['password']) {
+    return array('url' => 
+		 hotspot_login_url($res['username'], 
+				   $res['password']));
+  }
+
+  return false;
+}
+
+function coova_radius_hotspot_loginpage() {
+
+  $ewt = coova_radius_client();
+  $ap_mac = hotspot_get_param('called');
+
+  if (!isset($ap_mac)) { 
+
+    drupal_goto('unknown'); 
+
+  } else {
+    
+    $ap = $ewt->getAccessPoint($ap_mac);
+    
+    if (!isset($ap)) { 
+      
+      drupal_goto('unknownAccessPoint'); 
+      
+    } else {
+      
+      $network = $ewt->getNetworkById($ap['networkId']);
+      
+      if (!isset($network)) { 
+
+	drupal_goto('unknownNetwork'); 
+
+      }
+    }
+  }
+
+  // Hotspot "page not found" default
+  $_SESSION['renderNode'] = coova_radius_setting('default_node', '');
+  
+  $nid = db_result(db_query("SELECT n.nid FROM {node} n, {users} u WHERE u.uid = n.uid AND LOWER(u.name) = LOWER('%s') AND n.type = '%s'", $network['name'], 'hotspot_page'));
+  
+  if ($nid) {
+    $_SESSION['renderNode'] = $nid;
+  }
+
+  ewt_set_session('accessPointId', $ap['uid']);
+  ewt_set_session('anonMacAuth', $ap['anonymousMacAuth'] == true);
+  ewt_set_session('networkId', $network['uid']);
+  ewt_set_session('networkName', $network['name']);
+  ewt_set_session('networkOwnerId', $network['ownerId']);
+  ewt_set_session('realmId', $network['defaultRealmId']);
+  ewt_set_session('uamsecret', $network['uamsecret']);
+}
+
+function coova_radius_voucher(&$ewt, $username, $password) {
+  if (!$username || !$password) return false;
+
+  $info = array('username' => $username, 'password' => $password);
+
+  $_SESSION['accessCode'] = $info;
+
+  if (($key = coova_radius_setting('cookie_key', '')) != '') {
+    setcookie('CoovaRADIUS_N'.$_SESSION['networkId'], 
+	      $ewt->encrypt($info, $key), time() + 3600 * 24 * 365, '/');
+  }
+
+  return $info;
+}
+
+function coova_radius_check_roles() {
+  global $user;
+  $roles = coova_radius_setting('provision_user_roles', '');
+
+  if ($roles == '') 
+    return false;
+
+  $a = split(',',$roles);
+  
+  if (is_array($a)) 
+    foreach ($user->roles as $role) 
+      foreach ($a as $allow) 
+      if ($role == $allow) 
+	return false;
+
+  return true;
+}
+
+function coova_radius_get_user($user, $create = true, $withnet = false, $byname = false) {
+  $ewt = coova_radius_client();
+
+  if ($byname) {
+    $res = $ewt->getUser($user->name, null, coova_radius_setting('realm_id', null));
+  } else {
+    $res = $ewt->getUserByForeignUser($user->uid, ewt_setting('realm', ''));
+  }
+ 
+  if (!$res['password']) {
+    if (!$create) return false;
+
+    $data = array('userName' => $user->name,
+		  'password' => $ewt->createPassword(10),
+		  'email' => $user->mail,
+		  'foreignUserId' => $user->uid,
+		  'foreignUserRealm' => ewt_setting('realm', ''),
+		  'macauthAllowed' => coova_radius_setting('provision_user_mac_auth', 'false'),
+		  'ownsAccessPoints' => coova_radius_setting('provision_user_owns_aps', 'false'),
+		  'ownsClientDevices' => coova_radius_setting('provision_user_owns_devices', 'false'),
+		  'attributeSetId' => coova_radius_setting('attribute_set_id', null),
+		  'homeNetworkId' => coova_radius_setting('network_id', '1'),
+		  'realmId' => coova_radius_setting('realm_id', false),
+		  'calledStationId' => $_SESSION['called'],
+		  'callingStationId' => $_SESSION['mac']);
+
+    if ($withnet) {
+      $net = coova_radius_setting('network_id', false);
+      
+      if ($net) {
+	$data['netUser'] = 
+	  array('networkId' => $net,
+		'accessPolicyId' => coova_radius_setting('access_policy_id', null));
+      }
+    }
+
+    $res = $ewt->createUser($data);
+    
+    if (coova_radius_setting('provisioning', '') == 'oneCode') {
+      
+      if (!$ewt->hasAccessCodes($res['uid'])) {
+	
+	$data = array('accessPolicyId' => coova_radius_setting('access_policy_id', null),
+		      'networkId' => coova_radius_setting('network_id', null),
+		      'realmId' => coova_radius_setting('realm_id', false),
+		      'ownerId' => $res['uid'],
+		      'ownerSessionUser' => 'true',
+		      'macAuthLast' => 'true',
+		      'calledStationId' => $_SESSION['called'],
+		      'callingStationId' => $_SESSION['mac']);
+	
+	$res = $ewt->provisionAccessCode($data);
+      }
+      
+      if ($res['password']) {
+	// success
+      }
+    }
+  }
+
+  return $res;
+}
+
+function coova_radius_hotspot_dologin() {
+  global $user;
+  
+  $ewt = coova_radius_client();
+  
+  if (hotspot_get_param('res') == 'notyet') {
+
+    if (coova_radius_setting('provisioning', '') == 'users') {
+
+      if (!$user->uid) {
+
+	drupal_set_message('<b>Users</b>: Login to Drupal to gain access to the Internet.',
+			   'status', false);
+
+      } else if (coova_radius_check_roles()) {
+
+	drupal_set_message('<b>Roles</b>: You do not have permission to use Internet.',
+			   'status', false);
+
+      } else {
+
+	$res = coova_radius_get_user($user, true, true);
+
+	if ($res['password']) {
+	  return coova_radius_voucher($ewt, $res['userName'], $res['password']);
+	}
+      }
+    }
+
+    if (coova_radius_setting('provisioning', '') == 'codes') {
+      
+      $usr = coova_radius_get_user($user);
+      
+      $data = array('accessPolicyId' => coova_radius_setting('access_policy_id', null),
+		    'networkId' => coova_radius_setting('network_id', null),
+		    'realmId' => coova_radius_setting('realm_id', false),
+		    'ownerSessionUser' => 'true',
+		    'ownerId' => $usr['id'],
+		    'calledStationId' => $_SESSION['called'],
+		    'callingStationId' => $_SESSION['mac']);
+      
+      $res = $ewt->provisionAccessCode($data);
+      
+      if ($res['password']) {
+	return coova_radius_voucher($ewt, $res['username'], $res['password']);
+      }
+    }
+  }
+
+  if ($_REQUEST['payment'] == 'cancel') {
+  }
+
+  if ($_REQUEST['payment'] == 'return') {
+
+    $enckey = coova_radius_setting('cookie_key', '');
+    $data = $ewt->decrypt($_REQUEST['o'], $enckey);
+
+    if (is_array($data) && $data['accessPolicyId']) {
+
+      $data = array('accessPolicyId' => $data['accessPolicyId'],
+		    'networkId' => $data['networkId'],
+		    'realmId' => $data['realmId'],
+		    'calledStationId' => $_SESSION['called'],
+		    'callingStationId' => $_SESSION['mac']);
+
+      if (isset($_REQUEST['token'])) {
+	$data['paymentToken'] = $_REQUEST['token'];
+	if (isset($_REQUEST['PayerID'])) {
+	  $data['customerId'] = $_REQUEST['PayerID'];
+	}
+      }
+
+      // wait up to 60 seconds for the 
+      // notification callback
+      $timeout = time() + 60;
+
+      do {
+	$res = $ewt->provisionByPayment($data);
+	$result = coova_radius_voucher($ewt, $res['username'], $res['password']);
+	if ($result) return $result;
+	sleep(1);
+      } 
+      while (time() < $timeout);
+
+      $_SESSION['paymentError'] = true;
+      return $result;
+    }
+  }
+
+  if ($_REQUEST['payment'] == 'start') {
+
+    $enckey = coova_radius_setting('cookie_key', '');
+    $data = $ewt->decrypt($_REQUEST['o'], $enckey);
+
+    $_SESSION['paymentError'] = false;
+      
+    if (is_array($data) && $data['paymentProfileId']) {
+					  
+      $data = array('paymentAmount' => $data['price'], 
+		    'paymentType' => 'Sale', 
+		    'returnUrl' => url('hotspot',array('query'=>'payment=return&o='.
+						       urlencode($_REQUEST['o']),'absolute'=>true)),
+		    'cancelUrl' => url('hotspot',array('query'=>'payment=cancel&o='.
+						       urlencode($_REQUEST['o']),'absolute'=>true)),
+		    'paymentProfileId' => $data['paymentProfileId'],
+		    'accessPolicyId' => $data['accessPolicyId'],
+		    'calledStationId' => $_SESSION['called'],
+		    'callingStationId' => $_SESSION['mac']);
+      
+      $res = $ewt->provisionByPayment($data);
+      
+      $url = $res['redirectUrl'];
+      if (isset($_REQUEST['append'])) {
+	$url = $url.'&'.$_REQUEST['append'];
+      }
+
+      if ($url) {
+	header('Location: '. "".$url, TRUE, 302);
+	exit();
+      }
+      else {
+	// report an error about the paypal profile not working
+	// var_dump($data);
+      }
+    }
+  }
+
+  return null;
+}
+
+function coova_radius_hotspot_intercept() {
+  global $user;
+  
+  if ($_REQUEST['payment'] == 'notification') {
+
+    $data = array('type' => $_GET['type'],
+		  'username' => $_SERVER['PHP_AUTH_USER'],
+		  'password' => $_SERVER['PHP_AUTH_PW'],
+		  'request' => $_REQUEST,
+		  'post' => file_get_contents('php://input'));
+
+    $ewt = coova_radius_client();
+    $res = $ewt->paymentNotification($data);
+
+    header('Content-type: text/xml');
+    print $res;
+
+    exit;
+  }
+
+  return false;
+}
+
+function coova_check_access_point() {
+  $ewt = coova_radius_client();
+  $ap = $ewt->getAccessPointByAddr();
+  var_dump($ap);
+  if (!isset($ap)) { 
+    return $ap;
+  } else {
+    return false;
+  }
+}
+
+function coova_check_client_device() {
+  $ewt = coova_radius_client();
+  $data = array('mac'=>hotspot_get_param('mac'),
+		'networkId'=>$_SESSION['networkId']
+		);
+  $check = $ewt->checkClientDevice($data);
+  return $check;
+}
+
+function coova_radius_user_access_code() {
+  global $user;
+
+  if ($code = __req_get_cache('product_code')) {
+    return $code;
+  }
+
+  if ($user->uid) {
+    $usr = coova_radius_get_user($user);
+    if ($usr) {
+      $ewt = coova_radius_client();
+      $codes = $ewt->checkUserAccessCodes($usr['uid']);
+      if (is_array($codes)) {
+	foreach ($codes as $code) {
+	  __req_put_cache('product_code', $code);
+	  return $code;
+	}
+      }
+    }
+  }
+
+  return false;
+}
+
+function coova_radius_last_user_access_code() {
+  global $user;
+  if ($user->uid) {
+    $usr = coova_radius_get_user($user);
+    if ($usr) {
+      $ewt = coova_radius_client();
+      $codes = $ewt->lastUserAccessCodes($usr['uid']);
+      if (is_array($codes)) {
+	foreach ($codes as $code) {
+	  return $code;
+	}
+      }
+    }
+  }
+  return false;
+}
+
+function coova_radius_voucher_status(&$code) {
+  if (is_array($code) && $code['accessVoucherId']) {
+    $ewt = coova_radius_client();
+    $res = $ewt->checkAccessVoucher($code['accessVoucherId']);
+    if (is_array($res)) {
+      foreach ($res as $r) {
+	return $r;
+      }
+    }
+  }
+  return  false;
+}
+
+function coova_radius_anon_loginurl() {
+  global $user;
+
+  if (!$user->uid && coova_radius_setting('anon_provisioning', '') == 'otp') {
+
+    $attributes = coova_radius_setting('anon_provisioning_attributes', '');
+
+    $ewt = coova_radius_client();
+
+    $res = $ewt->provisionOneTimePassword($_SESSION['called'], $_SESSION['mac'], split("\n", $attributes));
+    
+    if ($res['password']) {
+      require_once drupal_get_path('module', 'hotspot').'/hotspot.inc';
+
+      return hotspot_login_url($res['username'], $res['password']);
+    } 
+  }
+
+  return false;
+}
+
+function coova_radius_cookie_loginurl() {
+  if (($key = coova_radius_setting('cookie_key', '')) != '') {
+    $cookieKey = 'CoovaRADIUS_N'.$_SESSION['networkId'];
+    $cookie = $_COOKIE[$cookieKey];
+    if ($cookie) {
+      $ewt = coova_radius_client();
+      $res = $ewt->decrypt($cookie, $key);
+      $res = $ewt->checkAccessCode($res['username'], $_SESSION['realmId']);
+      if ($res['username']) {
+	require_once drupal_get_path('module', 'hotspot').'/hotspot.inc';
+
+	return hotspot_login_url($res['username'], $res['password']);
+      } else {
+	  setcookie($cookieKey, '', time()-3600, '/');
+      }
+    }
+  }
+
+  return null;
+}
+
+function coova_radius_policy_loginurls() {
+  $free = false;
+  $list = array();
+
+  if ($result = __req_get_cache('policy_urls')) {
+    return $result;
+  }
+
+  $ewt = coova_radius_client();
+
+  $p = $ewt->getAccessPoliciesForNetwork($_SESSION['networkId']);
+
+  $enckey = coova_radius_setting('cookie_key', '');
+
+  if (is_array($p)) {
+    foreach ($p as $n => $r) { 
+      if ($r['buyOnline'] == true) {
+
+	if (!$pp) {
+	  $pp = $ewt->getPaymentProfilesForOwner($_SESSION['networkOwnerId'], 
+						 $_SESSION['networkId'], 1);
+	}
+
+	if ($pp && $r['price'] > 0) {
+	  $o = array();
+	  $o['realmId'] = $_SESSION['realmId'];
+	  $o['networkId'] = $_SESSION['networkId'];
+	  $o['paymentProfileId'] = $pp['uid'];
+	  $o['accessPolicyId'] = $r['uid'];
+	  $o['price'] = $r['price'];
+	  $o['url'] = url('hotspot', array('query'=>'payment=start&o='.$ewt->encrypt($o, $enckey)));
+	  $o['name'] = $r['name'];
+	  $o['type'] = $pp['typename'];
+	  $list[] = $o;
+	} else if (!isset($newUserPolicy)) {
+	  $newUserPolicy = $r;
+	}
+      }
+    }
+    
+    if (coova_radius_autologin_policy() && is_array($newUserPolicy)) {
+
+      $data = array('accessPolicyId' => $newUserPolicy['uid'],
+		    'realmId' => $_SESSION['realmId'],
+		    'ownerId' => $_SESSION['networkOwnerId'],
+		    'networkId' => $_SESSION['networkId'],
+		    );
+
+      if ($_SESSION['mac'] != "" && $_SESSION['realmId'] != "") {
+	$res = $ewt->provisionMacBasedAccessCode('otp-', 
+						 $_SESSION['mac'], 
+						 $_SESSION['realmId'],
+						 $data);
+//  var_dump( $res );
+	
+	if ($res['password']) {
+	  require_once drupal_get_path('module', 'hotspot').'/hotspot.inc';
+
+	  $free = hotspot_login_url($res['username'], $res['password']);
+	}
+      } else if ($_SESSION['mac'] == "") {
+	$free = '/not_at_a_hotspot';
+      }
+    }
+  }
+
+  $result = array('list'=>$list, 'free'=>$free);
+  __req_put_cache('policy_urls', $result);
+
+  return $result; 
+}
+
+function coova_radius_free_link() {
+  if ($urls = coova_radius_policy_loginurls()) {
+    if (isset($urls['free'])) {
+      return $urls['free'];
+    }
+  }
+  return false;
+}
+
+function coova_radius_hotspot_links() {
+
+  if ($url = coova_radius_anon_loginurl()) {
+      $content .= '<p><a href="'.$url.'">Click here for your free access</a></p>';
+  }
+
+  if (coova_radius_policies()) {
+
+    if ($url = coova_radius_cookie_loginurl()) {
+      $content .= '<p><a href="'.$url.'">Click here to use existing access voucher</a></p>';
+    }
+
+    if ($urls = coova_radius_policy_loginurls()) {
+
+      if (coova_radius_payment_policies()) {
+
+	foreach ($urls['list'] as $o) {
+
+	  if (strpos($o['type'], 'paypal') === 0) {
+	    $image = 'https://www.paypal.com/en_US/i/btn/btn_paynow_LG.gif';
+	  } else if ($o['type'] == 'checkout') {
+	    $image = '/'.drupal_get_path('theme', 'openmesh').'/images/google_buy.gif';
+	  }
+
+	  $content .= '<div class="payment"><a class="payment" href="'.$o['url'].'">'.$o['name'].'<input class="payment" type="image" src="'.$image.'" border="0" name="submit"></a></div>';
+
+	}
+      }
+
+      if ($urls['free']) {
+	$content .= '<p><a href="'.$urls['free'].'">Click here for your free access</a></p>';
+      }
+    }
+  }
+
+  return $content;
+}
+
+function coova_radius_policies() {
+  return coova_radius_setting('use_policies', 'true') == 'true';
+}
+
+function coova_radius_payment_policies() {
+  return coova_radius_setting('use_payment_policies', 'false') == 'true';
+}
+
+function coova_radius_autologin_policy() {
+  return coova_radius_setting('autologin_policies', 'true') == 'true';
+}
+
+function coova_radius_network_options() {
+  $ewt = coova_radius_client();
+  $list = $ewt->getNetworks();
+  if ($list) {
+    $options = array();
+    $options[] = '[ select one ]';
+    foreach ($list as $o) { $options[$o['uid']] = $o['name']; }
+    return $options;
+  } else {
+    return false;
+  }
+}
+
+function coova_radius_realm_options() {
+  $ewt = coova_radius_client();
+  $list = $ewt->getRealms();
+  if ($list) {
+    $options = array();
+    $options[] = '[ select one ]';
+    foreach ($list as $o) { $options[$o['uid']] = $o['realm']; }
+    return $options;
+  } else {
+    return false;
+  }
+}
+
+function coova_radius_policy_options($forNetwork = false) {
+  $ewt = coova_radius_client();
+
+  if ($forNetwork) $list = $ewt->getAccessPoliciesForNetwork($forNetwork);
+  else $list = $ewt->getAccessPolicies();
+
+  if ($list) {
+    $options = array();
+    $options[] = '[ select one ]';
+    foreach ($list as $o) { $options[$o['uid']] = $o['name']; }
+    return $options;
+  } else {
+    return false;
+  }
+}
+
+function coova_radius_attributeset_options() {
+  $ewt = coova_radius_client();
+  $list = $ewt->getAttributeSets();
+  if ($list) {
+    $options = array();
+    $options[] = '[ select one ]';
+    foreach ($list as $o) { $options[$o['uid']] = $o['name']; }
+    return $options;
+  } else {
+    return false;
+  }
+}
+
+
+function __req_get_cache($n) {
+  $key = '__'.$n.'__';
+  $has_key = '__has_'.$n.'__';
+
+  if ($_REQUEST[$has_key]) {
+    if (!isset($_GET[$key]) && 
+	!isset($_POST[$key]) &&
+	!isset($_COOKIE[$key]) &&
+	is_array($_REQUEST[$key])) {
+      return $_REQUEST[$key];
+    }
+  }
+
+  return false;
+}
+
+function __req_put_cache($n, $value) {
+  $key = '__'.$n.'__';
+  $has_key = '__has_'.$n.'__';
+
+  $_REQUEST[$has_key] = true;
+  $_REQUEST[$key] = $value;
+}
+

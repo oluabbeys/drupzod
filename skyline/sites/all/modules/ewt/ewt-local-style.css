@@ -1,0 +1,12 @@
+.body {
+  position: relative;
+}
+
+.ewtWidget table, .ewtWidget tbody {
+  border: 0;
+  margin: 0;
+}
+
+dl dd {
+  font-weight: normal;
+}

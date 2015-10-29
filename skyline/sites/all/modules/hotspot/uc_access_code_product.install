@@ -1,0 +1,66 @@
+<?php
+/**
+ * Drupal HotSpot Module * http://drupal.org/project/Hotspot
+ * Copyright 2008-2011 (c) Coova Technologies, LLC.
+ * Licensed under the GNU General Public License.
+ */
+
+function uc_access_code_product_schema() {
+  $schema = array();
+
+  $schema['uc_access_code_products'] = 
+    array(
+	  'description' => t('Access code product information for nodes.'),
+	  'fields' => 
+	  array(
+		'nid' => 
+		array(
+		      'description' => t('The product node id.'),
+		      'type' => 'int',
+		      'unsigned' => TRUE,
+		      'not null' => TRUE,
+		      'default' => 0,
+		      ),
+		'access_policy' => 
+		array(
+		      'description' => t('Access policy (from CoovaRADIUS).'),
+		      'type' => 'int',
+		      'unsigned' => TRUE,
+		      'not null' => TRUE,
+		      'default' => 0,
+		      ),
+		'mac_auth_last' => 
+		array(
+		      'description' => t('Auto-MAC Authenticate.'),
+		      'type' => 'int',
+		      'default' => 0,
+		      ),
+		),
+	  'primary key' => array('nid'),
+	  );
+
+  return $schema;
+}
+
+function uc_access_code_product_install() {
+  drupal_install_schema('uc_access_code_product');
+}
+
+function uc_access_code_product_uninstall() {
+  drupal_uninstall_schema('uc_access_code_product');
+}
+
+function uc_access_code_product_update_6101() {
+  $ret = array();
+
+  $new_field = 
+    array(
+	  'type' => 'int',
+	  'default' => 0,
+	  'description' => t('Auto-MAC Authenticate.'),
+	  );
+  
+  db_add_field($ret, 'uc_access_code_products', 'mac_auth_last', $new_field);
+
+  return $ret;
+}

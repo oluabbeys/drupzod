@@ -1,0 +1,555 @@
+<?php
+/**
+ * Drupal HotSpot Module * http://drupal.org/project/Hotspot
+ * Copyright 2008-2011 (c) Coova Technologies, LLC.
+ * Licensed under the GNU General Public License.
+ */
+
+/*
+ *  Module to extend Ubercart for integration with CoovaRADIUS access code sales.
+ */
+
+function uc_access_code_product_menu() {
+  $items = array();
+
+  $items['admin/store/settings/products/edit/access-code-products'] = array(
+    'title' => 'Access products',
+    'description' => 'Configure the access code product settings.',
+    'access arguments' => array('administer access code products'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_access_code_product_settings_form'),
+    'file' => 'uc_access_code_product.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+
+  return $items;
+}
+
+function uc_access_code_product_perm() {
+  return array('administer access code products');
+}
+
+function uc_access_code_product_nodeapi(&$node, $op, $arg3 = null, $arg4 = null) {
+  switch ($op) {
+    case 'update':
+      break;
+  }
+}
+
+function uc_access_code_product_views_api() {
+  return array(
+    'api' => '2.0',
+    'path' => drupal_get_path('module', 'hotspot') .'/uc_access_code_product_views',
+  );
+}
+
+function uc_access_code_product_access($op, $node, $account) {
+  switch ($op) {
+  case 'create':
+    return user_access('create products');
+  case 'update':
+  case 'delete':
+    if ($account->uid == $node->uid) {
+      return user_access('edit own products');
+    }
+    else {
+      return user_access('edit products');
+    }
+  }
+}
+
+function uc_access_code_product_product_types() {
+  return array('access_code_product');
+}
+
+function uc_access_code_product_enable() {
+  $node_type = node_get_types('type', 'access_code_product');
+  if ($node_type->module == 'node') {
+    $node_type->module = 'uc_access_code_product';
+    $node_type->custom = 0;
+    node_type_save($node_type);
+  }
+}
+
+function uc_access_code_product_disable() {
+  $node_type = node_get_types('type', 'access_code_product');
+  $node_type->module = 'node';
+  $node_type->custom = 1;
+  node_type_save($node_type);
+}
+
+function uc_access_code_product_node_info() {
+  return array('access_code_product' => 
+	       array('name' => t('Access Code Product'),
+		     'module' => 'uc_access_code_product',
+		     'description' => t('This product represents an access code for WiFi access.'),
+		     'title_label' => t('Name'),
+		     'body_label' => t('Description'),
+		     ),
+	       );
+}
+
+function uc_access_code_product_forms($form_id, $args) {
+  $forms = array();
+  if (is_object($args[0]) && isset($args[0]->type)) {
+    $product = $args[0];
+    if (in_array($product->type, array_keys(uc_access_code_product_node_info()))) {
+      $forms['uc_product_add_to_cart_form_'. $product->nid] = array('callback' => 'uc_product_add_to_cart_form');
+      $forms['uc_catalog_buy_it_now_form_'. $product->nid] = array('callback' => 'uc_catalog_buy_it_now_form');
+    }
+  }
+  return $forms;
+}
+
+function uc_access_code_product_insert(&$node) {
+  $obj = new stdClass();
+  $obj->vid = $node->vid;
+  $obj->nid = $node->nid;
+  $obj->sell_price = $node->sell_price;
+  $obj->access_policy = $node->access_policy;
+  $obj->mac_auth_last = $node->mac_auth_last;
+  if (!isset($obj->mac_auth_last)) $obj->mac_auth_last = 0;
+
+  $obj->model = '';
+  $obj->list_price = 0;
+  $obj->cost = 0;
+  $obj->weight = 0;
+  $obj->weight_units = '';
+  $obj->ordering = $node->ordering;
+  $obj->shippable = false;
+  $obj->default_qty = 1;
+
+  $success = 
+    db_query("INSERT INTO {uc_products} (vid, nid, model, list_price, cost, ".
+	     "sell_price, weight, weight_units, default_qty, unique_hash, ".
+	     "ordering, shippable) VALUES ".
+	     "(%d, %d, '%s', %f, %f, %f, %f, '%s', %d, '%s', %d, %d)",
+	     $obj->vid, $obj->nid, $obj->model, $obj->list_price, $obj->cost, 
+	     $obj->sell_price, $obj->weight, $obj->weight_units, $obj->default_qty,
+	     md5($obj->vid . $obj->nid . $obj->model . $obj->list_price . 
+		 $obj->cost . $obj->sell_price . $obj->weight . $obj->weight_units . 
+		 $obj->default_qty . $obj->ordering . $obj->shippable . time()),
+	     $obj->ordering, $obj->shippable);
+  
+  if ($success) {
+    $pid = db_last_insert_id('uc_products', 'pid');
+    db_query("INSERT INTO {uc_access_code_products} (nid, access_policy, mac_auth_last) VALUES (%d, %d, %d)", $obj->nid, $obj->access_policy, $obj->mac_auth_last);
+  }
+}
+
+function uc_access_code_product_update(&$node) {
+  $obj = new stdClass();
+  $obj->vid = $node->vid;
+  $obj->nid = $node->nid;
+  $obj->sell_price = $node->sell_price;
+  $obj->access_policy = $node->access_policy;
+  $obj->mac_auth_last = $node->mac_auth_last;
+  if (!isset($obj->mac_auth_last)) $obj->mac_auth_last = 0;
+
+  $obj->model = '';
+  $obj->list_price = 0;
+  $obj->cost = 0;
+  $obj->weight = 0;
+  $obj->weight_units = '';
+  $obj->default_qty = 1;
+  $obj->ordering = $node->ordering;
+  $obj->shippable = false;
+
+  if ($node->revision) {
+    db_query("INSERT INTO {uc_products} (vid, nid, model, list_price, cost, sell_price, weight, weight_units, default_qty, unique_hash, ordering, shippable) VALUES (%d, %d, '%s', %f, %f, %f, %f, '%s', %d, '%s', %d, %d)",
+	     $obj->vid, $obj->nid, $obj->model, $obj->list_price, $obj->cost, $obj->sell_price, $obj->weight, $obj->weight_units, $obj->default_qty,
+	     md5($obj->vid . $obj->nid . $obj->model . $obj->list_price . $obj->cost . $obj->sell_price . $obj->weight . $obj->weight_units . $obj->default_qty . $obj->ordering . time()),
+	     $obj->ordering, $obj->shippable
+	     );
+  }
+  else {
+    db_query("UPDATE {uc_products} SET sell_price = %f, ordering = %d WHERE vid = %d",
+	     $obj->sell_price, $obj->ordering, $obj->vid);
+    if (!db_affected_rows()) {
+      db_query("INSERT INTO {uc_products} (vid, nid, model, list_price, cost, sell_price, weight, weight_units, default_qty, unique_hash, ordering, shippable) VALUES (%d, %d, '%s', %f, %f, %f, %f, '%s', %d, '%s', %d, %d)",
+	       $obj->vid, $obj->nid, $obj->model, $obj->list_price, $obj->cost, $obj->sell_price, $obj->weight, $obj->weight_units, $obj->default_qty,
+	       md5($obj->vid . $obj->nid . $obj->model . $obj->list_price . $obj->cost . $obj->sell_price . $obj->weight . $obj->weight_units . $obj->default_qty . $obj->ordering . $obj->shippable . time()),
+	       $obj->ordering, $boj->shippable
+	       );
+    }
+  }
+
+  db_query("UPDATE {uc_access_code_products} SET access_policy = %d, mac_auth_last = %d WHERE nid = %d", $obj->access_policy, $obj->mac_auth_last, $obj->nid);
+  if (!db_affected_rows()) {
+    db_query("INSERT INTO {uc_access_code_products} (nid, access_policy, mac_auth_last) VALUES (%d, %d, %d)", $obj->nid, $obj->access_policy, $obj->mac_auth_last);
+  }
+}
+
+function uc_access_code_product_delete(&$node) {
+  db_query("DELETE FROM {uc_products} WHERE nid = %d", $node->nid);
+  db_query("DELETE FROM {uc_access_code_products} WHERE nid = %d", $node->nid);
+}
+
+function uc_access_code_product_load(&$node) {
+  $obj = new stdClass();
+
+  if ($extra = uc_product_load($node)) {
+    foreach ($extra as $key => $value) {
+      $obj->$key = $value;
+    }
+  }
+
+  if ($extra = db_fetch_object(db_query('SELECT access_policy, mac_auth_last FROM {uc_access_code_products} WHERE nid = %d', $node->nid))) {
+    foreach ($extra as $key => $value) {
+      $obj->$key = $value;
+    }
+  }
+
+  return $obj;
+}
+
+function uc_access_code_product_form(&$node) {
+  $form = array();
+
+  $form['title'] = array('#type' => 'textfield',
+    '#title' => t('Name'),
+    '#required' => TRUE,
+    '#weight' => -5,
+    '#default_value' => $node->title,
+    '#description' => t('Name of the access code product')
+  );
+
+  $form['body_filter']['body'] = array('#type' => 'textarea',
+    '#title' => t('Description'),
+    '#required' => FALSE,
+    '#default_value' => $node->body,
+    '#rows' => 20,
+    '#description' => t('Explain these product.'),
+  );
+
+  $form['body_filter']['format'] = filter_form($node->format);
+  $form['body_filter']['#weight'] = -4;
+
+  $product_types = module_invoke_all('product_types');
+  unset($product_types[array_search('access_code_product', $product_types)]);
+
+  $form['base'] = array('#type' => 'fieldset',
+    '#title' => t('Product Information'),
+    '#collapsible' => true,
+    '#collapsed' => false,
+    '#weight' => -1,
+    '#attributes' => array('class' => 'product-field'),
+  );
+
+  $options = coova_radius_policy_options(coova_radius_setting('network_id', false));
+  if ($options) {
+    $form['base']['access_policy'] = 
+      array('#type' => 'select',
+	    '#required' => TRUE,
+	    '#title' => 'Access Policy',
+	    '#default_value' => $node->access_policy,
+	    '#options' => $options
+	    );
+  } else {
+    $form['base']['access_policy'] = 
+      array('#type' => 'markup',
+	    '#value' => 'Could not connect to CoovaRADIUS!'
+	    );
+  }
+
+  $sign_flag = variable_get('uc_sign_after_amount', FALSE);
+  $currency_sign = variable_get('uc_currency_sign', '$');
+
+  $form['base']['sell_price'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Sell price'),
+    '#required' => TRUE,
+    '#default_value' => $node->sell_price,
+    '#description' => t('Customer purchase price.'),
+    '#precision' => 2,
+    '#weight' => 2,
+    '#size' => 20,
+    '#maxlength' => 35,
+    '#field_prefix' => $sign_flag ? '' : $currency_sign,
+    '#field_suffix' => $sign_flag ? $currency_sign : '',
+  );
+
+  $form['base']['mac_auth_last'] = 
+    array('#type' => 'checkbox',
+	  '#title' => 'Auto MAC-Authenticate last client device',
+	  '#default_value' => $node->mac_auth_last,
+	  '#description' => 'Check to have the access codes auto MAC authenticate'
+	  );
+
+  $form['base']['ordering'] = array('#type' => 'weight',
+    '#title' => t('List order'),
+    '#delta' => 25,
+    '#default_value' => $node->ordering,
+    '#weight' => 30,
+  );
+
+  return $form;
+}
+
+function uc_access_code_product_view($node, $teaser = 0, $page = 0) {
+  global $user;
+
+  $node = node_prepare($node, $teaser);
+
+  $enabled = variable_get('uc_product_field_enabled', array(
+    'display_price' => 1,
+    'add_to_cart' => 1,
+  ));
+
+  $weight = variable_get('uc_product_field_weight', array(
+    'display_price' => -1,
+    'add_to_cart' => 10,
+  ));
+
+  $node->content['display_price'] = 
+    array('#value' => 
+	  theme('uc_access_code_product_display_price', $node->sell_price),
+	  '#access' => $enabled['display_price'],
+	  '#weight' => $weight['display_price'],
+	  );
+
+  if (!$teaser) {
+    $node->content['body']['#weight'] = 1;
+  }
+  else {
+    $node->content['#attributes'] = array('style' => 'display: inline');
+  }
+
+  if (!$teaser) {
+    if (module_exists('uc_cart')) {
+      $node->content['add_to_cart'] = 
+	array('#value' => theme('uc_access_code_product_add_to_cart', $node),
+	      '#access' => $enabled['add_to_cart'],
+	      '#weight' => $weight['add_to_cart'],
+	      );
+    }
+  }
+  else if (module_exists('uc_cart') && variable_get('uc_product_add_to_cart_teaser', true)) {
+    $node->content['add_to_cart'] = 
+      array('#value' => theme('uc_access_code_product_add_to_cart', $node),
+	    '#access' => $enabled['add_to_cart'],
+	    '#weight' => $weight['add_to_cart'],
+	    );
+  }
+
+  //print '<pre>'. print_r($node, true) .'</pre>';
+  return $node;
+}
+
+function uc_ac_setting($name, $value) {
+  return variable_get('uc_access_code_product_'.$name, $value);
+}
+
+function uc_access_code_product_hotspot_dologin() {
+  global $user;
+
+  if ($user->uid && 
+      hotspot_get_param('res') == 'notyet' && 
+      uc_ac_setting('dologin', 1) == 1) {
+    return has_access_code_product();
+  }
+}
+
+function has_access_code_product() {
+  return coova_radius_user_access_code();
+}
+
+function uc_access_code_product_block($op = 'list', $delta = 0, $edit = array()) {
+  global $user;
+  
+  switch ($op) {
+  case 'list':
+    $blocks = array();
+    $blocks[0]['info'] = t('Available access codes');
+    return $blocks;
+    
+  case 'view':
+    $block = array();
+    if ($delta == 0) {
+      if ($user->uid) {
+	if ($_SESSION['hotspot'] == 'true' && $_SESSION['res'] == 'notyet') {
+	  $usr = coova_radius_get_user($user);
+	  $cnt = 0;
+	  if ($usr) {
+	    $ewt = coova_radius_client();
+	    $codes = $ewt->checkUserAccessCodes($usr['uid']);
+	    if (is_array($codes)) {
+	      $content .= '<ul>';
+	      foreach ($codes as $code) {
+		$url = hotspot_login_url($code['username'], $code['password']);
+		$content .= '<li><a href="'.$url.'">Login with code</a>';
+		$cnt++;
+	      }
+	      $content .= '</ul>';
+	    }
+	  }
+	  if ($cnt > 0) {
+	    $block['subject'] = 'Your access codes';
+	    $block['content'] = $content;
+	  }
+	}
+      }
+    }
+    return $block;
+  }
+}
+
+function uc_access_code_product_order($op, &$order, $arg2) {
+  switch ($op) {
+    case 'new':
+      $ewt = $_SESSION['ewtSession'];
+      if (is_array($ewt)) {
+	$order->data = array();
+	foreach ($ewt as $n => $v)
+	  $order->data[$n] = $v;
+	uc_order_save($order);
+      }
+      break;
+
+    case 'update':
+      $odata = $order->data;
+      if ($arg2 == 'payment_received') {
+        foreach ($order->products as $product) {
+          $pdata = $product->data;
+          if ($pdata['access_policy']) {
+	    $u = user_load($order->uid);
+	    $usr = coova_radius_get_user($u);
+	    $ewt = coova_radius_client();
+	    $cnt = $product->qty;
+
+	    while ($cnt > 0) {
+
+	      $d = array('ownerId' => $usr['uid'],
+			 'accessPolicyId' => $pdata['access_policy'],
+			 'networkId' => coova_radius_setting('network_id', null),
+			 'realmId' => coova_radius_setting('realm_id', false),
+			 'price' => $product->price,
+			 'ownerSessionUser' => 'true',
+			 'macAuthLast' => ($pdata['mac_auth_last'] ? 'true' : 'false'),
+			 'accessPointId' => $odata['accessPointId'],
+			 'calledStationId' => $odata['called'],
+			 'callingStationId' => $odata['mac']);
+	      
+	      $res = $ewt->provisionAccessCode($d);
+	      $cnt--;
+	    }
+	  }
+        }
+      }
+      break;
+  }
+}
+
+function uc_access_code_product_add_to_cart($nid, $qty, $data) {
+  global $user;
+
+  //$msg = coova_radius_setting('buy_at_hotspot', 'none');
+  $msg = coova_radius_setting('buy_at_hotspot', 'You do not appear to be at one of our locations.');
+
+  if ($msg != 'none' && !isset($_SESSION['hotspot'])) {
+    $result[] = 
+      array('success' => FALSE,'silent' => FALSE,
+	    'message' => uc_ac_setting('login', t($msg)),
+	    );
+  }
+
+  //$msg = coova_radius_setting('buy_with_access', 'none');
+  $msg = coova_radius_setting('buy_at_hotspot', 'You should already have access, so there is no need to purchase more at this time.');
+
+  if ($msg != 'none' && has_access_code_product()) {
+    $result[] = 
+      array('success' => FALSE,'silent' => FALSE,
+	    'message' => uc_ac_setting('login', t($msg)),
+	    );
+  }
+
+  $node = node_load($nid);
+  if ($node->type == 'access_code_product') {
+    $cid = uc_cart_get_id();
+    $item = db_fetch_object(db_query("SELECT * FROM {uc_cart_products} WHERE cart_id = '%s' AND nid in (select nid from {node} where type = 'access_code_product')", $cid));
+    if ($item)
+      $result[] = 
+	array('success' => FALSE, 
+	      'silent' => TRUE,
+	      'message' => uc_ac_setting('already', t('You already have an access product in your cart.')));
+  }
+
+  return $result;
+}
+
+function uc_access_code_product_add_to_cart_data($form_values) {
+  $node = node_load($form_values['nid']);
+  $data = array();
+  if ($node->type == 'access_code_product') {
+    $obj = uc_access_code_product_load($node);
+    $data['access_policy'] = $obj->access_policy;
+    $data['mac_auth_last'] = $obj->mac_auth_last;
+    $data['module'] = 'uc_access_code_product';
+  }
+  return $data;
+}
+
+function uc_access_code_product_update_cart_item($nid, $data = array(), $qty, $cid = null) {
+  if (!$nid) return NULL;
+  $cid = !(is_null($cid) || empty($cid)) ? $cid : uc_cart_get_id();
+  if ($qty < 1) {
+    uc_cart_remove_item($nid, $cid, $data);
+  }
+  else {
+    uc_product_update_cart_item($nid, $data, 1, $cid);
+  }
+}
+
+function uc_access_code_product_cart_display($item) {
+  $node = node_load($item->nid);
+
+  $element = array();
+  $element['nid'] = array('#type' => 'value', '#value' => $node->nid);
+  $element['module'] = array('#type' => 'value', '#value' => 'uc_access_code_product');
+  $element['remove'] = array('#type' => 'checkbox');
+
+  $element['options'] = '';
+  if (module_exists('uc_attribute') && is_array($item->options)) {
+    foreach ($item->options as $option) {
+      $op_names[] = $option['attribute'] .': '. $option['name'];
+    }
+    $element['options'] = array('#value' => 
+                                theme('item_list', $op_names, NULL, 'ul', 
+                                      array('class' => 'cart-options')));
+  }
+
+  $element['title'] = 
+    array('#value' => node_access('view', $node) ? l($item->title, 'node/'. $node->nid) : check_plain($item->title));
+
+  $element['qty'] = array('#type' => 'value', '#value' => 1);
+  $element['data'] = array('#type' => 'value', '#value' => serialize($item->data));
+  $element['#total'] = $item->price * $item->qty;
+
+  return $element;
+}
+
+function uc_access_code_product_theme() {
+  return 
+    array('uc_access_code_product_add_to_cart' =>
+	  array('arguments' => array('node' => NULL)),
+	  'uc_access_code_product_sell_price' => 
+	  array('arguments' => array('price' => 0, 'teaser' => FALSE)),
+	  'uc_access_code_product_display_price' => 
+	  array('arguments' => array('price' => 0)),
+  	  );
+}
+
+function theme_uc_access_code_product_add_to_cart($node) {
+  $output  = '<div class="add_to_cart" title="'. t('Click to add to cart.') .'">';
+  $output .= drupal_get_form('uc_product_add_to_cart_form', $node);
+  $output .= '</div>';
+  return $output;
+}
+
+function theme_uc_access_code_product_display_price($price) {
+  $output = '<div class="display_price">';
+  $output .= uc_currency_format($price);
+  $output .= '</div>';
+  return $output;
+}

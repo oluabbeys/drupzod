@@ -1,0 +1,28 @@
+<?php
+/**
+ * Drupal HotSpot Module * http://drupal.org/project/Hotspot
+ * Copyright 2008-2011 (c) Coova Technologies, LLC.
+ * Licensed under the GNU General Public License.
+ */
+
+/**
+ * Implementation of hook_perm().
+ */
+function coova_cart_perm() {
+  return array('administer coova cart');
+}
+
+
+/**
+ * Implementation of hook_help().
+ */
+function coova_cart_help($section) {
+  switch ($section) {
+  case 'admin/modules#description':
+    return t("Integrate with CoovaRADIUS and Ubercart for access code products. This module will limit the number of items in the shopping cart to just one! ");
+  }
+}
+
+
+
+?>

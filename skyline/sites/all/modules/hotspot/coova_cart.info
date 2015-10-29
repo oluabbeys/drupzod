@@ -1,0 +1,22 @@
+name = CoovaCart
+description = "Integration with CoovaRADIUS and Ubercart for access code products"
+package = Other
+version = "6.x-1.x-dev"
+project = "hotspot"
+datestamp = "2008112603"
+dependencies[] = 'uc_cart'
+dependencies[] = 'uc_store'
+dependencies[] = 'uc_product'
+dependencies[] = 'uc_payment'
+dependencies[] = 'coova_radius'
+dependencies[] = 'hotspot'
+dependencies[] = 'ewt'
+core = 6.x
+
+
+; Information added by drupal.org packaging script on 2013-09-30
+version = "6.x-1.x-dev"
+core = "6.x"
+project = "hotspot"
+datestamp = "1380582098"
+

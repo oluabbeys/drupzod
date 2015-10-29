@@ -1,0 +1,13 @@
+
+CoovaEWT Integration Module
+
+http://coova.org/wiki/index.php/CoovaEWT/Drupal
+
+This module does not come with the CoovaEWT application (JavaScript)
+files, that is installed separately and is not released under the
+GPL. But, this module does provide the Drupal integration - linking in
+the CoovaEWT JavaScript application and providing an Ajax proxy to the
+remote CoovaEWT enabled back-end.
+
+Copyright (c) David Bird <david@coova.com>
+Released under the Gnu Public License
