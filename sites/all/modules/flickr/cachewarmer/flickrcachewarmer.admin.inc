@@ -43,10 +43,10 @@ function flickrcachewarmer_form_flickr_admin_settings_alter(&$form, &$form_state
     '#title' => t('Content types to warm'),
     '#default_value' => variable_get('flickrcachewarmer_nodetypes', array()),
     '#options' => array_map('check_plain', $names),
-    '#description' => t('Enable cache warming for the selected node type(s). Leave empty to select all content types.'),
+    '#description' => t('Enable cache warming for the selected node type(s). Leave empty to warm all content types.'),
   );
   if (variable_get('cache_lifetime', 0) != 0) {
-    $form['cachewarmer_settings']['flickrcachewarmer_nodetypes']['#description'] = t('Enable cache warming for the selected node type(s). Leave empty to select all content types.') . '<br />' . t("NOTE: The Flickr Cache Warmer only seems to work well if you !disable_cachelifetime. Currently it is set to %lifetime.", array('!disable_cachelifetime' => $disable_cachelifetime, '%lifetime' => $lifetime));
+    $form['cachewarmer_settings']['flickrcachewarmer_nodetypes']['#description'] = t('Enable cache warming for the selected node type(s). Leave empty to warm all content types.') . '<br />' . t("NOTE: The Flickr Cache Warmer only seems to work well if you !disable_cachelifetime. Currently it is set to %lifetime.", array('!disable_cachelifetime' => $disable_cachelifetime, '%lifetime' => $lifetime));
   }
   $runcron = l(t("run cron separately"), 'admin/config/system/cron', array(
     'attributes' => array(
@@ -59,7 +59,7 @@ function flickrcachewarmer_form_flickr_admin_settings_alter(&$form, &$form_state
     '#type' => 'checkbox',
     '#title' => t("Rebuild the cache on form submit to enhance performance for all page visits after saving this form."),
     '#default_value' => variable_get('flickrcachewarmer_run', 0),
-    '#description' => t("Note that form submit will very slow. The cache will be rebuilt for the nodes of the selected content types for cache warming.") . '<br />' . t("If you get errors, try to !runcron.", array('!runcron' => $runcron)),
+    '#description' => t("Note that form submit will be very slow. The cache will be rebuilt for the nodes of the selected content types for cache warming.") . '<br />' . t("If you get errors, try to !runcron.", array('!runcron' => $runcron)),
     '#weight' => 98,
   );
 }
@@ -68,6 +68,7 @@ function flickrcachewarmer_form_flickr_admin_settings_alter(&$form, &$form_state
  * Validate user input.
  */
 function flickrcachewarmer_admin_settings_validate($form, &$form_state) {
+  // Put validation rules here.
 }
 
 /**

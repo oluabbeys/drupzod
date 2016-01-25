@@ -32,7 +32,7 @@ function read_more_install() {
 
 /**
  * Update 7000.
- * 
+ *
  * Upgrade from all Drupal 6 to Drupal 7.
  */
 function ed_readmore_update_7000() {
@@ -82,26 +82,49 @@ function ed_readmore_update_7000() {
   return array();
 }
 
+/**
+ * Rename variables per refactoring
+ */
+function read_more_update_7101() {
+  // Move the read_more_text to read_more_link_text.
+  variable_set('read_more_link_text', variable_get('read_more_text', READ_MORE_LINK_TEXT_DEFAULT));
+  variable_del('read_more_text');
+
+  return array();
+}
 
 /**
  * @} End of "addtogroup updates-6.x-to-7.x"
  */
 
+/**
+ * Delete two variables that were removed from the code long ago.
+ */
+function read_more_update_7102() {
+  variable_del('read_more_text_prepend');
+  variable_del('read_more_text_append');
+
+  return array();
+}
 
 /**
  * Implements hook_uninstall().
  */
 function read_more_uninstall() {
+  $content_types = node_type_get_types();
+
   // Remove variables.
+  foreach ($content_types as $type) {
+    variable_del('read_more_' . $type->type . '_view_modes');
+  }
   variable_del('read_more_placement');
   variable_del('read_more_remove');
   variable_del('read_more_anchor');
   variable_del('read_more_text');
-  variable_del('read_more_text_prepend');
-  variable_del('read_more_text_append');
   variable_del('read_more_title');
   variable_del('read_more_nofollow');
   variable_del('read_more_newwindow');
   variable_del('read_more_elements');
   variable_del('read_more_rss');
+  variable_del('read_more_require_body_field');
 }

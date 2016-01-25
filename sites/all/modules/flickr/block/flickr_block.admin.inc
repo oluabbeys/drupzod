@@ -21,6 +21,8 @@ function flickr_block_form_flickr_admin_settings_alter(&$form, &$form_state) {
     '#required' => TRUE,
     '#default_value' => variable_get('flickr_block_heading', 'h2'),
     '#description' => t("Use 'p' for no style, e.g. 'h2' for a heading or 'none' to not display an album title."),
+    '#field_prefix' => t('<'),
+    '#field_suffix' => t('>'),
     '#size' => 4,
     '#maxlength' => 4,
   );
@@ -32,6 +34,7 @@ function flickr_block_form_flickr_admin_settings_alter(&$form, &$form_state) {
     '#field_suffix' => t('hours.'),
     '#size' => 3,
     '#maxlength' => 3,
+    '#attributes' => array('class' => array('flickr-form-align')),
   );
   $cache_warming = l(t('cache warming'), 'https://drupal.org/node/1576686/', array(
     'attributes' => array(
@@ -48,6 +51,7 @@ function flickr_block_form_flickr_admin_settings_alter(&$form, &$form_state) {
     '#field_suffix' => t('hours.'),
     '#size' => 3,
     '#maxlength' => 3,
+    '#attributes' => array('class' => array('flickr-form-align')),
   );
   $form['block_settings']['flickr_block_photos_per_set'] = array(
     '#type' => 'textfield',
@@ -65,19 +69,19 @@ function flickr_block_form_flickr_admin_settings_alter(&$form, &$form_state) {
  * Validate user input.
  */
 function flickr_block_admin_settings_validate($form, &$form_state) {
-  $limit5 = trim($form_state['values']['flickr_block_refresh_random']);
-  $limit6 = trim($form_state['values']['flickr_block_refresh_others']);
-  $limit10 = trim($form_state['values']['flickr_block_photos_per_set']);
   // Validate refresh rate random blocks.
-  if (!is_numeric($limit5) || $limit5 < 2) {
+  $limit = trim($form_state['values']['flickr_block_refresh_random']);
+  if (!is_numeric($limit) || $limit < 2) {
     form_set_error('flickr_block_refresh_random', t('Set a number from 2 to 999.'));
   }
   // Validate refresh rate other blocks.
-  if (!is_numeric($limit6) || $limit6 < 2) {
+  $limit = trim($form_state['values']['flickr_block_refresh_others']);
+  if (!is_numeric($limit) || $limit < 2) {
     form_set_error('flickr_block_refresh_others', t('Set a number from 2 to 999.'));
   }
   // Validate photos per set.
-  if (!is_numeric($limit10) || $limit10 < 1) {
-    form_set_error('flickr_block_photos_per_set', t('Set a number from 1 to 99.'));
+  $limit = trim($form_state['values']['flickr_block_photos_per_set']);
+  if (!ctype_digit($limit) || $limit < 1) {
+    form_set_error('flickr_block_photos_per_set', t('Set an integer from 1 to 99.'));
   }
 }

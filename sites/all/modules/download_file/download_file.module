@@ -1,4 +1,5 @@
 <?php
+// $Id: download_file.module,v 1.1.6.5 2010/12/03 12:00:25 xmattx Exp $
 
 /**
  * @file
@@ -218,36 +219,34 @@ function download_file_field_formatter_info() {
 function download_file_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
 
-  if ($items) {
-    switch ($display['type']) {
-      case 'direct_download':
-        $element[0] = array(
-          '#theme' => 'download_file_formatter_direct_download',
-          '#items' => $items
-        );
-        break;
+  switch ($display['type']) {
+    case 'direct_download':
+      $element[0] = array(
+        '#theme' => 'download_file_formatter_direct_download',
+        '#items' => $items
+      );
+      break;
 
-      case 'direct_download_icon':
-        $element[0] = array(
-          '#theme' => 'download_file_formatter_direct_download_icon',
-          '#items' => $items
-        );
-        break;
+    case 'direct_download_icon':
+      $element[0] = array(
+        '#theme' => 'download_file_formatter_direct_download_icon',
+        '#items' => $items
+      );
+      break;
 
-      case 'direct_download_accessible':
-        $element[0] = array(
-          '#theme' => 'download_file_formatter_direct_download_accessible',
-          '#items' => $items
-        );
-        break;
+    case 'direct_download_accessible':
+      $element[0] = array(
+        '#theme' => 'download_file_formatter_direct_download_accessible',
+        '#items' => $items
+      );
+      break;
 
-      case 'direct_download_accessible_icon':
-        $element[0] = array(
-          '#theme' => 'download_file_formatter_direct_download_accessible_icon',
-          '#items' => $items
-        );
-        break;
-    }
+    case 'direct_download_accessible_icon':
+      $element[0] = array(
+        '#theme' => 'download_file_formatter_direct_download_accessible_icon',
+        '#items' => $items
+      );
+      break;
   }
 
   return $element;

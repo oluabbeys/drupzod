@@ -54,6 +54,12 @@ function hook_metatag_config_default() {
 }
 
 /**
+ * Allow the exported configurations to be changed prior to being cached.
+ */
+function hook_metatag_config_default_alter(&$config) {
+}
+
+/**
  * Internal hook for adding further configuration values in bundled submodules.
  *
  * The defaults provided by the main Metatag module need to be extended by the
@@ -69,19 +75,10 @@ function hook_metatag_bundled_config_alter(&$config) {
 }
 
 /**
+ * Triggered when a Metatag configuration is created.
  *
- */
-function hook_metatag_config_default_alter(&$config) {
-}
-
-/**
- *
- */
-function hook_metatag_config_delete($entity_type, $entity_ids, $revision_ids, $langcode) {
-}
-
-/**
- *
+ * @param object $config
+ *   The configuration object that was created.
  */
 function hook_metatag_config_insert($config) {
 }
@@ -118,9 +115,21 @@ function hook_metatag_config_presave($config) {
 }
 
 /**
+ * Triggered when a Metatag configuration is updated.
  *
+ * @param object $config
+ *   The configuration object that was modified.
  */
 function hook_metatag_config_update($config) {
+}
+
+/**
+ * Triggered when a Metatag configuration is removed.
+ *
+ * @param object $config
+ *   The configuration object that was removed.
+ */
+function hook_metatag_config_delete($config) {
 }
 
 /**
@@ -335,5 +344,47 @@ function hook_metatag_entity_type_is_supported_alter(&$suitable, $entity_type, $
   // ignored, e.g. it doesn't allow fields.
   if ($entity_type == 'my_entity') {
     $suitable = TRUE;
+  }
+}
+
+/**
+ * Identify the entity type provided by a specific view.
+ *
+ * When a view is used to display a page it can be difficult to identify what
+ * entity type is being managed. Use this hook to inform Metatag what type of
+ * entity is being displayed.
+ *
+ * @param object $view
+ *   The view object being displayed.
+ *
+ * @return string|NULL
+ *   Should return a string indicating an entity type that will be paired with
+ *   the views' first argument ($view->args[0]) to load that entity.
+ */
+function hook_metatag_views_post_render_get_entity($view) {
+  $display = $view->display[$view->current_display];
+  if ($display->display_options['path'] == 'coolpage/%') {
+    return 'my_entity';
+  }
+}
+
+/**
+ * Allow the context string being passed to i18n_string to be changed before
+ * it is used.
+ *
+ * If the string is set to an empty value it will cause this meta tag to not
+ * be translated.
+ *
+ * @param string $context
+ *  The context string being passed into i18n_string. Will usually be in the
+ *  format "[category]:[path-identifier]", e.g. "[node:123]", "[page:contact]",
+ *  etc.
+ * @param string $tag_name
+ *   The name of the meta tag being translated.
+ */
+function hook_metatag_i18n_context_alter(&$context, $tag_name) {
+  // Don't bother translating the canonical URL.
+  if ($tag_name == 'canonical') {
+    $context = '';
   }
 }

@@ -49,15 +49,22 @@ abstract class JuiceboxGalleryDecorator implements JuiceboxGalleryInterface {
   /**
    * {@inheritdoc}
    */
-  public function addImage($src_data = array(), $title = '', $caption = '', $filter = TRUE, $override_id = NULL, $offset = NULL) {
+  public function addImage($src_data = array(), $title = '', $caption = '', $filter = NULL, $override_id = NULL, $offset = NULL) {
     return $this->gallery->addImage($src_data, $title, $caption, $filter, $override_id, $offset);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getImages() {
-    return $this->gallery->getImages();
+  public function updateImage($image_id, $src_data = array(), $title = '', $caption = '', $filter = TRUE) {
+    return $this->gallery->updateImage($image_id, $src_data, $title, $caption, $filter);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getImages($filtered = FALSE) {
+    return $this->gallery->getImages($filtered);
   }
 
   /**
@@ -77,8 +84,8 @@ abstract class JuiceboxGalleryDecorator implements JuiceboxGalleryInterface {
   /**
    * {@inheritdoc}
    */
-  public function getOptions() {
-    return $this->gallery->getOptions();
+  public function getOptions($filtered = FALSE) {
+    return $this->gallery->getOptions($filtered);
   }
 
   /**
@@ -98,8 +105,8 @@ abstract class JuiceboxGalleryDecorator implements JuiceboxGalleryInterface {
   /**
    * {@inheritdoc}
    */
-  public function renderXml() {
-    return $this->gallery->renderXml();
+  public function renderXml($script_wrap_id = NULL) {
+    return $this->gallery->renderXml($script_wrap_id);
   }
 
   /**
@@ -112,8 +119,15 @@ abstract class JuiceboxGalleryDecorator implements JuiceboxGalleryInterface {
   /**
    * {@inheritdoc}
    */
-  public function renderJavascript($xml_path) {
-    return $this->gallery->renderJavascript($xml_path);
+  public function renderJavascript($xml_url, $add_script_tags = FALSE, $jquery_defer = FALSE) {
+    return $this->gallery->renderJavascript($xml_url, $add_script_tags, $jquery_defer);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getJavascriptVars($xml_url) {
+    return $this->gallery->getJavascriptVars($xml_url);
   }
 
 }

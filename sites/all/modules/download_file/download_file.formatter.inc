@@ -1,4 +1,5 @@
 <?php
+// $Id: download_file.formatter.inc,v 1.1.6.4 2010/12/03 12:00:25 xmattx Exp $
 
 /**
  * Theming function for displaying the link to direct download the file.

@@ -144,9 +144,9 @@ function flickr_request($method, $args, $cacheable = TRUE, $return_errors = FALS
     $message = t('Automatic fallback to the cURL connection method kicked in to handle the request. Result code from the failing request') . ': ' . $result->code;
     drupal_set_message($message, 'warning', FALSE);
     watchdog('flickr', $message, array(), WATCHDOG_WARNING);
-    if ($return_errors) {
+    if ($return_errors && $result->code != 200) {
       // Debug info.
-      if (variable_get('flickr_debug', 0) == 2 && module_exists('devel')) {
+      if (variable_get('flickr_debug', 0) == 2 && function_exists('dpm')) {
         dpm("Value of error 'result' in 'function flickr_request()' with connection method " . "'" . $cmethod . "' in 'flickr.inc':");
         dpm($result);
       }
@@ -162,7 +162,7 @@ function flickr_request($method, $args, $cacheable = TRUE, $return_errors = FALS
     // Even the cURL method returns an error.
     if ($result->code != 200) {
       // Debug info.
-      if (variable_get('flickr_debug', 0) == 2 && module_exists('devel')) {
+      if (variable_get('flickr_debug', 0) == 2 && function_exists('dpm')) {
         dpm("Value of 'result' with error in 'function flickr_request()' with connection method " . "'" . $cmethod . "' in 'flickr.inc':");
         dpm($result);
       }
@@ -177,7 +177,7 @@ function flickr_request($method, $args, $cacheable = TRUE, $return_errors = FALS
 
   }
   // Debug info.
-  if (variable_get('flickr_debug', 0) == 2 && module_exists('devel')) {
+  if (variable_get('flickr_debug', 0) == 2 && function_exists('dpm')) {
     dpm("Value of 'result' in 'function flickr_request()' with the " . "'" . $cmethod . "' connection method in 'flickr.inc':");
     dpm($result);
   }
@@ -263,7 +263,7 @@ function flickr_request($method, $args, $cacheable = TRUE, $return_errors = FALS
  */
 function flickr_img($photo, $size = NULL, $attributes = NULL) {
   // Debug info.
-  if (variable_get('flickr_debug', 0) == 2 && module_exists('devel')) {
+  if (variable_get('flickr_debug', 0) == 2 && function_exists('dpm')) {
     dpm("Value of 'photo' passed to 'function flickr_img()' in 'flickr.inc':");
     dpm($photo);
   }
@@ -284,17 +284,11 @@ function flickr_img($photo, $size = NULL, $attributes = NULL) {
   // Photoset's use primary instead of id to specify the image.
   if (isset($photo['primary'])) {
     $id = $photo['primary'];
-    $attributes['class'] = implode(' ', array(
-      $attributes['class'],
-      'flickr-photoset-img',
-    ));
+    $attributes['class'] = explode(' ', trim($attributes['class'] . ' flickr-photoset-img'));
   }
   else {
     $id = $photo['id'];
-    $attributes['class'] = implode(' ', array(
-      $attributes['class'],
-      'flickr-photo-img',
-    ));
+    $attributes['class'] = explode(' ', trim($attributes['class'] . ' flickr-photo-img'));
   }
 
   $image_sizes = flickr_photos_getsizes($id);
@@ -317,7 +311,7 @@ function flickr_img($photo, $size = NULL, $attributes = NULL) {
   }
   $info = !is_array($photo['title']) ? flickr_photos_getinfo($photo['id']) : '';
   if (isset($info['dates']) || isset($photo['dates'])) {
-    $date_taken = isset($info['dates']['taken']) ? $info['dates']['taken'] : $photo['dates']['taken'];
+    $date_taken = is_array($info) && isset($info['dates']['taken']) ? $info['dates']['taken'] : $photo['dates']['taken'];
     $format_title = variable_get('flickr_date_format_image_title', 'medium');
     switch ($format_title) {
       case 'interval':
@@ -494,13 +488,16 @@ function flickr_set_error($message_or_response) {
       '@error_id' => $message_or_response['code'],
       '%flickr_error' => $message_or_response['message'],
     ));
+    if ($message_or_response['code'] == 100) {
+      $message .= '. ' . t('No valid Flickr API key has been set at !link.', array('!link' => l('admin/config/media/flickr', 'admin/config/media/flickr')));
+    }
   }
   else {
     $message = $message_or_response;
   }
 
   if (user_access('administer flickr')) {
-    drupal_set_message($message, 'error');
+    drupal_set_message($message, 'error', FALSE);
   }
   watchdog('flickr', $message, array(), WATCHDOG_WARNING);
 }
@@ -585,6 +582,10 @@ function flickr_get_id_type($id) {
  * Render multiple photos as an album.
  */
 function flickr_album($type = 'user', $id = '39873962@N08', $show_n = NULL, $size = NULL, $media = 'photos', $tags = '', $tags_user = '', $delta = 'true', $sort = 'unsorted', $heading = 'p', $min_title = NULL, $min_metadata = NULL, $vocab_isset = 0, $filter = NULL, $lat = NULL, $lon = NULL, $radius = NULL, $datefrom = NULL, $dateto = NULL, $extend = 1, $tag_mode = 'context', $class = NULL, $style = NULL, $page = 1) {
+  // If no API key is set, break.
+  if (!variable_get('flickr_api_key', NULL)) {
+    return FALSE;
+  }
   // Also Flickr converts tags to lowercase, removes spaces and the ampersand.
   $tags = strtolower(str_replace(array(' ', '&'), '', $tags));
   // drupal_is_front_page() is added because it also can have arg(0) == 'node'.
@@ -1124,8 +1125,8 @@ function flickr_album($type = 'user', $id = '39873962@N08', $show_n = NULL, $siz
         $rest_ok = ($total % variable_get('flickr_per_page', 100)) > 3 * $show_n ? 1 : 0;
         $page = ($sort == 'random' && isset($total) && $total > variable_get('flickr_per_page', 100) && empty($tags)) ? mt_rand(1, floor($total / variable_get('flickr_per_page', 100)) + $rest_ok) : $page;
         // Debug info.
-        if (variable_get('flickr_debug', 0) == 2 && module_exists('devel')) {
-          dpm("Arguments passed to 'function flickr_album()': " . '$type=' . $type . ' $delta=' . $delta . ' $id=' . $id . ' $sort=' . $sort . ' $filter=' . $filter . ' $page=' . $page . ' $per_page=' . $per_page . ' $tags=' . $tags . ' $vocab_isset=' . $vocab_isset . ' $total=' . $total . ' $lat=' . $lat . ' $lon=' . $lon . ' $radius=' . $radius . '$datefrom=' . $datfrom . ' $dateto=' . $dateto . ' $extend=' . $extend . ' $tag_mode=' . $tag_mode . ' $class=' . $class . ' $style=' . $style . ' $page=' . $page);
+        if (variable_get('flickr_debug', 0) == 2 && function_exists('dpm')) {
+          dpm("Arguments passed to 'function flickr_album()': " . '$type=' . $type . ' $delta=' . $delta . ' $id=' . $id . ' $sort=' . $sort . ' $filter=' . $filter . ' $page=' . $page . ' $per_page=' . $per_page . ' $tags=' . $tags . ' $vocab_isset=' . $vocab_isset . ' $total=' . $total . ' $lat=' . $lat . ' $lon=' . $lon . ' $radius=' . $radius . '$datefrom=' . $datefrom . ' $dateto=' . $dateto . ' $extend=' . $extend . ' $tag_mode=' . $tag_mode . ' $class=' . $class . ' $style=' . $style . ' $page=' . $page);
         }
         // Get a list of "all" the photos. This is cached.
         switch ($type) {
@@ -1584,7 +1585,7 @@ function flickr_album($type = 'user', $id = '39873962@N08', $show_n = NULL, $siz
         $total = (isset($response['total']) && !empty($tags) && $j == $show_n * 4) ? $response['total'] : $total;
         $total = $total < $i ? $i : $total;
         $total = $i < $show_n ? $i : $total;
-        $total = number_format($total, 0, ",", ".");
+        $total = number_format($total, 0, '.', variable_get('flickr_thousands_sep', ','));
         if (!empty($radius)) {
           $radius = $radius / 3;
           $km = floor($radius);

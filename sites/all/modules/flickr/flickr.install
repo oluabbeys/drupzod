@@ -51,6 +51,16 @@ function flickr_uninstall() {
   variable_del('flickr_date_format_image_caption');
   variable_del('flickr_date_format_image_caption_hover');
   variable_del('flickr_date_format_album_title');
+  variable_del('flickr_capsize');
+  variable_del('flickr_sswidth_value');
+  variable_del('flickr_sswidth_unit');
+  variable_del('flickr_sswidth');
+  variable_del('flickr_sswratio');
+  variable_del('flickr_sshratio');
+  variable_del('flickr_ssratio');
+  variable_del('flickr_caption_fontsize');
+  variable_del('flickr_preview_html');
+  variable_del('flickr_preview_collapsed');
 }
 
 /**
@@ -81,6 +91,22 @@ function flickr_schema() {
     'primary key' => array('uid'),
   );
   return $schema;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function flickr_requirements($phase) {
+  if ($phase == 'runtime') {
+    $requirements = array();
+    $t = get_t();
+    $requirements['flickr_requirements'] = array(
+      'title' => $t('Flickr'),
+      'value' => variable_get('flickr_api_key', NULL) ? $t('A Flickr API key has been set.') : $t("No Flickr API key has been set at !link.", array('!link' => l('admin/config/media/flickr', 'admin/config/media/flickr'))),
+      'severity' => variable_get('flickr_api_key', NULL) ? REQUIREMENT_OK : REQUIREMENT_ERROR,
+    );
+    return $requirements;
+  }
 }
 
 /**

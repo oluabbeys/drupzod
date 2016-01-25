@@ -1,9 +1,15 @@
+/**
+ * The CSS values that are wrapped in /*variable comments are intended for use
+ * by https://www.drupal.org/project/style_settings. Enable that module to
+ * have those CSS variables exposed in the settings UI.
+ */
+
 .flickr-photo-img {
   vertical-align: text-bottom;
 }
 
 .flickr-photo-box {
-  float: left;
+  float: left; /* LTR */
   width: 260px;
   height: 260px;
   padding: 10px;
@@ -15,7 +21,7 @@
 }
 
 .flickr-photoset-box {
-  float: left;
+  float: left; /* LTR */
   padding: 10px;
   text-align: center;
 }
@@ -24,7 +30,7 @@ span.flickr-wrap,
 span.flickr-photoset-single {
   position: relative;
   display: inline-block;
-  margin: 0 5px 5px 0;
+  margin: 0 5px 5px 0; /* LTR */
   vertical-align: top;
 }
 
@@ -32,23 +38,25 @@ span.flickr-credit {
   display: block;
   overflow: hidden;
   padding: 0 0 4px 4px;
-  font-size: 80%;
+  font-size: /*variable:flickr_capsize*/80%/*variable*/;
   line-height: 100%;
 }
 
 .flickr-slideshow {
   position: relative;
   overflow: hidden;
-  width: 100%;
+  width: /*variable:flickr_sswidth*/100%/*variable*/;
   height: 0;
-  /*Change percentage below to change ratio. Currently 16:9 (as most screens).*/
-  padding-bottom: 56.25%;
+  /*The percentage is the height/width ratio. Defaults to 3:4.*/
+  padding-bottom: /*variable:flickr_slideshow_ratio*/75%/*variable*/;
 }
 
 .flickr-slideshow object {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 0; /* LTR */
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .flickr-block-photosets .flickr-block-photoset {
@@ -97,10 +105,29 @@ span.flickr-empty {
   float: none !important;
 }
 
-span.grayed-out {
+span.grayed-out,
+.form-disabled label,
+input[disabled=disabled] label {
   color: darkgray;
 }
 
 span.grayed-out-help {
   color: #666;
 }
+
+.flickr-form-align {
+  text-align: right; /* LTR */
+}
+
+.form-item.form-type-textfield.form-item-flickr-sswratio {
+  float: left; /* LTR */
+}
+
+/*Puts a preview template next to the preview itself.*/
+.flickr-preview {
+  float: left; /* LTR */
+  margin: 0 12px 15px 0; /* LTR */
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+

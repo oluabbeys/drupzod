@@ -12,43 +12,96 @@ function flickr_admin_settings() {
     'group' => CSS_DEFAULT,
     'every_page' => FALSE,
   ));
-  $form['credentials'] = array(
+  // A preview area.
+  $form['flickr_preview'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Flickr credentials'),
+    '#title' => t('Preview'),
+    '#description' => '<p>' . t('Note: Save the form to see your changes.') . '</p>',
     '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#weight' => 2,
+    '#collapsed' => variable_get('flickr_preview_collapsed', TRUE),
   );
-  $apply = l(t('https://www.flickr.com/services/apps/create/apply'), 'https://www.flickr.com/services/apps/create/apply', array(
+  // Form submit resulted in an uncollapsed preview. Set it back.
+  variable_set('flickr_preview_collapsed', TRUE);
+
+  if (module_exists('flickr_filter')) {
+    $markup = variable_get('flickr_preview_html', array(
+      'value' => '[flickr-user:id=lolandese1, size=q, num=2, sort=views]',
+      'format' => 'full_html',
+    ));
+    // Reset to the default preview template if it is found empty.
+    $trimmed = trim($markup['value']);
+    $markup = empty($trimmed) ? variable_set('flickr_preview_html', array(
+      'value' => '[flickr-user:id=lolandese1, size=q, num=2, sort=views]',
+      'format' => 'full_html',
+    )) : $markup;
+    // Use the current user's default format if the stored one isn't available.
+    $format_id = filter_format_load($markup['format']) ? $markup['format'] : filter_default_format();
+    $form['flickr_preview']['flickr_preview_markup'] = array(
+      '#markup' => '<div class="flickr-preview">' . check_markup($markup['value'], $format_id, '', $cache = FALSE) . '</div>',
+    );
+    $form['flickr_preview']['flickr_preview_details'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Template'),
+      '#description' => t('Wrapped in <code>&lt;div class="flickr-preview"> .. &lt;/div></code>.'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+    $form['flickr_preview']['flickr_preview_details']['flickr_preview_html'] = array(
+      '#type' => 'text_format',
+      '#description' => t('Changes are visible after form submit. Empty the text area to reset to default.'),
+      '#default_value' => $markup['value'],
+      '#format' => $format_id,
+      '#access' => 'use text format ' . $format_id,
+    );
+  }
+  else {
+    $flickr_filter_module = l(t('Flickr Filter sub-module'), 'admin/modules', array(
+      'fragment' => 'edit-modules-flickr',
+      'attributes' => array(
+        'title' => t('admin/modules#edit-modules-flickr'),
+      ),
+    ));
+    $form['flickr_preview']['flickr_note_preview'] = array(
+      '#markup' => t("Enable the !flickr_filter_module to have an editable preview template available to see the effect of your settings changes instantly without closing the form.", array('!flickr_filter_module' => $flickr_filter_module)),
+    );
+    }
+    $form['credentials'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Flickr credentials'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#weight' => 2,
+    );
+    $apply = l(t('https://www.flickr.com/services/apps/create/apply'), 'https://www.flickr.com/services/apps/create/apply', array(
       'attributes' => array(
         'title' => t('Flickr Services'),
         'target' => '_blank',
       ),
-  ));
-  $form['credentials']['flickr_api_key'] = array(
-    '#type' => 'textfield',
-    '#title' => t('API Key'),
-    '#required' => TRUE,
-    '#default_value' => variable_get('flickr_api_key', ''),
-    '#description' => t("API Key from Flickr. Get an API Key at !apply.", array('!apply' => $apply)),
-  );
-  $form['credentials']['flickr_api_secret'] = array(
-    '#type' => 'textfield',
-    '#title' => t('API Shared Secret'),
-    '#required' => TRUE,
-    '#default_value' => variable_get('flickr_api_secret', ''),
-    '#description' => t("API key's secret from Flickr."),
-  );
-  $default = variable_get('flickr_default_userid', '');
-  if (!empty($default)) {
-    $info = flickr_people_getinfo($default);
-    $default = $info['username']['_content'];
-  }
-  $form['credentials']['flickr_default_userid'] = array(
+    ));
+    $form['credentials']['flickr_api_key'] = array(
+      '#type' => 'textfield',
+      '#title' => t('API Key'),
+      '#required' => TRUE,
+      '#default_value' => variable_get('flickr_api_key', ''),
+      '#description' => t("API Key from Flickr. Get an API Key at !apply.", array('!apply' => $apply)),
+    );
+    $form['credentials']['flickr_api_secret'] = array(
+      '#type' => 'textfield',
+      '#title' => t('API Shared Secret'),
+      '#required' => TRUE,
+      '#default_value' => variable_get('flickr_api_secret', ''),
+      '#description' => t("API key's secret from Flickr."),
+    );
+    $default = variable_get('flickr_default_userid', '');
+    if (!empty($default)) {
+      $info = flickr_people_getinfo($default);
+      $default = $info['username']['_content'];
+    }
+    $form['credentials']['flickr_default_userid'] = array(
     '#type' => 'textfield',
     '#title' => t('Default Flickr User ID'),
     '#default_value' => $default,
-    '#description' => t('An, optional, default Flickr user (number@number, alias, username or email). This will be used when no user is specified.'),
+    '#description' => t('An optional default Flickr user (number@number, alias, username or email). This will be used when no user is specified.'),
   );
   // We need an api key before we can verify usernames.
   if (!$form['credentials']['flickr_api_key']['#default_value']) {
@@ -109,6 +162,7 @@ function flickr_admin_settings() {
     '#field_suffix' => t('px'),
     '#size' => 3,
     '#maxlength' => 3,
+    '#attributes' => array('class' => array('flickr-form-align')),
   );
   $form['info_settings']['flickr_metadata_suppress_on_small'] = array(
     '#type' => 'textfield',
@@ -119,6 +173,23 @@ function flickr_admin_settings() {
     '#field_suffix' => t('px'),
     '#size' => 3,
     '#maxlength' => 3,
+    '#attributes' => array('class' => array('flickr-form-align')),
+  );
+  $rubular = l(t('http://rubular.com/r/RhKjj9Thy1'), 'http://rubular.com/r/RhKjj9Thy1', array(
+      'attributes' => array(
+        'title' => t('Rubular: ^[a-zA-Z]+[^\s][0-9]+$'),
+        'target' => '_blank',
+      ),
+  ));
+
+  $form['info_settings']['flickr_regex'] = array(
+    '#type' => 'textfield',
+    '#title' => t("Replace photo titles matching this Regular Expression with 'View on Flickr'"),
+    '#default_value' => variable_get('flickr_regex', '^[a-zA-Z]+[^\s][0-9]+$'),
+    '#description' => t("Avoids camera generated titles like 'IMG_4259'. Try your own RegEx first with !rubular. Leave empty to NOT replace any titles.", array('!rubular' => $rubular)),
+    '#field_prefix' => t('/'),
+    '#field_suffix' => t('/'),
+    '#size' => 60,
   );
   $cc_icons = l(t('Source for the CC icon font'), 'https://cc-icons.github.io/', array(
       'attributes' => array(
@@ -155,7 +226,7 @@ function flickr_admin_settings() {
       t("In the caption"),
     ),
     '#default_value' => variable_get('flickr_license', 1),
-    '#description' => t("To give !attribution. Clear the cache on form submit.<br />!cc_icons in 'flickr_cc_icons.css'. Download it if you prefer to host it yourself locally (CC 4.0 licensed, give credit somewhere). Adjust 'flickr_cc_icons.css' accordingly.<br />Some examples (try to mouse-over): !ccexample_cna !cc_example_copy !cc_example_p", array(
+    '#description' => t("To give !attribution. Clear the cache on form submit.<br />!cc_icons in 'flickr_cc_icons.css'. Download it if you prefer to host it yourself locally (CC 4.0 licensed, give credit somewhere). Adjust 'flickr_cc_icons.css' accordingly.<p>Some examples (try to mouse-over):</p>!ccexample_cna !cc_example_copy !cc_example_p", array(
         '!attribution' => $attribution,
         '!cc_icons' => $cc_icons,
         '!ccexample_cna' => $cc_example_cna,
@@ -191,6 +262,16 @@ function flickr_admin_settings() {
     '#title' => t('Show a Flickr counter'),
     '#default_value' => variable_get('flickr_counter', 1),
     '#description' => t('Shows how many photos are displayed out of the total number available for a user, group, set or tags on Flickr. Can be overridden individually by the filter tag, eg. [flickr-photoset:id=72157634563269642,count=false]'),
+  );
+  $form['info_settings']['flickr_thousands_sep'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Counter thousands separator'),
+    '#default_value' => variable_get('flickr_thousands_sep', ','),
+    '#description' => t('Common values are NULL, a dot ("."), a comma (",") or a space (" ").'),
+    '#field_prefix' => t('For example <em>4 out of 23</em>'),
+    '#field_suffix' => t('<em>473</em>'),
+    '#size' => 1,
+    '#maxlength' => 1,
   );
   $form['info_settings']['flickr_geophp'] = array(
     '#type' => 'checkboxes',
@@ -252,7 +333,6 @@ function flickr_admin_settings() {
   // Disable the caption hover option if a date in the caption is set to 'none'.
   if (variable_get('flickr_date_format_image_caption', 'interval') == 'none') {
     $form['date_formats_settings']['flickr_date_format_image_caption_hover']['#disabled'] = TRUE;
-    $form['date_formats_settings']['flickr_date_format_image_caption_hover']['#title'] = '<span class="grayed-out">' . t('When hovering a date in the caption') . '</span>';
     $form['date_formats_settings']['flickr_date_format_image_caption_hover']['#description'] = t('Disabled until a date format for the image caption is selected.');
   }
   $form['date_formats_settings']['flickr_date_format_album_title'] = array(
@@ -340,8 +420,110 @@ function flickr_admin_settings() {
     '#type' => 'checkbox',
     '#title' => t('Use flickr.css'),
     '#default_value' => variable_get('flickr_css', 1),
-    '#description' => t("Uncheck to take care of the styling yourself in custom CSS.<br />If you use Flickr Filter, you might find the !autofloat_module useful.", array('!autofloat_module' => $autofloat_module)),
+    '#description' => t("Uncheck to take care of the styling yourself in custom CSS. If you use Flickr Filter, you might find the !autofloat_module useful.", array('!autofloat_module' => $autofloat_module)),
   );
+  $form['css_settings']['css_variables'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('CSS variables'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $style_settings_module = l(t('Style (CSS) Settings module'), 'https://drupal.org/project/style_settings', array(
+      'attributes' => array(
+        'title' => t('Style (CSS) Settings | Drupal.org'),
+        'target' => '_blank',
+      ),
+  ));
+  if (module_exists('style_settings')) {
+    $form['css_settings']['css_variables']['#collapsed'] = TRUE;
+    $form['css_settings']['css_variables']['flickr_capsize'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Caption font-size'),
+      '#description' => t('Relative to the font size for the normal text. A minimum font size setting of your browser might limit it. Test it on different browsers.'),
+      // Make containing fields align horizontally.
+      '#attributes' => array('class' => array('container-inline')),
+    );
+    // Number field without a '#field_suffix'.
+    $form['css_settings']['css_variables']['flickr_capsize']['flickr_capsize_value'] = array(
+      '#type' => 'style_settings_number',
+      '#default_value' => variable_get('flickr_capsize_value', 85),
+    );
+    // A measurement unit select field.
+    $form['css_settings']['css_variables']['flickr_capsize']['flickr_capsize_unit'] = array(
+      '#type' => 'select',
+      '#options' => array(
+        'px' => t('px'),
+        'em' => t('em'),
+        '%' => t('%'),
+      ),
+      '#default_value' => variable_get('flickr_capsize_unit', '%'),
+      '#required' => TRUE,
+    );
+    $form['css_settings']['css_variables']['flickr_sswidth'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Slideshow width'),
+      '#description' => t('Relative to width of the containing block element (%) or fixed (px). Never wider than the containing block (max-width: 100 %).'),
+      // Make containing fields align horizontally.
+      '#attributes' => array('class' => array('container-inline')),
+    );
+    // Number field without a '#field_suffix'.
+    $form['css_settings']['css_variables']['flickr_sswidth']['flickr_sswidth_value'] = array(
+      '#type' => 'style_settings_number',
+      '#default_value' => variable_get('flickr_sswidth_value', '100'),
+    );
+    // A measurement unit select field.
+    $form['css_settings']['css_variables']['flickr_sswidth']['flickr_sswidth_unit'] = array(
+      '#type' => 'select',
+      '#options' => array(
+        'px' => t('px'),
+        '%' => t('%'),
+      ),
+      '#default_value' => variable_get('flickr_sswidth_unit', '%'),
+      '#required' => TRUE,
+    );
+    $form['css_settings']['css_variables']['flickr_ssratio'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Slideshow width:height ratio'),
+      // Make containing fields align horizontally.
+      '#attributes' => array('class' => array('container-inline')),
+    );
+    // Number field without a '#field_suffix'.
+    $form['css_settings']['css_variables']['flickr_ssratio']['flickr_sswratio'] = array(
+      '#type' => 'style_settings_number',
+      '#default_value' => variable_get('flickr_sswratio', 4),
+      '#field_suffix' => '&nbsp;&nbsp;:&nbsp;&nbsp;',
+      '#step' => 1,
+      '#min' => 1,
+    );
+    // Number field without a '#field_suffix'.
+    $form['css_settings']['css_variables']['flickr_ssratio']['flickr_sshratio'] = array(
+      '#type' => 'style_settings_number',
+      '#default_value' => variable_get('flickr_sshratio', 3),
+      '#step' => 1,
+      '#min' => 1,
+      '#attributes' => NULL,
+      '#input_help' => NULL,
+    );
+  }
+  elseif (!module_exists('flickrstyle')) {
+    $form['css_settings']['css_variables']['flickr_note'] = array(
+      '#markup' => t("Enable the !style_settings_module (<strong>dev version!</strong>) to get even more styling options. They consist of:<ul>
+          <li>the photo caption font size</li>
+          <li>the slideshow width, fluid (%) or fixed (px)</li>
+          <li>the slideshow width/height ratio</li>
+        </ul>", array('!style_settings_module' => $style_settings_module)),
+    );
+  }
+  else {
+    $form['css_settings']['css_variables']['flickr_note'] = array(
+      '#markup' => t("Enable the !style_settings_module (<strong>dev version!</strong>) to get even more styling options. They consist of:<ul>
+          <li>the photo caption font size</li>
+          <li>the slideshow width, fluid (%) or fixed (px)</li>
+          <li>the slideshow width/height ratio</li>
+          <li>customized rounded corners, shadow, border and scale properties</li>
+        </ul>", array('!style_settings_module' => $style_settings_module)),
+    );
+  }
   $flickr_style = l(t('Flickr Style'), 'admin/modules', array(
       'attributes' => array(
         'title' => t('Extra configuration options.'),
@@ -349,7 +531,8 @@ function flickr_admin_settings() {
   ));
   if (!module_exists('flickrstyle')) {
     $form['css_settings']['flickr_style'] = array(
-      '#markup' => t("Extend the styling options with rounded corners, shadow, border and emphasize on hover by enabling the !flickr_style sub-module.", array('!flickr_style' => $flickr_style)),
+      '#markup' => '<p>' . t("Extend the styling options with rounded corners, shadow, border and emphasize on hover by enabling the !flickr_style sub-module.", array('!flickr_style' => $flickr_style)) . '</p>',
+      '#weight' => -1,
     );
   }
   $form['advanced_settings'] = array(
@@ -378,7 +561,7 @@ function flickr_admin_settings() {
     '#title' => t('Update interval'),
     '#options' => $ageoptions,
     '#default_value' => variable_get('flickr_cache_duration', 3600),
-    '#description' => t('The refresh interval indicating how often you want to check cached Flickr API calls are up to date.'),
+    '#description' => t("The refresh interval indicating how often you want to check cached Flickr API calls are up to date. This only kicks in when a repeating request with the same query is made, e.g. when re-saving a Flickr block without changing the parameters within the above specified interval. A Flickr API request is usually avoided by a page or block cache, therefore it is pretty safe to set it to '<em>1 hour</em>'."),
   );
   $cache_warming = l(t('cache warming'), 'https://drupal.org/node/1576686', array(
     'attributes' => array(
@@ -457,11 +640,6 @@ function flickr_admin_settings() {
   );
   // Disable the Devel output until it is available.
   if (!module_exists('devel')) {
-    $form['advanced_settings']['flickr_debug']['#options'] = array(
-      t('None'),
-      t('Flickr response only (as a link to an XML page in a debug message)'),
-      '<span class="grayed-out">' . t('Plus Devel (Flickr response plus additional output') . '</span> <span class="grayed-out-help">' . t('Disabled until you enable the !devel_module.', array('!devel_module' => $devel_module)) . '</span> ',
-    );
     $form['advanced_settings']['flickr_debug'][2]['#disabled'] = TRUE;
     $form['advanced_settings']['flickr_debug']['#description'] = t('Display the Flickr XML response.');
   }
@@ -490,7 +668,7 @@ function flickr_admin_settings() {
   $form['block_settings']['flickr_smart'] = array(
     '#type' => 'checkbox',
     '#title' => t("Smart install of Flickr Block"),
-    '#default_value' => variable_get('flickr_smart', 1),
+    '#default_value' => variable_get('flickr_smart', 0),
     '#description' => t("On install of Flickr Block auto create Flickr taxonomy, date and geo fields on all node types to grab Flickr photos related to the node on the same page as a Flickr block based on tags, a date or a location. Enable Taxonomy (core), !date (including date_popup) and !geofield before enabling Flickr Block for the first time (or uninstall it first).", array('!date' => $date, '!geofield' => $geofield)),
   );
   // If a block variable exists, the Flickr Block module has not been
@@ -518,6 +696,9 @@ function flickr_admin_settings() {
     '#description' => t("Note that form submit will be slower. Your content will be rebuilt at the first visit. Your choice will be 'remembered' for your next visit to this configuration page."),
     '#weight' => 97,
   );
+  if (variable_get('flickr_css', 1) && module_exists('style_settings')) {
+    $form['flickr_cc']['#title'] = t("Flush the cache on form submit to see your changes instantly. CSS is flushed in any case.");
+  }
 
   // Call submit_function() on form submission.
   $form['#submit'][] = 'flickr_admin_settings_submit';
@@ -529,19 +710,16 @@ function flickr_admin_settings() {
  * Validate user input.
  */
 function flickr_admin_settings_validate($form, &$form_state) {
+  // Validate the credentials.
   $key = trim($form_state['values']['flickr_api_key']);
-  $sec = trim($form_state['values']['flickr_api_secret']);
-  $uid = trim($form_state['values']['flickr_default_userid']);
-  $limit1 = trim($form_state['values']['flickr_photos_per_page']);
-  $limit2 = trim($form_state['values']['flickr_title_suppress_on_small']);
-  $limit3 = trim($form_state['values']['flickr_metadata_suppress_on_small']);
-  $limit7 = trim($form_state['values']['flickr_per_page']);
   if ($key && (preg_match('/^[A-Fa-f\d]{32}$/', $key) != 1)) {
     form_set_error('flickr_api_key', t('This does not appear to be a Flickr API key.'));
   }
+  $sec = trim($form_state['values']['flickr_api_secret']);
   if ($sec && (preg_match('/^[A-Fa-f\d]{16}$/', $sec) != 1)) {
     form_set_error('flickr_api_secret', t('This does not appear to be a Flickr API secret.'));
   }
+  $uid = trim($form_state['values']['flickr_default_userid']);
   if ($uid) {
     $user = flickr_user_find_by_identifier($uid);
     if (!$user) {
@@ -549,20 +727,24 @@ function flickr_admin_settings_validate($form, &$form_state) {
     }
   }
   // Validate the number of photos.
-  if (!is_numeric($limit1) || $limit1 < 1) {
-    form_set_error('flickr_photos_per_page', t('Set a number from 1 to 999.'));
+  $limit = trim($form_state['values']['flickr_photos_per_page']);
+  if (!ctype_digit($limit) || $limit < 1) {
+    form_set_error('flickr_photos_per_page', t('Set an integer from 1 to 999.'));
   }
   // Validate the minimum width to suppress title caption.
-  if (!is_numeric($limit2) || $limit2 < 0) {
+  $limit = trim($form_state['values']['flickr_title_suppress_on_small']);
+  if (!is_numeric($limit) || $limit < 0) {
     form_set_error('flickr_title_suppress_on_small', t('Set a width from 0 to 999 px.'));
   }
   // Validate the minimum width to suppress metadata caption.
-  if (!is_numeric($limit3) || $limit3 < 0) {
+  $limit = trim($form_state['values']['flickr_metadata_suppress_on_small']);
+  if (!is_numeric($limit) || $limit < 0) {
     form_set_error('flickr_metadata_suppress_on_small', t('Set a width from 0 to 999 px.'));
   }
-  // Validate the number to return on a random or views sorted API requests.
-  if (!is_numeric($limit7) || $limit7 < 20 || $limit7 > 500) {
-    form_set_error('flickr_per_page', t('Set a number from 20 to 500.'));
+  // Validate the number to return on 'random' or 'views' sorted API requests.
+  $limit = trim($form_state['values']['flickr_per_page']);
+  if (!ctype_digit($limit) || $limit < 20 || $limit > 500) {
+    form_set_error('flickr_per_page', t('Set an integer from 20 to 500.'));
   }
 }
 
@@ -570,9 +752,37 @@ function flickr_admin_settings_validate($form, &$form_state) {
  * Submit form data.
  */
 function flickr_admin_settings_submit($form, &$form_state) {
+  // Uncollapse the preview. Likely we want to see the changes we just made.
+  variable_set('flickr_preview_collapsed', FALSE);
+  if (variable_get('flickr_css', 1) && module_exists('style_settings')) {
+    // Concatenate the caption font-size value and unit.
+    variable_set('flickr_capsize', $form_state['values']['flickr_capsize_value'] . $form_state['values']['flickr_capsize_unit']);
+    // Concatenate the caption font-size value and unit.
+    variable_set('flickr_sswidth', $form_state['values']['flickr_sswidth_value'] . $form_state['values']['flickr_sswidth_unit']);
+    $ssratio = $form_state['values']['flickr_sswidth_value'] * $form_state['values']['flickr_sshratio'] / $form_state['values']['flickr_sswratio'];
+    $ssratio = $ssratio > 100 ? $ssratio . 'px' : $ssratio . '%';
+    variable_set('flickr_slideshow_ratio', $ssratio);
+    // IMAGE URL: Reset to default if empty.
+    if (module_exists('flickrstyle')) {
+      if (trim($form_state['values']['flickrstyle_magnifier_image']) == '') {
+        $form_state['values']['flickrstyle_magnifier_image'] = '/' . drupal_get_path('module', 'flickrstyle') . '/img/magnifier.png';
+        drupal_set_message(t('The image URL has been reset to the default.'), 'warning', FALSE);
+      }
+    }
+  }
+  // Reset to the default preview template if it is found empty.
+  $trimmed = trim($form_state['values']['flickr_preview_html']['value']);
+  $form_state['values']['flickr_preview_html'] = empty($trimmed) ? variable_set('flickr_preview_html', array(
+    'value' => '[flickr-user:id=lolandese1, size=q, num=2, sort=views]',
+    'format' => 'full_html',
+  )) : $form_state['values']['flickr_preview_html'];
+  // Optionally make changes visible after form submit.
   if ($form_state['values']['flickr_cc']) {
     drupal_flush_all_caches();
     drupal_set_message(t('All caches are flushed.'), 'status', FALSE);
+  }
+  elseif (variable_get('flickr_css', 1) && module_exists('style_settings')) {
+    _drupal_flush_css_js();
   }
   // Clean up the data.
   $form_state['values']['flickr_api_key'] = trim($form_state['values']['flickr_api_key']);

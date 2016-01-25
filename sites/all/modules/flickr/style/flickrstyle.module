@@ -24,6 +24,10 @@ function flickrstyle_help($path, $arg) {
 function flickrstyle_page_build(&$page) {
   // Determine the settings which CSS files to use.
   if (variable_get('flickr_css', 1)) {
+    drupal_add_css(drupal_get_path('module', 'flickrstyle') . '/css/flickrstyle.css', array(
+      'group' => CSS_DEFAULT,
+      'every_page' => TRUE,
+    ));
     $styles = variable_get('flickrstyle_styles', array(
       'rounded' => 'rounded',
       'shadow' => 'shadow',

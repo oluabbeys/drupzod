@@ -9,10 +9,16 @@
  */
 function flickr_filter_form_flickr_admin_settings_alter(&$form, &$form_state) {
   $form['#validate'][] = 'flickr_filter_admin_settings_validate';
+  $autofloat_module = l(t('AutoFloat module'), 'https://drupal.org/project/autofloat', array(
+      'attributes' => array(
+        'title' => t('AutoFloat | Drupal.org'),
+        'target' => '_blank',
+      ),
+  ));
   $form['filter_settings'] = array(
     '#type' => 'fieldset',
     '#title' => t('Filter options'),
-    '#description' => t('Clear the cache on form submit.'),
+    '#description' => t("Clear the cache on form submit. You might find the !autofloat_module useful.", array('!autofloat_module' => $autofloat_module)),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
     '#weight' => 18,
@@ -40,6 +46,8 @@ function flickr_filter_form_flickr_admin_settings_alter(&$form, &$form_state) {
     '#required' => TRUE,
     '#default_value' => variable_get('flickr_filter_heading', 'p'),
     '#description' => t("Use 'p' for no style, e.g. 'h3' for a heading or 'none' to not display an album title."),
+    '#field_prefix' => t('<'),
+    '#field_suffix' => t('>'),
     '#size' => 4,
     '#maxlength' => 4,
   );

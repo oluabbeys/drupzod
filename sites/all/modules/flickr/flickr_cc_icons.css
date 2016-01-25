@@ -19,8 +19,8 @@ span.flickr-copyright {
   /*The normal size is not well recognizable*/
   font-size: large;
 }
-#flickr-admin-settings span.flickr-cc,
-#flickr-admin-settings span.flickr-copyright {
+#flickr-admin-settings .form-item-flickr-license span.flickr-cc,
+#flickr-admin-settings .form-item-flickr-license span.flickr-copyright {
   float: none;
   margin-right: 8px;
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * The Flickr Cache Warmer uninstall hook
+ * The Flickr Cache Warmer uninstall hook.
  */
 
 /**

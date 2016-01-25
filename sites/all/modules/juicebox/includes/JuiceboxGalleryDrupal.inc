@@ -94,17 +94,27 @@ class JuiceboxGalleryDrupal extends JuiceboxGalleryDecorator implements Juicebox
       }
     }
     // Allow other modules to alter the built gallery data before it's
-    // rendered.
+    // rendered. After this point the gallery should no longer change.
     drupal_alter('juicebox_gallery', $this, $this->data);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildEmbed($xml_path = '', $add_js = TRUE, $context = array()) {
-    // Capture the current query parameters and a checksum value in the XML.
+  public function buildEmbed($xml_path = '', $add_js = TRUE, $context = array(), $add_xml = FALSE) {
+    // Prep the ids that may be referenced.
+    $embed_id = $this->getId();
+    $embed_xml_id = 'xml--' . $embed_id;
+    // If we are embedding the XML we also want to set some query string values
+    // on the XML URL that will allow the XML build methods to fetch it later.
+    $embed_query_additions = array();
+    if ($add_xml) {
+      $embed_query_additions['xml-source-path'] = current_path();
+      $embed_query_additions['xml-source-id'] = $embed_xml_id;
+    }
+    // Pass-through the current query paramaters and a checksum on the XML URL.
     $current_query = drupal_get_query_parameters();
-    $xml_query = array_merge(array('checksum' => $this->getChecksum()), $current_query);
+    $xml_query = array_merge($current_query, array('checksum' => $this->getChecksum()), $embed_query_additions);
     $xml = array(
       'path' => $xml_path,
       'options' => array('query' => $xml_query),
@@ -112,12 +122,13 @@ class JuiceboxGalleryDrupal extends JuiceboxGalleryDecorator implements Juicebox
     // The returned render array will contain some common values no matter what
     // output we produce (normal and debug).
     $output = array(
-      '#c_links' => $this->buildContextualLinks($xml_path, $context),
-      '#gallery_id' => $this->getId(),
-      '#gallery_images' => $this->getImages(),
-      '#gallery_options' => $this->getOptions(),
+      '#c_links' => $this->buildContextualLinks($xml_path, $context, $add_xml),
+      '#gallery_id' => $embed_id,
+      '#gallery_images' => $this->getImages(TRUE),
+      '#gallery_options' => $this->getOptions(TRUE),
       '#xml' => $xml,
       '#settings' => $this->settings,
+      '#suffix' => '',
     );
     // If "jb-debug" is active in the query we display debug info in place of
     // the actual gallery.
@@ -125,30 +136,26 @@ class JuiceboxGalleryDrupal extends JuiceboxGalleryDecorator implements Juicebox
       $output['#theme'] = 'juicebox_debug_markup';
       $output['#attached']['css'] = array(drupal_get_path('module', 'juicebox') . '/css/admin_styles.css');
     }
-    // Otherwise we are just displaying the normal gallery.
+    // Otherwise we display the gallery as normal.
     else {
       $output['#theme'] = 'juicebox_embed_markup';
       if ($add_js) {
-        $xml_url = url($xml['path'], $xml['options']);
+        // Add the main library via libraries API.
         $output['#attached']['libraries_load'][] = array('juicebox');
+        // Add the JS gallery details as Drupal.settings.
         $output['#attached']['js'][] = array(
-          'data' => $this->renderJavascript($xml_url),
-          'type' => 'inline',
-          'scope' => variable_get('juicebox_js_scope', 'header'),
-          'weight' => 10, // load below main library
+          'data' => array('juicebox' => array($embed_id => $this->getJavascriptVars(url($xml['path'], $xml['options'])))),
+          'type' => 'setting',
         );
+        // Add some local JS (implementing Drupal.behaviors) that will process
+        // the Drupal.settings above into a new client-side juicebox object.
+        $output['#attached']['js'][] = drupal_get_path('module', 'juicebox') . '/js/juicebox_load.js';
+      }
+      if ($add_xml) {
+        $output['#suffix'] .= $this->renderXml($embed_xml_id);
       }
     }
     return $output;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function addImage($src_data = array(), $title = '', $caption = '', $filter = TRUE, $override_id = NULL, $offset = NULL) {
-    // We should always get the filter setting from global variables.
-    $filter = $this->settings['apply_markup_filter'];
-    return $this->gallery->addImage($src_data, $title, $caption, $filter, $override_id, $offset);
   }
 
   /**
@@ -174,7 +181,7 @@ class JuiceboxGalleryDrupal extends JuiceboxGalleryDecorator implements Juicebox
       $src_data['thumb_url'] = $thumb_item['juicebox_src_data']['image_url'];
     }
     // Check if the linkURL should be customized based on settings.
-    $src_data['link_url'] = $image_item['juicebox_unstyled_src'];
+    $src_data['link_url'] = $image_item['unstyled_src'];
     if ($image_item['juicebox_compatible'] && !empty($settings['linkurl_source']) && $settings['linkurl_source'] == 'image_styled') {
       $src_data['link_url'] = $src_data['image_url'];
     }
@@ -204,9 +211,8 @@ class JuiceboxGalleryDrupal extends JuiceboxGalleryDecorator implements Juicebox
    */
   protected function styleImage(&$item, $style, $check_compatible = TRUE) {
     $item['juicebox_compatible'] = TRUE;
-    $item['juicebox_styled_src'] = '';
     // Set the normal, unstyled, url for reference.
-    $item['juicebox_unstyled_src'] = file_create_url($item['uri']);
+    $item['unstyled_src'] = file_create_url($item['uri']);
     // Check compatibility if configured and if the library info contains
     // mimetype compatibitly information.
     if ($check_compatible && !empty($this->library['compatible_mimetypes']) && !in_array($item['filemime'], $this->library['compatible_mimetypes'])) {
@@ -238,7 +244,7 @@ class JuiceboxGalleryDrupal extends JuiceboxGalleryDecorator implements Juicebox
           $item['juicebox_src_data'][$size] = image_style_url($style_each, $item['uri']);
         }
         else {
-          $item['juicebox_src_data'][$size] = $item['juicebox_unstyled_src'];
+          $item['juicebox_src_data'][$size] = $item['unstyled_src'];
         }
       }
     }
@@ -254,25 +260,28 @@ class JuiceboxGalleryDrupal extends JuiceboxGalleryDecorator implements Juicebox
    *   Optional contextual information that may be used in the links:
    *   - conf_path: A Drupal path within the admin interface where the gallery
    *     can be configured.
+   * @param boolean $omit_xml_link
+   *   Whether-or-not to omit a contextul link to the gallery XML.
    * @return array
    *   Drupal render array for the contextual links.
    *
    * @see JuiceboxGalleryDrupalInterface::buildGallery()
    */
-  protected function buildContextualLinks($xml_path = '', $context = array()) {
+  protected function buildContextualLinks($xml_path = '', $context = array(), $omit_xml_link = FALSE) {
     $c_links = array();
     if (module_exists('contextual') && user_access('access contextual links')) {
       $links = array();
       // Add link to the gallery-specific configuration if we have it.
       if (!empty($context['conf_path']) && drupal_valid_path($context['conf_path'])) {
-        $links['gallery_config'] = array('title' => t('Configure this Juicebox gallery'), 'href' => $context['conf_path'], 'query' => drupal_get_destination());
+        $links['gallery_config'] = array('title' => t('Configure galleries of this type'), 'href' => $context['conf_path'], 'query' => drupal_get_destination());
       }
       // Add a link to the global Juicebox options.
       if (drupal_valid_path('admin/config/media/juicebox')) {
         $links['global_config'] = array('title' => t('Configure global Juicebox options'), 'href' => 'admin/config/media/juicebox', 'query' => drupal_get_destination());
       }
-      // Add a direct link to the XML.
-      $links['xml'] = array('title' => t('View gallery XML'), 'href' => $xml_path);
+      if (!$omit_xml_link) {
+        $links['xml'] = array('title' => t('View gallery XML'), 'href' => $xml_path);
+      }
       // Add link to toggle debug view.
       if ($this->accessDebugDisplay()) {
         $query = drupal_get_query_parameters();
@@ -383,7 +392,6 @@ class JuiceboxGalleryDrupal extends JuiceboxGalleryDecorator implements Juicebox
       'linkurl_source' => '',
       'linkurl_target' => '_blank',
       'incompatible_file_action' => 'show_icon_and_link',
-      'show_debug_links' => 0,
     );
   }
 

@@ -8,7 +8,8 @@
 
 
 define('READ_MORE_PLACEMENT_DEFAULT', 'inline');
-define('READ_MORE_TEXT_DEFAULT', '<strong>Read more<span class="element-invisible"> about [node:title]</span></strong>');
+define('READ_MORE_TEXT_DEFAULT', '[node:read-more:link]');
+define('READ_MORE_LINK_TEXT_DEFAULT', '<strong>Read more<span class="element-invisible"> about [node:title]</span></strong>');
 define('READ_MORE_TITLE_DEFAULT', '[node:title]');
 
 
@@ -22,146 +23,15 @@ function read_more_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('read_more_admin_settings'),
     'access arguments' => array('administer site configuration'),
+    'file' => 'read_more.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/config/content/read_more/settings'] = array(
+    'title' => 'Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
   );
   return $items;
-}
-
-
-/**
- * Displays the settings form.
- */
-function read_more_admin_settings() {
-  $form = array();
-
-  $elements = array(
-    'address'    => '<address>',
-    'blockquote' => '<blockquote>',
-    'cite'       => '<cite>',
-    'div'        => '<div>',
-    'h1'         => '<h1>',
-    'h2'         => '<h2>',
-    'h3'         => '<h3>',
-    'h4'         => '<h4>',
-    'h5'         => '<h5>',
-    'h6'         => '<h6>',
-    'p'          => '<p>',
-    'span'       => '<span>',
-  );
-
-  $form['read_more_behavior'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Link behavior'),
-    '#collapsible' => FALSE,
-  );
-    $form['read_more_behavior']['read_more_placement'] = array(
-      '#type' => 'radios',
-      '#title' => t('Link placement'),
-      '#options' => array(
-        'inline'  => t('Inline: Try to add the Read More link after the last word of the teaser. If this fails, add the link on a new line after the teaser.'),
-        'after'   => t('On a new line: Add the Read More link on a new line after the teaser.'),
-        'disable' => t('Disable the link: Do not add a Read More link to the teaser.'),
-      ),
-      '#default_value' => variable_get('read_more_placement', READ_MORE_PLACEMENT_DEFAULT),
-      '#description' => t('The inline option will attempt to add the Read More link after the last word of the teaser and before any CCK fields. The HTML elements into which the Read More link may be inserted can be chosen in the "Advanced options for inline placement" interface below.'),
-    );
-    $form['read_more_behavior']['read_more_placement_advanced'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Advanced options for inline placement'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-    );
-      $form['read_more_behavior']['read_more_placement_advanced']['read_more_elements'] = array(
-        '#type' => 'select',
-        '#title' => t('Elements eligible for inline placement'),
-        '#description' => t('Select the elements into which the Read More link may be inserted. The "Inline" placement option must be selected above.'),
-        '#multiple' => TRUE,
-        '#options' => $elements,
-        '#default_value' => variable_get('read_more_elements', array('p')),
-        '#size' => 10,
-      );
-    $form['read_more_behavior']['read_more_remove'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Remove Read More link from links section'),
-      '#default_value' => variable_get('read_more_remove', TRUE),
-      '#description' => t('Enabling this option will remove Drupal\'s default Read More link from the node links.'),
-    );
-    $form['read_more_behavior']['read_more_rss'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Replace Read More link in RSS feeds'),
-      '#default_value' => variable_get('read_more_rss', TRUE),
-    );
-    $form['read_more_behavior']['read_more_require_body_field'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Do not display if the body text is empty'),
-      '#default_value' => variable_get('read_more_require_body_field', FALSE),
-    );
-    $form['read_more_behavior']['read_more_anchor'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Skip to unread content (SEE WARNING BELOW)'),
-      '#default_value' => variable_get('read_more_anchor', FALSE),
-      '#description' => t('Enabling this option will add an anchor to the destination page so that the user skips past the content they already saw in the teaser. WARNING: This feature is still being tested! Please report any problems you experience in the <a href="@link">Read More issue queue</a>.', array('@link' => url('http://drupal.org/project/issues/read_more'))),
-    );
-
-  $form['read_more_formatting'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Link text and formatting'),
-    '#description' => t('Here you can specify the wording of the Read More link, change its appearance by wrapping it in markup, and use tokens to display information about the node.'),
-    '#collapsible' => FALSE,
-  );
-    $form['read_more_formatting']['read_more_text'] = array(
-      '#type' => 'textfield',
-      '#title' =>  t('Link text'),
-      '#default_value' => variable_get('read_more_text', READ_MORE_TEXT_DEFAULT),
-      '#description' => t('Enter the text you wish to display in the Read More link. Special characters should be encoded (like <code>&amp;raquo;</code> or <code>&amp;amp;</code>). Allowed HTML is listed below.'),
-      '#required' => TRUE,
-    );
-    $form['read_more_formatting']['allowed_html'] = array(
-      '#type'        => 'fieldset',
-      '#title'       => t('Allowed HTML'),
-      '#collapsible' => TRUE,
-      '#collapsed'   => TRUE,
-      '#value'       => t('The following HTML is allowed in the link text field above:') . ' <code>abbr</code>, <code>acronym</code>, <code>b</code>, <code>big</code>, <code>cite</code>, <code>code</code>, <code>del</code>, <code>em</code>, <code>i</code>, <code>img</code>, <code>ins</code>, <code>small</code>, <code>span</code>, <code>strong</code>, <code>sub</code>, <code>sup</code>',
-    );
-    $form['read_more_formatting']['read_more_title'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Link title attribute'),
-      '#default_value' => variable_get('read_more_title', ''),
-      '#description' => t('Enter the text you wish to be used as the title for the Read More link (the value of the <code>title=""</code> attribute). The link title is used for accessibility and search engine optimization and appears as a tooltip in some browsers.'),
-      '#required' => FALSE,
-    );
-    $form['read_more_formatting']['read_more_nofollow'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Make link nofollow'),
-      '#default_value' => variable_get('read_more_nofollow', TRUE),
-      '#description' => t('Adds <code>rel="nofollow"</code> to the link\'s attributes. Often used for search engine optimization.'),
-    );
-    $form['read_more_formatting']['read_more_newwindow'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Make link open in a new window'),
-      '#default_value' => variable_get('read_more_newwindow', FALSE),
-      '#description' => t('Adds <code>target="_blank"</code> to the link\'s attributes.'),
-    );
-
-  // Add help text for tokens and list of tokens if the Tokens module is enabled.
-  $token_description = t('Use the <code>[node:title]</code> token to insert the node title.');
-  if (module_exists('token')) {
-    $token_description = t('Other available <a href="@tokens">tokens</a> are listed below.', array('@tokens' => url('http://drupal.org/project/token')));
-    $form['read_more_tokens'] = array(
-      '#type' => 'fieldset',
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-      '#title' => t('Tokens'),
-      '#description' => t('The following tokens can be used in the Read More link text and title attribute.'),
-    );
-    $form['read_more_tokens']['list'] = array(
-      '#theme' => 'token_tree',
-      '#token_types' => array('node'),
-    );
-  }
-  $form['read_more_formatting']['read_more_text']['#description'] .= ' ' . $token_description;
-  $form['read_more_formatting']['read_more_title']['#description'] .= ' ' . $token_description;
-
-  return system_settings_form($form);
 }
 
 
@@ -180,9 +50,9 @@ function read_more_preprocess_node(&$vars) {
  * Implements hook_node_view().
  */
 function read_more_node_view($node, $view_mode, $langcode) {
-  $anchor = variable_get('read_more_anchor', FALSE);
+  $attachments = variable_get('read_more_' . $node->type . '_view_modes', array());
 
-  if ($view_mode == 'teaser') { /* Teaser */
+  if (!empty($attachments[$view_mode])) { /* Teaser */
     $display = variable_get('read_more_placement', READ_MORE_PLACEMENT_DEFAULT);
 
     // Don't do anything if placing the link is disabled.
@@ -191,7 +61,7 @@ function read_more_node_view($node, $view_mode, $langcode) {
     }
 
     // Is this an RSS feed?
-    if (isset($node->build_mode) && $node->build_mode == NODE_BUILD_RSS) {
+    if ($view_mode == 'rss') {
       // If link replacement in RSS feeds is enabled, prevent core from
       // adding a second link by setting the readmore flag to NULL.
       if (variable_get('read_more_rss', TRUE)) {
@@ -203,7 +73,7 @@ function read_more_node_view($node, $view_mode, $langcode) {
       }
     }
 
-    $read_more_link = read_more_link($node, $display, $anchor);
+    $read_more_link = read_more_link($node, $display, $view_mode);
 
     // Try to insert the link inline.
     if ($display == 'inline') {
@@ -214,9 +84,10 @@ function read_more_node_view($node, $view_mode, $langcode) {
       if (!variable_get('read_more_require_body_field', FALSE) || isset($node->content['body'])) {
         // Get last position of the last closing marker in teaser, if the body
         // field exists.
-        if (isset($node->content['body']) && preg_match('!</?' . $elements . '[^>]*>\s*$!i', $node->content['body'][0]['#markup'], $match, PREG_OFFSET_CAPTURE)) {
+        if (isset($node->content['body'])) {
+          preg_match('!</?' . $elements . '[^>]*>\s*$!i', $node->content['body'][0]['#markup'], $match, PREG_OFFSET_CAPTURE);
           // Recalculate the position in $teaser. We do this because there may be extra CCK fields appended to the teaser.
-          $insert_point = strpos($view_mode, $node->content['body'][0]['#markup']) + $match[0][1];
+          $insert_point = (empty($match)) ? -1 : strpos($view_mode, $node->content['body'][0]['#markup']) + $match[0][1];
           // Insert the link.
           $node->content['body'][0]['#markup'] = substr_replace($node->content['body'][0]['#markup'], drupal_render($read_more_link), $insert_point, 0);
         }
@@ -230,13 +101,15 @@ function read_more_node_view($node, $view_mode, $langcode) {
 
     // Append the link to the end of the teaser.
     if ($display == 'after') {
-      $node->content['read_more'] = read_more_link($node, $display, $anchor) + array('#weight' => 1);
+      $node->content['read_more'] = read_more_link($node, $display, $view_mode) + array('#weight' => 1);
     }
   }
 
-  elseif ($anchor) { /* Full node and anchoring is enabled */
-    $teaser_rendered = check_markup($node->teaser, $node->format, FALSE);
-    $node->content['body'][0]['#markup'] = substr_replace($node->content['body'][0]['#markup'], $teaser_rendered . "\n" . '<a name="more"></a>', 0, strlen($teaser_rendered));
+  if (($view_mode == 'full') && variable_get('read_more_anchor', FALSE)) { /* Full node and anchoring is enabled */
+    $body = field_get_items('node', $node, 'body');
+    $teaser = field_view_value('node', $node, 'body', $body[0], 'teaser');
+    $teaser_rendered = $teaser['#markup'];
+    $node->content['body'][0]['#markup'] = substr_replace($node->content['body'][0]['#markup'], $teaser_rendered . '<a name="more"></a>', 0, strlen($teaser_rendered));
   }
 }
 
@@ -247,33 +120,34 @@ function read_more_node_view($node, $view_mode, $langcode) {
  * XSS checking and other safety measures are performed here to prevent
  * themers from omitting them.
  */
-function read_more_link($node, $display, $anchor) {
-  // Allowed tags borrowed largely from filter_xss_admin().
-  // See http://api.drupal.org/api/function/filter_xss_admin
-  $allowed_tags = array('abbr', 'acronym', 'b', 'big', 'cite', 'code', 'del', 'em', 'i', 'img', 'ins', 'small', 'span', 'strong', 'sub', 'sup');
+function read_more_link($node, $display, $view_mode) {
+  $uri = entity_uri('node', $node);
+  if (empty($uri)) {
+    return array();
+  }
 
-  // Filter link text for cross-site scripting (XSS).
-  // We sanitize the link text here because l() will be told to allow HTML.
-  $link_text = t(variable_get('read_more_text', READ_MORE_TEXT_DEFAULT), array('@title' => strip_tags($node->title)));
-  $link_text = filter_xss($link_text, $allowed_tags);
-
-  // We don't need to sanitize the link title attribute because it's passed to l(), which runs strip_tags() for us.
-  $link_title = t(variable_get('read_more_title', READ_MORE_TITLE_DEFAULT));
-
-  // Replace tokens with values if the Token module and the token options are enabled.
-  $link_text = token_replace($link_text, array('node' => $node));
-  $link_title = token_replace($link_title, array('node' => $node));
-
-  // Build link options array.
-  $link_options = array(
-    'attributes' => array(
-      'title' => $link_title,
-    ),
-    'html' => TRUE,
+  // Send prepared data to the theme function.
+  return array(
+    '#theme' => 'read_more_link',
+    '#node' => $node,
+    '#display' => $display,
+    '#view_mode' => $view_mode,
   );
+}
+
+/* Link preprocessing */
+
+/**
+ * Add link options as prescribed in the Read More link config page.
+ */
+function _read_more_link_options($uri) {
+  // Build link options array.
+  $link_options = $uri['options'];
+  $link_options['attributes']['title'] = _read_more_link_title($uri['options']['entity']);
+  $link_options['html'] = TRUE;
 
   // Add anchor to link if the option is enabled.
-  if ($anchor) {
+  if (variable_get('read_more_anchor', FALSE)) {
     $link_options['fragment'] = 'more';
   }
 
@@ -287,14 +161,92 @@ function read_more_link($node, $display, $anchor) {
     $link_options['attributes']['target'] = '_blank';
   }
 
-  // Send prepared data to the theme function.
-  return array(
-    '#theme' => 'read_more_link',
-    '#node' => $node,
-    '#link_text' => $link_text,
-    '#link_options' => $link_options,
-    '#display' => $display
-  );
+  return $link_options;
+}
+
+function _read_more_link_uri($node, $options = array()) {
+  $uri = entity_uri('node', $node);
+  $uri['options'] = _read_more_link_options($uri);
+  $uri['options'] = $options + $uri['options'];
+
+  return $uri;
+}
+
+/**
+ * @return The Read More URL, with any noted options.
+ */
+function _read_more_link_url($node, $options = array()) {
+  $uri = _read_more_link_uri($node, $options);
+  return url($uri['path'], $uri['options']);
+}
+
+
+/**
+ * Limit the tags in the link text and link wrapper to a specific set.
+ */
+function _read_more_filter_xss($text) {
+  // Allowed tags borrowed largely from filter_xss_admin().
+  // See http://api.drupal.org/api/function/filter_xss_admin
+  $allowed_tags = array('abbr', 'acronym', 'b', 'big', 'cite', 'code', 'del', 'em', 'i', 'img', 'ins', 'small', 'span', 'strong', 'sub', 'sup');
+
+  return filter_xss($text, $allowed_tags);
+}
+
+/* Token handlers */
+
+/**
+ * The 'read-more' token will probably include the node:read-more:link token.
+ */
+function _read_more_wrapper($node, $view_mode) {
+  $link_wrapper = variable_get('read_more_text', READ_MORE_TEXT_DEFAULT);
+
+  // Filter link text for cross-site scripting (XSS).
+  // We sanitize the link text here because l() will be told to allow HTML.
+  $link_wrapper = _read_more_filter_xss($link_wrapper);
+
+  return token_replace($link_wrapper, array('node' => $node), array('read_more_view_mode' => $view_mode));
+}
+
+/**
+ * The read-more:link token wraps the read-more:link-text in link.
+ */
+function _read_more_link($node, $view_mode) {
+  $link_text = _read_more_link_text($node);
+  $link_uri = _read_more_link_uri($node);
+  $view_mode_settings = variable_get('read_more_absolute_link_modes', array());
+  if (!empty($view_mode_settings[$view_mode])) {
+    $link_uri['options']['absolute'] = TRUE;
+  }
+
+  return l($link_text, $link_uri['path'], $link_uri['options']);
+}
+
+/**
+ * The read-more:link-text token contains the text that will be wrapped in a link,
+ * but without the link.
+ */
+function _read_more_link_text($node) {
+  $link_text = variable_get('read_more_link_text', READ_MORE_LINK_TEXT_DEFAULT);
+
+  // Filter link text for cross-site scripting (XSS).
+  // We sanitize the link text here because l() will be told to allow HTML.
+  $link_text = _read_more_filter_xss($link_text);
+
+  // Replace tokens with values if the Token module and the token options are enabled.
+  $link_text = token_replace($link_text, array('node' => $node));
+
+  return $link_text;
+}
+
+/**
+ * The read-more:link-title token will be included in the link as the title attribute.
+ */
+function _read_more_link_title($node) {
+  // We don't need to sanitize the link title attribute because it's passed to l(), which runs strip_tags() for us.
+  $link_title = variable_get('read_more_title', READ_MORE_TITLE_DEFAULT);
+  $link_title = token_replace($link_title, array('node' => $node));
+
+  return $link_title;
 }
 
 
@@ -306,9 +258,8 @@ function read_more_theme($existing, $type, $theme, $path) {
     'read_more_link' => array(
       'variables' => array(
         'node' => NULL,
-        'link_text' => NULL,
-        'link_options' => NULL,
         'display' => NULL,
+        'view_mode' => NULL,
       ),
     ),
   );
@@ -319,10 +270,9 @@ function read_more_theme($existing, $type, $theme, $path) {
  * Theme function that wraps the rendered link.
  */
 function theme_read_more_link($vars) {
-  $node = $vars['node'];
-  $link_text = $vars['link_text'];
-  $link_options = $vars['link_options'];
   $display = $vars['display'];
+  $node = $vars['node'];
+  $view_mode = $vars['view_mode'];
 
   // Use a <div> (block-level) element for links appended after the teaser.
   if ($display == 'after') {
@@ -335,6 +285,16 @@ function theme_read_more_link($vars) {
     $separator = ' ';
   }
 
-  return $separator . '<' . $element . ' class="read-more">' . l($link_text, 'node/' . $node->nid, $link_options) . '</' . $element . '>';
+  return $separator . '<' . $element . ' class="read-more">' . _read_more_wrapper($node, $view_mode) . '</' . $element . '>';
 }
 
+function read_more_view_modes_options_list() {
+  $entity_info = entity_get_info('node');
+  $view_modes = array();
+
+  foreach ($entity_info['view modes'] as $key => $view_mode) {
+    $view_modes[$key] = $view_mode['label'];
+  }
+
+  return $view_modes;
+}

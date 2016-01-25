@@ -58,14 +58,14 @@ function flickr_sets_form_flickr_admin_settings_alter(&$form, &$form_state) {
  * Validate user input.
  */
 function flickr_sets_admin_settings_validate($form, &$form_state) {
-  $limit8 = trim($form_state['values']['flickr_sets_per_page']);
-  $limit9 = trim($form_state['values']['flickr_sets_photos_per_set']);
   // Validate sets per page.
-  if (!is_numeric($limit8) || $limit8 < 1) {
-    form_set_error('flickr_sets_per_page', t('Set a number from 1 to 99.'));
+  $limit = trim($form_state['values']['flickr_sets_per_page']);
+  if (!ctype_digit($limit) || $limit < 1) {
+    form_set_error('flickr_sets_per_page', t('Set an integer from 1 to 99.'));
   }
   // Validate photos per set.
-  if (!is_numeric($limit9) || $limit9 < 1) {
-    form_set_error('flickr_sets_photos_per_set', t('Set a number from 1 to 99.'));
+  $limit = trim($form_state['values']['flickr_sets_photos_per_set']);
+  if (!ctype_digit($limit) || $limit < 1) {
+    form_set_error('flickr_sets_photos_per_set', t('Set an integer from 1 to 99.'));
   }
 }
