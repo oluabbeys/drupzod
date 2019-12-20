@@ -6,7 +6,7 @@
  */
 
 /**
- * A parser for the Sitemap specification http://www.sitemaps.org/protocol.php
+ * A parser for the Sitemap specification http://www.sitemaps.org/protocol.html
  */
 class FeedsSitemapParser extends FeedsParser {
   /**
